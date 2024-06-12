@@ -191,9 +191,11 @@ end
 
 --script ui creation
 print("almost")
-if CoreGui:FindFirstChild("cheatt") then
-	CoreGui.cheatt:Destroy()
-end
+pcall(function()
+	if CoreGui:FindFirstChild("cheatt") then
+		CoreGui.cheatt:Destroy()
+	end
+end)
 do
 	local cheatt = Instance.new("ScreenGui")
 	cheatt.Name = "cheatt"

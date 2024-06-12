@@ -1491,7 +1491,7 @@ do
 										conn:Disconnect()
 										print(result, code)
 										
-										queue_on_teleport('local script = game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/source", true);print(script);loadstring(script)()')
+										queue_on_teleport('local script = game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/source", true);loadstring(script)()')
 									end
 								end
 							end

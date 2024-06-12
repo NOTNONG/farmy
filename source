@@ -94,7 +94,7 @@ end
 
 --player
 local localPlayer
-while not localPlayer do
+while not localPlayer or not pcall(CoreGui.FindFirstChild, CoreGui, "") do
 	RunService.Heartbeat:Wait()
 	localPlayer = Players.LocalPlayer
 end

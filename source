@@ -90,7 +90,7 @@ end
 
 --stuff
 local localPlayer
-while not localPlayer and not pcall(function()
+while not localPlayer or not pcall(function()
 	return CoreGui.FindFirstChild
 end) do
 	print("waiting")

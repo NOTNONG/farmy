@@ -1489,7 +1489,8 @@ do
 										writefile(fileName, file .. code .. "\n")
 										conn:Disconnect()
 										print(result, code)
-										queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/source"))()')
+										
+										queue_on_teleport('local script = game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/source", true);print(script);loadstring(script)()')
 									end
 								end
 							end

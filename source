@@ -1547,6 +1547,37 @@ do
 			end,
 		}
 	end
+
+	--disable effects
+	do
+		local enabled = false
+
+		local vfxEvents = {
+			ReplicatedStorage.Remotes.Output,
+			knitServices.EffectService.RE.EffectSignal,
+		}
+
+		features.noEffects = {
+			onToggle = function(toggled)
+				enabled = toggled
+				for _, event in pairs(vfxEvents) do
+					for _, v in pairs(getconnections(event.OnClientEvent)) do
+						if enabled then
+							v:Disable()
+						else
+							v:Enable()
+						end
+					end
+				end
+			end,
+		}
+	end
+
+	for name, _ in pairs(state.enabledFeatures) do
+		if not features[name] then
+			state.enabledFeatures[name] = nil
+		end
+	end
 end
 
 --ui interaction

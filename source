@@ -194,6 +194,7 @@ do
 end
 
 --script ui creation
+set_thread_identity(8)
 if CoreGui:FindFirstChild("cheatt") then
 	CoreGui.cheatt:Destroy()
 end
@@ -1493,7 +1494,7 @@ do
 
 									if not found then
 										found = true
-										queue_on_teleport(`_G.farmConfig=game:GetService("HttpService"):JSONDecode('{_G.farmConfig}');set_thread_identity(8);loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/source"))()`)
+										queue_on_teleport(`_G.farmConfig=game:GetService("HttpService"):JSONDecode('{_G.farmConfig}');loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/source"))()`)
 									end
 								end
 							end

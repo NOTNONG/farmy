@@ -93,6 +93,7 @@ local function addConn(connection)
 end
 
 --player
+print("atleast")
 local localPlayer
 while not localPlayer or not pcall(CoreGui.FindFirstChild, CoreGui, "") do
 	RunService.Heartbeat:Wait()

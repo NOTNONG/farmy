@@ -1,8 +1,8 @@
 if not _G.farmConfig then
 	--default
 	_G.farmConfig = {
-		tpOffset = CFrame.new(0, 17, 0) * CFrame.Angles(math.rad(-90), 0, 0),
-		hitboxDistance = CFrame.new(0, 0, -8.5),
+		tpOffset = { position = { 0, 17, 0 }, angle = { -90, 0, 0 } },
+		hitboxDistance = { position = { 0, 0, -8.5 }, angle = { 0, 0, 0 } },
 		hpFilterUsePercentage = false,
 		sellAt = 1,
 		serverWhitelist = {},
@@ -88,8 +88,7 @@ while not localPlayer or not getgenv().set_thread_identity do
 	RunService.Heartbeat:Wait()
 	localPlayer = Players.LocalPlayer
 end
---selene:allow(undefined_variable)
-set_thread_identity(8)
+getgenv().set_thread_identity(8)
 
 --connections
 do
@@ -133,6 +132,12 @@ local function teleport(pos)
 	root.CFrame = if typeof(pos) == "Vector3" then CFrame.new(pos) else pos
 	root.AssemblyLinearVelocity = Vector3.zero
 	root.AssemblyAngularVelocity = Vector3.zero
+end
+
+local function tbToCfr(tb)
+	local angle = tb.angle
+	return CFrame.new(table.unpack(tb.position))
+		* CFrame.Angles(math.rad(angle[1]), math.rad(angle[2]), math.rad(angle[3]))
 end
 
 --aut stuff
@@ -1258,7 +1263,7 @@ do
 
 			if foe then
 				local foeRoot = foe.HumanoidRootPart
-				teleport(CFrame.new(foeRoot.CFrame.Position) * _G.farmConfig.tpOffset)
+				teleport(CFrame.new(foeRoot.CFrame.Position) * tbToCfr(_G.farmConfig.tpOffset))
 
 				local keysList
 				local isSummoned = character:HasTag("Summoned")
@@ -1686,7 +1691,7 @@ do
 				if oldIndex(instance, "Name") == "HumanoidRootPart" and state.mode == "curses" then
 					local cfr = oldIndex(instance, "CFrame")
 					local old = cfr
-					cfr *= _G.farmConfig.hitboxDistance
+					cfr *= tbToCfr(_G.farmConfig.hitboxDistance)
 
 					if index == "CFrame" then
 						return cfr

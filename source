@@ -191,11 +191,11 @@ end
 
 --script ui creation
 print("almost")
-pcall(function()
-	if CoreGui:FindFirstChild("cheatt") then
-		CoreGui.cheatt:Destroy()
-	end
-end)
+set_thread_identity(8)
+task.wait()
+if CoreGui:FindFirstChild("cheatt") then
+	CoreGui.cheatt:Destroy()
+end
 do
 	local cheatt = Instance.new("ScreenGui")
 	cheatt.Name = "cheatt"
@@ -1491,7 +1491,7 @@ do
 										conn:Disconnect()
 										print(result, code)
 										
-										queue_on_teleport('while not pcall(function() return game.CoreGui.FindFirstChild end) do print("waiding") task.wait() end;local script = game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/source", true);loadstring(script)()')
+										queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/source"))()')
 									end
 								end
 							end

@@ -189,6 +189,7 @@ do
 end
 
 --script ui creation
+print("almost")
 if CoreGui:FindFirstChild("cheatt") then
 	CoreGui.cheatt:Destroy()
 end

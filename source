@@ -39,8 +39,8 @@ if game.PlaceId ~= 6846458508 then
 end
 
 --selene: allow(undefined_variable, unused_variable)
-local print, stringify, rconsoleclear, isfile, readfile, writefile, rconsoleprint =
-	print, nil, rconsoleclear, isfile, readfile, writefile, rconsoleprint
+local print, stringify, rconsoleclear, isfile, readfile, writefile, rconsoleprint, getrenv =
+	print, nil, rconsoleclear, isfile, readfile, writefile, rconsoleprint, getrenv
 do
 	rconsoleclear()
 	if isfile("stringify") then
@@ -54,7 +54,11 @@ do
 				end
 				table.insert(result, v)
 			end
-			rconsoleprint(`  {table.concat(result, " ")}`)
+
+			local msg = `  {table.concat(result, " ")}`
+			if not pcall(rconsoleprint, msg) then
+				getrenv().print(msg)
+			end
 		end
 	end
 end
@@ -88,12 +92,9 @@ local function addConn(connection)
 	return connection
 end
 
---stuff
+--player
 local localPlayer
-while not localPlayer or not pcall(function()
-	return CoreGui:FindFirstChild("cheatt")
-end) do
-	print("waiting")
+while not localPlayer do
 	RunService.Heartbeat:Wait()
 	localPlayer = Players.LocalPlayer
 end
@@ -189,7 +190,6 @@ do
 end
 
 --script ui creation
-print("almost")
 if CoreGui:FindFirstChild("cheatt") then
 	CoreGui.cheatt:Destroy()
 end

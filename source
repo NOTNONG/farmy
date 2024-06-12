@@ -39,7 +39,7 @@ if game.PlaceId ~= 6846458508 then
 end
 
 --selene: allow(undefined_variable, unused_variable)
-local print, stringify, rconsoleclear, isfile, readfile, writefile, rconsoleprint, firesignal, fireproximityprompt, hookmetamethod, getconnections, getgenv, set_thread_identity, queue_on_teleport =
+local print, stringify, rconsoleclear, isfile, readfile, writefile, rconsoleprint, firesignal, fireproximityprompt, hookmetamethod, getconnections, getgenv, queue_on_teleport =
 	print,
 	nil,
 	rconsoleclear,
@@ -52,7 +52,6 @@ local print, stringify, rconsoleclear, isfile, readfile, writefile, rconsoleprin
 	hookmetamethod,
 	getconnections,
 	getgenv,
-	set_thread_identity,
 	queue_on_teleport
 do
 	rconsoleclear()
@@ -89,6 +88,7 @@ while not localPlayer or not getgenv().set_thread_identity do
 	RunService.Heartbeat:Wait()
 	localPlayer = Players.LocalPlayer
 end
+--selene:allow(undefined_variable)
 set_thread_identity(8)
 
 --connections

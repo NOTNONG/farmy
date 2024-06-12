@@ -32,6 +32,8 @@ if not _G.farmConfig then
 			"Q",
 		},
 	}
+else
+	print(_G.farmConfig)
 end
 
 if game.PlaceId ~= 6846458508 then
@@ -39,7 +41,7 @@ if game.PlaceId ~= 6846458508 then
 end
 
 --selene: allow(undefined_variable, unused_variable)
-local print, stringify, rconsoleclear, isfile, readfile, writefile, rconsoleprint, set_thread_identity, firesignal, fireproximityprompt, hookmetamethod, getconnections =
+local print, stringify, rconsoleclear, isfile, readfile, writefile, rconsoleprint, firesignal, fireproximityprompt, hookmetamethod, getconnections =
 	print,
 	nil,
 	rconsoleclear,
@@ -47,7 +49,6 @@ local print, stringify, rconsoleclear, isfile, readfile, writefile, rconsoleprin
 	readfile,
 	writefile,
 	rconsoleprint,
-	set_thread_identity,
 	firesignal,
 	fireproximityprompt,
 	hookmetamethod,
@@ -193,7 +194,6 @@ do
 end
 
 --script ui creation
-set_thread_identity(8)
 if CoreGui:FindFirstChild("cheatt") then
 	CoreGui.cheatt:Destroy()
 end
@@ -1493,7 +1493,7 @@ do
 
 									if not found then
 										found = true
-										queue_on_teleport(`_G.farmConfig=game:GetService("HttpService"):JSONDecode('{_G.farmConfig}');print(_G.farmConfig);loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/source"))()`)
+										queue_on_teleport(`_G.farmConfig=game:GetService("HttpService"):JSONDecode('{_G.farmConfig}');set_thread_identity(8);loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/source"))()`)
 									end
 								end
 							end

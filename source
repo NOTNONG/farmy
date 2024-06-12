@@ -142,15 +142,9 @@ local combatTagged = false
 local ui = localPlayer.PlayerGui:WaitForChild("UI")
 local traitHandPrompt = ui.Gameplay.TraitHandPrompt
 local modules = ReplicatedStorage:WaitForChild("ReplicatedModules")
-local living = workspace:WaitForChild("Living")
 local data = localPlayer:WaitForChild("Data")
 local knitServices = modules:WaitForChild("KnitPackage"):WaitForChild("Knit"):WaitForChild("Services")
-local levelService = knitServices:WaitForChild("LevelService")
 --local moveService = knitServices:WaitForChild("MoveService")
-local traitService = knitServices:WaitForChild("TraitService")
-local shopService = knitServices:WaitForChild("ShopService")
-local inventoryService = knitServices:WaitForChild("InventoryService")
-local fireInput = knitServices:WaitForChild("MoveInputService"):WaitForChild("RF"):WaitForChild("FireInput")
 --[[local getMovesInfo = moveService:WaitForChild("RF"):WaitForChild("GetMovesInfo")
 local getKeyMap = moveService:WaitForChild("RF"):WaitForChild("GetKeybindsMap")
 local equipMove = moveService:WaitForChild("RF"):WaitForChild("EquipMove")--]]
@@ -847,15 +841,197 @@ if isfile("farmState") then
 	state = HttpService:JSONDecode(readfile("farmState"))
 end
 
+--TRAIT UI
+local hideTraitUIs = false
+do
+	local traitService = knitServices:WaitForChild("TraitService")
+	local traitHandEvent = traitService:WaitForChild("RE"):WaitForChild("TraitHand")
+
+	local traitPage = scriptUI.Main.Pages.TraitInfo
+	local cardsHolder = traitPage.CardsHolder
+	local template = cardsHolder.template
+	local cards = {}
+	local availableTraits = {}
+	local inProgress = false
+
+	local function chosen()
+		inProgress = false
+		availableTraits = {}
+		traitPage.none.Visible = true
+		traitPage.discard.Visible = false
+		traitPage.pity.Visible = false
+		for _, card in pairs(cards) do
+			card.Parent.Visible = false
+		end
+	end
+
+	for i = 1, 3 do
+		local clone = template:Clone()
+		local card = clone.card
+		card.description.Text = ""
+		card.name.Text = "None"
+		card.Name = `Trait{tostring(i)}`
+		clone.Parent = cardsHolder
+
+		card.MouseButton1Click:Connect(function()
+			if availableTraits[i] then
+				local pickTrait = traitService.RF.PickTrait
+				task.spawn(pickTrait.InvokeServer, pickTrait, i)
+				chosen()
+			end
+		end)
+		cards[i] = card
+	end
+
+	traitPage.discard.MouseButton1Click:Connect(function()
+		local discardTraits = traitService.RF.DiscardTraits
+		task.spawn(discardTraits.InvokeServer, discardTraits)
+		chosen()
+	end)
+
+	--fuck with AUT's trait ui
+	for _, connection in pairs(getconnections(traitHandEvent.OnClientEvent)) do
+		connection:Disable()
+		--selene:allow(incorrect_standard_library_use)
+		do
+			local func = connection.Function
+			if debug.getupvalue(func, 1) == true then
+				traitHandPrompt.Visible = true
+				traitPage.none.Visible = false
+				traitPage.used.Visible = true
+				local conn
+				conn = addConn(RunService.Heartbeat:Connect(function()
+					if debug.getupvalue(func, 1) == false then
+						if not inProgress then
+							traitPage.none.Visible = true
+						end
+						traitPage.used.Visible = false
+						hideTraitUIs = true
+						conn:Disconnect()
+					end
+				end))
+			else
+				hideTraitUIs = true
+			end
+
+			local i, upvalue
+			for index, v in pairs(debug.getupvalues(func)) do
+				if type(v) == "table" and rawget(v, "ResolveLock") then
+					i = index
+					upvalue = v
+					break
+				end
+			end
+
+			debug.setupvalue(
+				func,
+				i,
+				setmetatable({
+					__original = rawget(upvalue, "__original") or upvalue,
+					ResolveLock = function() end,
+					ToggleMenu = function() end,
+					MakeLockInstance = function() end,
+					SetMenu = function() end,
+					DestroyPrompt = function() end,
+				}, {
+					__index = upvalue,
+					__newindex = upvalue,
+				})
+			)
+		end
+	end
+
+	addConn(data.Ability.Changed:Connect(function()
+		chosen()
+	end))
+
+	--replace AUT's trait ui
+	local function handle(traitsInfo)
+		inProgress = true
+		traitPage.used.Visible = false
+		traitPage.none.Visible = false
+		traitPage.discard.Visible = true
+		traitPage.pity.Text = "getting pity data"
+		traitPage.pity.Visible = true
+		task.spawn(function()
+			local info = knitServices.ShopService.RF.GetPityInfo:InvokeServer()
+			local max
+			if ascensions <= 5 then
+				max = 60
+			elseif ascensions <= 10 then
+				max = 80
+			elseif ascensions > 10 then
+				max = 100
+			end
+
+			traitPage.pity.Text = `{info.TraitRerollPity}/{max}`
+		end)
+
+		for i, info in pairs(traitsInfo) do
+			availableTraits[i] = info
+			local trait = traits[info.Trait]
+			local card = cards[i]
+
+			if info.Hexed then
+				card.name.Text = `{trait.HexPrefix} {info.Trait} ({info.Rarity})`
+				card.description.Text = trait.HexDescription
+			else
+				card.name.Text = `{info.Trait} ({info.Rarity})`
+				card.description.Text = trait.Description
+			end
+
+			if info.Hexed or info.Rarity == "Mythic" then
+				card.name.Text = `!!! {card.name.Text} !!!`
+			end
+
+			card.Parent.Visible = true
+
+			local statTemplate = card.stats.category
+			for _, v in pairs(card.stats:GetChildren()) do
+				if v ~= statTemplate then
+					v:Destroy()
+				end
+			end
+
+			if info.StatBonuses then
+				local xPos = 0
+				local yPos = 0
+
+				for stat, points in pairs(info.StatBonuses) do
+					local clone = statTemplate:Clone()
+					clone.Text = `{stat}: {tostring(points)}`
+					clone.Name = stat
+					clone.Visible = true
+					clone.Position = UDim2.fromScale(xPos, yPos)
+					clone.Parent = card.stats
+					xPos += 0.5
+					if xPos > 0.5 then
+						xPos = 0
+						yPos += 0.5
+					end
+				end
+			end
+		end
+	end
+
+	if _G.currentTraits then
+		handle(_G.currentTraits)
+	end
+
+	addConn(traitHandEvent.onClientEvent:Connect(function(traitsInfo)
+		_G.currentTraits = traitsInfo
+		handle(traitsInfo)
+	end))
+end
+
 --features
 local featureDebounce = 0
 local features = {}
 
 --STEP
+local levelService = knitServices:WaitForChild("LevelService")
 local steps = {}
 local invokeQueue = {}
-local hideTraitUIs = false
-
 do
 	if _G.farmStepConn then
 		if typeof(_G.farmStepConn) == "RBXScriptConnection" then
@@ -926,187 +1102,6 @@ addConn(UserInputService.InputBegan:Connect(function(inputObject, processed)
 	end
 end))
 
---TRAIT UI
-do
-	local traitHandEvent = traitService:WaitForChild("RE"):WaitForChild("TraitHand")
-	local discardTraits = traitService:WaitForChild("RF"):WaitForChild("DiscardTraits")
-	local pickTrait = traitService:WaitForChild("RF"):WaitForChild("PickTrait")
-
-	local traitPage = scriptUI.Main.Pages.TraitInfo
-	local cardsHolder = traitPage.CardsHolder
-	local template = cardsHolder.template
-	local cards = {}
-	local availableTraits = {}
-	local inProgress = false
-
-	local function chosen()
-		inProgress = false
-		availableTraits = {}
-		traitPage.none.Visible = true
-		traitPage.discard.Visible = false
-		traitPage.pity.Visible = false
-		for _, card in pairs(cards) do
-			card.Parent.Visible = false
-		end
-	end
-
-	for i = 1, 3 do
-		local clone = template:Clone()
-		local card = clone.card
-		card.description.Text = ""
-		card.name.Text = "None"
-		card.Name = `Trait{tostring(i)}`
-		clone.Parent = cardsHolder
-
-		card.MouseButton1Click:Connect(function()
-			if availableTraits[i] then
-				task.spawn(pickTrait.InvokeServer, pickTrait, i)
-				chosen()
-			end
-		end)
-		cards[i] = card
-	end
-
-	traitPage.discard.MouseButton1Click:Connect(function()
-		task.spawn(discardTraits.InvokeServer, discardTraits)
-		chosen()
-	end)
-
-	--fuck with AUT's trait ui
-	for _, connection in pairs(getconnections(traitHandEvent.OnClientEvent)) do
-		connection:Disable()
-		--selene:allow(incorrect_standard_library_use)
-		do
-			local func = connection.Function
-			if debug.getupvalue(func, 1) == true then
-				traitHandPrompt.Visible = true
-				traitPage.none.Visible = false
-				traitPage.used.Visible = true
-				local conn
-				conn = addConn(RunService.Heartbeat:Connect(function()
-					if debug.getupvalue(func, 1) == false then
-						if not inProgress then
-							traitPage.none.Visible = true
-						end
-						traitPage.used.Visible = false
-						hideTraitUIs = true
-						conn:Disconnect()
-					end
-				end))
-			else
-				hideTraitUIs = true
-			end
-
-			local i, upvalue
-			for index, v in pairs(debug.getupvalues(func)) do
-				if type(v) == "table" and rawget(v, "ResolveLock") then
-					i = index
-					upvalue = v
-					break
-				end
-			end
-
-			debug.setupvalue(
-				func,
-				i,
-				setmetatable({
-					__original = rawget(upvalue, "__original") or upvalue,
-					ResolveLock = function() end,
-					ToggleMenu = function() end,
-					MakeLockInstance = function() end,
-					SetMenu = function() end,
-					DestroyPrompt = function() end,
-				}, {
-					__index = upvalue,
-					__newindex = upvalue,
-				})
-			)
-		end
-	end
-
-	addConn(data.Ability.Changed:Connect(function()
-		chosen()
-	end))
-
-	--replace AUT's trait ui
-	local function handle(traitsInfo)
-		inProgress = true
-		traitPage.used.Visible = false
-		traitPage.none.Visible = false
-		traitPage.discard.Visible = true
-		traitPage.pity.Text = "getting pity data"
-		traitPage.pity.Visible = true
-		task.spawn(function()
-			local info = shopService.RF.GetPityInfo:InvokeServer()
-			local max
-			if ascensions <= 5 then
-				max = 60
-			elseif ascensions <= 10 then
-				max = 80
-			elseif ascensions > 10 then
-				max = 100
-			end
-
-			traitPage.pity.Text = `{info.TraitRerollPity}/{max}`
-		end)
-
-		for i, info in pairs(traitsInfo) do
-			availableTraits[i] = info
-			local trait = traits[info.Trait]
-			local card = cards[i]
-
-			if info.Hexed then
-				card.name.Text = `{trait.HexPrefix} {info.Trait} ({info.Rarity})`
-				card.description.Text = trait.HexDescription
-			else
-				card.name.Text = `{info.Trait} ({info.Rarity})`
-				card.description.Text = trait.Description
-			end
-
-			if info.Hexed or info.Rarity == "Mythic" then
-				card.name.Text = `!!! {card.name.Text} !!!`
-			end
-
-			card.Parent.Visible = true
-
-			local statTemplate = card.stats.category
-			for _, v in pairs(card.stats:GetChildren()) do
-				if v ~= statTemplate then
-					v:Destroy()
-				end
-			end
-
-			if info.StatBonuses then
-				local xPos = 0
-				local yPos = 0
-
-				for stat, points in pairs(info.StatBonuses) do
-					local clone = statTemplate:Clone()
-					clone.Text = `{stat}: {tostring(points)}`
-					clone.Name = stat
-					clone.Visible = true
-					clone.Position = UDim2.fromScale(xPos, yPos)
-					clone.Parent = card.stats
-					xPos += 0.5
-					if xPos > 0.5 then
-						xPos = 0
-						yPos += 0.5
-					end
-				end
-			end
-		end
-	end
-
-	if _G.currentTraits then
-		handle(_G.currentTraits)
-	end
-
-	addConn(traitHandEvent.onClientEvent:Connect(function(traitsInfo)
-		_G.currentTraits = traitsInfo
-		handle(traitsInfo)
-	end))
-end
-
 --combat tag
 addConn(ReplicatedStorage.Remotes.UIOutput.OnClientEvent:Connect(function(...)
 	local args = { ... }
@@ -1123,6 +1118,7 @@ end))
 do
 	--curses
 	do
+		local fireInput = knitServices:WaitForChild("MoveInputService"):WaitForChild("RF"):WaitForChild("FireInput")
 		local sellDebounce = 0
 		local isSelling = false
 		local bmLocations = {}
@@ -1163,7 +1159,7 @@ do
 								})
 							end
 
-							shopService.RE.Signal:FireServer("BlackMarketBulkSellItems", itemsToSell)
+							knitServices.ShopService.RE.Signal:FireServer("BlackMarketBulkSellItems", itemsToSell)
 						end
 					else
 						local finished = false
@@ -1243,7 +1239,7 @@ do
 			teleport(locations.desert)
 			local mostHp = math.huge
 			local foe
-			for _, thisFoe in pairs(living:GetChildren()) do
+			for _, thisFoe in pairs(workspace.Living:GetChildren()) do
 				if curses[thisFoe.Name] then
 					local foeHumanoid = thisFoe:FindFirstChildWhichIsA("Humanoid")
 					local foeRoot = thisFoe:FindFirstChild("HumanoidRootPart")
@@ -1414,40 +1410,44 @@ do
 		end,
 	}
 
-	features.autoDeleteSkin = {
-		run = function()
-			if not combatTagged then
-				local skinInventory = inventoryService.RF.GetItems:InvokeServer("SkinInventory")
-				local uuidsToRemove = { {} }
-				local biggerIndex = 1
-				local index = 0
-				for uuid, skin in pairs(skinInventory) do
-					if
-						not skinWhitelist[skin._Rarity]
-						and not skinWhitelistName[skin._DisplayName]
-						and not skin._UnusualInfo
-					then
-						table.insert(uuidsToRemove[biggerIndex], uuid)
-						index += 1
-						if index >= 100 then
-							biggerIndex += 1
-							uuidsToRemove[biggerIndex] = {}
-							index = 0
+	--auto delete
+	do
+		local inventoryService = knitServices:WaitForChild("InventoryService")
+		features.autoDeleteSkin = {
+			run = function()
+				if not combatTagged then
+					local skinInventory = inventoryService.RF.GetItems:InvokeServer("SkinInventory")
+					local uuidsToRemove = { {} }
+					local biggerIndex = 1
+					local index = 0
+					for uuid, skin in pairs(skinInventory) do
+						if
+							not skinWhitelist[skin._Rarity]
+							and not skinWhitelistName[skin._DisplayName]
+							and not skin._UnusualInfo
+						then
+							table.insert(uuidsToRemove[biggerIndex], uuid)
+							index += 1
+							if index >= 100 then
+								biggerIndex += 1
+								uuidsToRemove[biggerIndex] = {}
+								index = 0
+							end
+						end
+					end
+
+					for _, v in pairs(uuidsToRemove) do
+						if #v > 0 then
+							inventoryService.RE.SkinInventory:FireServer({
+								UUIDS = v,
+								Remove = true,
+							})
 						end
 					end
 				end
-
-				for _, v in pairs(uuidsToRemove) do
-					if #v > 0 then
-						inventoryService.RE.SkinInventory:FireServer({
-							UUIDS = v,
-							Remove = true,
-						})
-					end
-				end
-			end
-		end,
-	}
+			end,
+		}
+	end
 
 	--auto rejoin
 	do

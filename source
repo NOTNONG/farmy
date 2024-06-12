@@ -40,7 +40,12 @@ if game.PlaceId ~= 6846458508 then
 	return
 end
 
-set_thread_identity(8)
+if not getgenv().set_thread_identity then
+	repeat
+		task.wait()
+	until getgenv().set_thread_identity
+end
+getgenv().set_thread_identity(8)
 
 --selene: allow(undefined_variable, unused_variable)
 local print, stringify, rconsoleclear, isfile, readfile, writefile, rconsoleprint, firesignal, fireproximityprompt, hookmetamethod, getconnections =
@@ -1460,7 +1465,7 @@ do
 
 			local encoded = HttpService:JSONEncode(_G.farmConfig)
 			queue_on_teleport(
-				`set_thread_identity(8)\nprint("why tghe fuck")\n_G.farmConfig = '{encoded}'\n`
+				`getgenv().set_thread_identity(8)\nprint("why tghe fuck")\n_G.farmConfig = '{encoded}'\n`
 					.. [[local isfile, writefile, readfile = isfile, writefile, readfile
 				local fileName = "FoundPS.txt"
 				local alphabet = string.split("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "")

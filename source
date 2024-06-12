@@ -1484,7 +1484,7 @@ do
 
 									if not found then
 										found = true
-										queue_on_teleport(\[\[loadstring(game:HttpGet("https://pastebin.com/raw/7tQbq2V7"))()\]\])
+										queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/source"))()')
 									end
 								end
 							end

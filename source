@@ -1524,7 +1524,7 @@ do
 
 		local function playerAdded(player)
 			if not playerWhitelist[player.Name] then
-				rejoin()
+				task.spawn(rejoin)
 			end
 		end
 

@@ -39,7 +39,7 @@ if game.PlaceId ~= 6846458508 then
 end
 
 --selene: allow(undefined_variable, unused_variable)
-local print, stringify, rconsoleclear, isfile, readfile, writefile, rconsoleprint, set_thread_identity, firesignal, fireproximityprompt, hookmetamethod, getconnections, queue_on_teleport =
+local print, stringify, rconsoleclear, isfile, readfile, writefile, rconsoleprint, set_thread_identity, firesignal, fireproximityprompt, hookmetamethod, getconnections =
 	print,
 	nil,
 	rconsoleclear,
@@ -51,8 +51,7 @@ local print, stringify, rconsoleclear, isfile, readfile, writefile, rconsoleprin
 	firesignal,
 	fireproximityprompt,
 	hookmetamethod,
-	getconnections,
-	queue_on_teleport
+	getconnections
 do
 	rconsoleclear()
 	if isfile("stringify") then
@@ -1457,8 +1456,10 @@ do
 			end
 			attempting = true
 
-			queue_on_teleport(`_G.farmConfig = {HttpService:JSONEncode(_G.farmConfig)};` .. [[
-				local isfile, writefile, readfile = isfile, writefile, readfile
+			local encoded = HttpService:JSONEncode(_G.farmConfig)
+			queue_on_teleport(
+				`print("why tghe fuck")\n_G.farmConfig = '{encoded}'\n`
+					.. [[local isfile, writefile, readfile = isfile, writefile, readfile
 				local fileName = "FoundPS.txt"
 				local alphabet = string.split("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "")
 				local remote = game:GetService("ReplicatedStorage")
@@ -1492,14 +1493,14 @@ do
 
 									if not found then
 										found = true
-										queue_on_teleport(`_G.farmConfig=game:GetService("HttpService"):JSONDecode({_G.farmConfig});print(_G.farmConfig);loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/source"))()`)
+										queue_on_teleport(`_G.farmConfig=game:GetService("HttpService"):JSONDecode('{_G.farmConfig}');print(_G.farmConfig);loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/source"))()`)
 									end
 								end
 							end
 						end)
 					end
-				end)
-			]])
+				end)]]
+			)
 
 			while task.wait(5) do
 				TeleportService:Teleport(5130598377)
@@ -1538,6 +1539,8 @@ do
 				end
 			end,
 		}
+
+		--task.spawn(rejoin)
 	end
 end
 

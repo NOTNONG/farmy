@@ -39,7 +39,7 @@ if game.PlaceId ~= 6846458508 then
 end
 
 --selene: allow(undefined_variable, unused_variable)
-local print, stringify, rconsoleclear, isfile, readfile, writefile, rconsoleprint, firesignal, fireproximityprompt, hookmetamethod, getconnections =
+local print, stringify, rconsoleclear, isfile, readfile, writefile, rconsoleprint, firesignal, fireproximityprompt, hookmetamethod, getconnections, getgenv, set_thread_identity, queue_on_teleport =
 	print,
 	nil,
 	rconsoleclear,
@@ -50,7 +50,10 @@ local print, stringify, rconsoleclear, isfile, readfile, writefile, rconsoleprin
 	firesignal,
 	fireproximityprompt,
 	hookmetamethod,
-	getconnections
+	getconnections,
+	getgenv,
+	set_thread_identity,
+	queue_on_teleport
 do
 	rconsoleclear()
 	if isfile("stringify") then
@@ -1293,7 +1296,7 @@ do
 		local function pressButtons()
 			for _, button in pairs(autoPress) do
 				if button.Visible then
-					firesignal(button.MouseButton1Click)
+					pcall(firesignal, button.MouseButton1Click)
 				end
 			end
 		end

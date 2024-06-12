@@ -1465,7 +1465,7 @@ do
 
 			local encoded = HttpService:JSONEncode(_G.farmConfig)
 			queue_on_teleport(
-				`getgenv().set_thread_identity(8)\nprint("why tghe fuck")\n_G.farmConfig = '{encoded}'\n`
+				`print("why tghe fuck")\n_G.farmConfig = '{encoded}'\n`
 					.. [[local isfile, writefile, readfile = isfile, writefile, readfile
 				local fileName = "FoundPS.txt"
 				local alphabet = string.split("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "")

@@ -1481,13 +1481,12 @@ do
 							local success, result = pcall(remote.InvokeServer, remote, "JoinCode", { Code = code })
 							if success then
 								if result == "Success" then
-									local file = if isfile(fileName) then readfile(fileName) else ""
-									writefile(fileName, file .. code .. "\n")
-									conn:Disconnect()
-									print(result, code)
-
 									if not found then
 										found = true
+										local file = if isfile(fileName) then readfile(fileName) else ""
+										writefile(fileName, file .. code .. "\n")
+										conn:Disconnect()
+										print(result, code)
 										queue_on_teleport('loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/source"))()')
 									end
 								end

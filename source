@@ -88,9 +88,12 @@ local function addConn(connection)
 	return connection
 end
 
---player
+--stuff
 local localPlayer
-while not localPlayer do
+while not localPlayer and not pcall(function()
+	return CoreGui.FindFirstChild
+end) do
+	print("waiting")
 	RunService.Heartbeat:Wait()
 	localPlayer = Players.LocalPlayer
 end

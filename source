@@ -1546,8 +1546,6 @@ do
 				end
 			end,
 		}
-
-		task.spawn(rejoin)
 	end
 end
 

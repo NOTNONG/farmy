@@ -91,7 +91,7 @@ end
 --stuff
 local localPlayer
 while not localPlayer or not pcall(function()
-	return CoreGui.FindFirstChild
+	return CoreGui:FindFirstChild("cheatt")
 end) do
 	print("waiting")
 	RunService.Heartbeat:Wait()

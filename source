@@ -45,7 +45,7 @@ do
 	rconsoleclear()
 	if isfile("stringify") then
 		stringify = loadstring(readfile("stringify"))()
-		print = function(...)
+		--[[print = function(...)
 			local args = { ... }
 			local result = {}
 			for _, v in pairs(args) do
@@ -56,10 +56,9 @@ do
 			end
 
 			local msg = `  {table.concat(result, " ")}`
-			if not pcall(rconsoleprint, msg) then
-				getrenv().print(msg)
-			end
-		end
+			--rconsoleprint(msg)
+			getrenv().print(msg)
+		end--]]
 	end
 end
 

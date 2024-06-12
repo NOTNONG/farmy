@@ -14,27 +14,26 @@ if not _G.farmConfig then
 			J = "stopped",
 			K = "curses",
 			L = "lostSwords",
+			KeypadOne = "tower",
 		},
 		--{"Q", "Press"}
 		loopKeys = {
 			"E",
-			"T",
+			"R",
 			"MOUSEBUTTON1",
 		},
 		standOnKeys = {
 			"E",
 			"R",
-			"Y",
-			"G",
-			"V",
-			"B",
-			"MOUSEBUTTON1",
 			"Q",
+			"MOUSEBUTTON1",
 		},
 	}
 end
 
-if game.PlaceId ~= 6846458508 then
+local inMainGame = game.PlaceId == 6846458508
+local inTower = game.PlaceId == 8023712967
+if not (inMainGame or inTower) then
 	return
 end
 
@@ -153,16 +152,6 @@ local knitServices = modules:WaitForChild("KnitPackage"):WaitForChild("Knit"):Wa
 --[[local getMovesInfo = moveService:WaitForChild("RF"):WaitForChild("GetMovesInfo")
 local getKeyMap = moveService:WaitForChild("RF"):WaitForChild("GetKeybindsMap")
 local equipMove = moveService:WaitForChild("RF"):WaitForChild("EquipMove")--]]
-local locations = {
-	desert = CFrame.new(1982, 928, -1573),
-	park = CFrame.new(2096, 974, 287),
-	dealer = {
-		CFrame.new(2454, 982, 119), --station
-		CFrame.new(2051, 922, 1062), --port
-		CFrame.new(2035, 1063, -781), --desert
-		CFrame.new(950, 1009, -459), --village
-	},
-}
 
 --modules
 local itemData = require(modules.ItemData)
@@ -838,12 +827,16 @@ local state = {
 	enabledFeatures = {},
 }
 
+local stateFileName = "farmState"
+if inTower then
+	stateFileName = stateFileName .. "Tower"
+end
 local function stateUpdated()
-	writefile("farmState", HttpService:JSONEncode(state))
+	writefile(stateFileName, HttpService:JSONEncode(state))
 end
 
-if isfile("farmState") then
-	state = HttpService:JSONDecode(readfile("farmState"))
+if isfile(stateFileName) then
+	state = HttpService:JSONDecode(readfile(stateFileName))
 end
 
 --TRAIT UI
@@ -1035,7 +1028,9 @@ local features = {}
 
 --STEP
 local levelService = knitServices:WaitForChild("LevelService")
-local steps = {}
+local steps = {
+	stopped = {},
+}
 local invokeQueue = {}
 do
 	if _G.farmStepConn then
@@ -1051,6 +1046,11 @@ do
 		if hideTraitUIs then
 			traitHandPrompt.Visible = false
 		end
+
+		if not steps[state.mode] then
+			state.mode = "stopped"
+		end
+
 		labels.mode.Text = `mode: {state.mode}`
 		labels.uc.Text = `uc: {data.UCoins.Value}`
 		labels.us.Text = `us: {data.Currency.Value}`
@@ -1095,10 +1095,10 @@ end
 addConn(UserInputService.InputBegan:Connect(function(inputObject, processed)
 	if not processed then
 		local modeToSwitch = _G.farmConfig.modeKeys[inputObject.KeyCode.Name]
-		if modeToSwitch then
+		if modeToSwitch and steps[modeToSwitch] then
 			if state.mode ~= modeToSwitch then
-				if modeToSwitch == "stopped" then
-					teleport(locations.park)
+				if modeToSwitch == "stopped" and inMainGame then
+					teleport(CFrame.new(2096, 974, 287)) --park
 				end
 			end
 			state.mode = modeToSwitch
@@ -1121,271 +1121,314 @@ end))
 
 --STEP FUNCTIONS
 do
-	--curses
-	do
-		local fireInput = knitServices:WaitForChild("MoveInputService"):WaitForChild("RF"):WaitForChild("FireInput")
-		local sellDebounce = 0
-		local isSelling = false
-		local bmLocations = {}
-		for i, pos in pairs(locations.dealer) do
-			bmLocations[i] = { timer = 0, cfr = pos }
+	local autoPress = {
+		ui.Gameplay.ChestRoll.SelectAll,
+		ui.Gameplay.ChestRoll.Close,
+	}
+	local function pressButtons()
+		for _, button in pairs(autoPress) do
+			if button.Visible then
+				pcall(firesignal, button.MouseButton1Click)
+			end
 		end
-		local function attemptSell(dt)
-			local dealer = workspace.NPCS:FindFirstChild("Black Market")
-			if localPlayer:FindFirstChild("Backpack") and dealer then
-				local items = {}
-				for _, v in pairs(localPlayer.Backpack:GetChildren()) do
-					if v:IsA("Tool") and v:GetAttribute("ItemId") then
-						items[#items + 1] = v
-					end
+	end
+
+	local fireInput = knitServices:WaitForChild("MoveInputService"):WaitForChild("RF"):WaitForChild("FireInput")
+	local keyIndex = 0
+	local wasSummoned = false
+	local function input()
+		local keysList
+		local isSummoned = character:HasTag("Summoned")
+		if isSummoned ~= wasSummoned then
+			keyIndex = 0
+			wasSummoned = isSummoned
+		end
+
+		keysList = if isSummoned then _G.farmConfig.standOnKeys else _G.farmConfig.loopKeys
+		keyIndex += 1
+		if keyIndex > #keysList then
+			keyIndex = 1
+		end
+
+		local key = keysList[keyIndex]
+		if type(key) == "table" then
+			if key[2] == "Press" then
+				task.delay(0.1, fireInput.InvokeServer, fireInput, `END-{key[1]}`)
+			end
+			key = key[1]
+		end
+		task.spawn(fireInput.InvokeServer, fireInput, key)
+	end
+
+	local mobFilter
+	local function findMob()
+		local mostHp = math.huge
+		local foe
+		for _, thisFoe in pairs(workspace.Living:GetChildren()) do
+			local foeHumanoid = thisFoe:FindFirstChildWhichIsA("Humanoid")
+			local foeRoot = thisFoe:FindFirstChild("HumanoidRootPart")
+			if
+				foeHumanoid
+				and foeRoot
+				and (if mobFilter then mobFilter(thisFoe) else true)
+				and not Players:GetPlayerFromCharacter(thisFoe)
+			then
+				local hp = foeHumanoid.Health
+				if _G.farmConfig.hpFilterUsePercentage then
+					hp /= foeHumanoid.MaxHealth
 				end
-
-				if #items == 0 and isSelling then
-					isSelling = false
-					sellDebounce = 0
+				if hp < mostHp then
+					mostHp = hp
+					foe = thisFoe
 				end
+			end
+		end
 
-				if #items >= _G.farmConfig.sellAt or isSelling then
-					if dealer:FindFirstChild("HumanoidRootPart") then
-						isSelling = true
-						teleport(
-							dealer.HumanoidRootPart.CFrame * CFrame.new(0, 0, -5) * CFrame.Angles(0, math.rad(180), 0)
-						)
+		if foe then
+			teleport(CFrame.new(foe.HumanoidRootPart.CFrame.Position) * tbToCfr(_G.farmConfig.tpOffset))
+			input()
+			return "break"
+		end
+	end
 
-						sellDebounce -= dt
-						if sellDebounce <= 0 then
-							sellDebounce = 2
-							local itemsToSell = {}
-							for _, v in pairs(items) do
-								table.insert(itemsToSell, {
-									[1] = v:GetAttribute("ItemId"),
-									[2] = v:getAttribute("UUID"),
-									[3] = 1,
-								})
-							end
+	local sellDebounce = 0
+	local isSelling = false
+	local dealerLocations
+	local function attemptSell(dt)
+		local dealer = workspace.NPCS:FindFirstChild("Black Market")
+		if localPlayer:FindFirstChild("Backpack") and dealer then
+			local items = {}
+			for _, v in pairs(localPlayer.Backpack:GetChildren()) do
+				if v:IsA("Tool") and v:GetAttribute("ItemId") then
+					items[#items + 1] = v
+				end
+			end
 
-							knitServices.ShopService.RE.Signal:FireServer("BlackMarketBulkSellItems", itemsToSell)
+			if #items == 0 and isSelling then
+				isSelling = false
+				sellDebounce = 0
+			end
+
+			if #items >= _G.farmConfig.sellAt or isSelling then
+				if dealer:FindFirstChild("HumanoidRootPart") then
+					isSelling = true
+					teleport(dealer.HumanoidRootPart.CFrame * CFrame.new(0, 0, -5) * CFrame.Angles(0, math.rad(180), 0))
+
+					sellDebounce -= dt
+					if sellDebounce <= 0 then
+						sellDebounce = 2
+						local itemsToSell = {}
+						for _, v in pairs(items) do
+							table.insert(itemsToSell, {
+								[1] = v:GetAttribute("ItemId"),
+								[2] = v:getAttribute("UUID"),
+								[3] = 1,
+							})
 						end
-					else
+
+						knitServices.ShopService.RE.Signal:FireServer("BlackMarketBulkSellItems", itemsToSell)
+					end
+				else
+					if dealerLocations then
 						local finished = false
-						for i, location in pairs(bmLocations) do
+						for i, location in pairs(dealerLocations) do
 							if location.timer < 2 then
 								location.timer += dt
 								teleport(location.cfr)
 								break
 							end
 
-							if i == #bmLocations then
+							if i == #dealerLocations then
 								finished = true
 							end
 						end
 
 						if finished then
-							for _, location in pairs(bmLocations) do
+							for _, location in pairs(dealerLocations) do
 								location.timer = 0
 							end
 						end
 					end
-
-					return "break"
-				end
-			end
-		end
-
-		local chestQueue = {}
-		local function attemptChests(dt)
-			if #chestQueue == 0 then
-				for _, chest in pairs(workspace:GetChildren()) do
-					if
-						chest:FindFirstChild("RootPart")
-						and chest.RootPart:FindFirstChild("ProximityAttachment")
-						and not chest:HasTag("WasOpened")
-					then
-						if (chest.RootPart.Position - locations.desert.Position).Magnitude <= 300 then
-							table.insert(chestQueue, { timer = 0, root = chest.RootPart })
-						end
-					end
-				end
-			else
-				local chest = chestQueue[1]
-				chest.timer += dt
-
-				if
-					chest.timer >= 0.5
-					or not chest.root:FindFirstChild("ProximityAttachment")
-					or not chest.root.ProximityAttachment:FindFirstChild("Interaction")
-				then
-					table.remove(chestQueue, 1)
-					chest.root.Parent:AddTag("WasOpened")
-				else
-					teleport(chest.root.CFrame)
-					fireproximityprompt(chest.root.ProximityAttachment.Interaction)
-					return "break"
-				end
-			end
-		end
-
-		local cursesList = {
-			"Mantis Curse",
-			"Jujutsu Sorcerer",
-			"Flyhead",
-			"Roppongi Curse",
-		}
-		local curses = {}
-		do
-			for _, mob in pairs(cursesList) do
-				curses[mob] = true
-			end
-		end
-
-		local keyIndex = 0
-		local wasSummoned = false
-		local function farmMobs()
-			teleport(locations.desert)
-			local mostHp = math.huge
-			local foe
-			for _, thisFoe in pairs(workspace.Living:GetChildren()) do
-				if curses[thisFoe.Name] then
-					local foeHumanoid = thisFoe:FindFirstChildWhichIsA("Humanoid")
-					local foeRoot = thisFoe:FindFirstChild("HumanoidRootPart")
-					if foeHumanoid and foeRoot and (foeRoot.Position - locations.desert.Position).Magnitude <= 300 then
-						local hp = foeHumanoid.Health
-						if _G.farmConfig.hpFilterUsePercentage then
-							hp /= foeHumanoid.MaxHealth
-						end
-						if hp < mostHp then
-							mostHp = hp
-							foe = thisFoe
-						end
-					end
-				end
-			end
-
-			if foe then
-				local foeRoot = foe.HumanoidRootPart
-				teleport(CFrame.new(foeRoot.CFrame.Position) * tbToCfr(_G.farmConfig.tpOffset))
-
-				local keysList
-				local isSummoned = character:HasTag("Summoned")
-				if isSummoned ~= wasSummoned then
-					keyIndex = 0
-					wasSummoned = isSummoned
 				end
 
-				keysList = if isSummoned then _G.farmConfig.standOnKeys else _G.farmConfig.loopKeys
-				keyIndex += 1
-				if keyIndex > #keysList then
-					keyIndex = 1
-				end
-
-				local key = keysList[keyIndex]
-				if type(key) == "table" then
-					if key[2] == "Press" then
-						task.delay(0.1, fireInput.InvokeServer, fireInput, `END-{key[1]}`)
-					end
-					key = key[1]
-				end
-				task.spawn(fireInput.InvokeServer, fireInput, key)
 				return "break"
 			end
 		end
-
-		local autoPress = {
-			ui.Gameplay.ChestRoll.SelectAll,
-			ui.Gameplay.ChestRoll.Close,
-		}
-		local function pressButtons()
-			for _, button in pairs(autoPress) do
-				if button.Visible then
-					pcall(firesignal, button.MouseButton1Click)
-				end
-			end
-		end
-
-		steps.curses = {
-			pressButtons,
-			attemptSell,
-			attemptChests,
-			farmMobs,
-		}
 	end
 
-	--lost swords
-	do
-		local function safeInvoke(remote, ...)
-			if invokeQueue[remote] then
-				return invokeQueue[remote]
+	local chestQueue = {}
+	local chestFilter
+	local function attemptChests(dt)
+		if #chestQueue == 0 then
+			for _, chest in pairs(workspace:GetChildren()) do
+				if
+					chest:FindFirstChild("RootPart")
+					and chest.RootPart:FindFirstChild("ProximityAttachment")
+					and not chest:HasTag("WasOpened")
+				then
+					if if chestFilter then chestFilter(chest) else true then
+						table.insert(chestQueue, { timer = 0, root = chest.RootPart })
+					end
+				end
 			end
+		else
+			local chest = chestQueue[1]
+			chest.timer += dt
 
-			local member = {
-				args = { ... },
-				timer = 0,
-				finished = false,
-				result = nil,
+			if
+				chest.timer >= 0.5
+				or not chest.root:FindFirstChild("ProximityAttachment")
+				or not chest.root.ProximityAttachment:FindFirstChild("Interaction")
+			then
+				table.remove(chestQueue, 1)
+				chest.root.Parent:AddTag("WasOpened")
+			else
+				teleport(chest.root.CFrame)
+				fireproximityprompt(chest.root.ProximityAttachment.Interaction)
+				return "break"
+			end
+		end
+	end
+
+	if inMainGame then
+		--curses
+		do
+			local desertCfr = CFrame.new(1982, 928, -1573)
+			local bmCfrs = {
+				CFrame.new(2454, 982, 119), --station
+				CFrame.new(2051, 922, 1062), --port
+				CFrame.new(2035, 1063, -781), --desert
+				CFrame.new(950, 1009, -459), --village
 			}
 
-			task.spawn(function()
-				local success, result
-				while not success do
-					success, result = pcall(function()
-						return { remote:InvokeServer(table.unpack(member.args)) }
-					end)
-				end
-
-				member.result = result
-				member.finished = true
-			end)
-
-			invokeQueue[remote] = member
-
-			return member
-		end
-
-		local checkDialogue =
-			knitServices:WaitForChild("DialogueService"):WaitForChild("RF"):WaitForChild("CheckDialogue")
-		local swordLocations
-		local function getSwords()
-			if not swordLocations then
-				local invokeResult = safeInvoke(checkDialogue, "Zoros_Swords_Adventure")
-				if invokeResult.finished and invokeResult.result[2] then
-					swordLocations = {}
-					for i, v in pairs(invokeResult.result[2].SwordLocations) do
-						swordLocations[i] = { pos = v.Location, finished = false }
-					end
-				else
-					return "break"
-				end
-			end
-		end
-
-		local function pickUpSwords()
-			local allFinished = false
-			for i, location in pairs(swordLocations) do
-				if not location.finished then
-					teleport(location.pos)
-					if safeInvoke(knitServices.AdventureService.RF.PickedUpSword).finished then
-						location.finished = true
-					end
-
-					break
-				else
-					if i == #swordLocations then
-						allFinished = true
-					end
-				end
+			dealerLocations = {}
+			for i, cfr in pairs(bmCfrs) do
+				dealerLocations[i] = { timer = 0, cfr = cfr }
 			end
 
-			if allFinished then
-				if safeInvoke(checkDialogue, "Zoros_Swords_Adventure").finished then
-					swordLocations = nil
-				end
+			local curses = {
+				["Mantis Curse"] = true,
+				["Jujutsu Sorcerer"] = true,
+				["Flyhead"] = true,
+				["Roppongi Curse"] = true,
+			}
+			mobFilter = function(mob)
+				return curses[mob.Name] and (mob.HumanoidRootPart.Position - desertCfr.Position).Magnitude <= 300
 			end
+
+			local function farmMobs()
+				teleport(desertCfr)
+				return findMob()
+			end
+
+			chestFilter = function(chest)
+				return (chest.RootPart.Position - desertCfr.Position).Magnitude <= 300
+			end
+
+			steps.curses = {
+				pressButtons,
+				attemptSell,
+				attemptChests,
+				farmMobs,
+			}
 		end
 
-		steps.lostSwords = {
-			getSwords,
-			pickUpSwords,
-		}
+		--lost swords
+		do
+			local function safeInvoke(remote, ...)
+				if invokeQueue[remote] then
+					return invokeQueue[remote]
+				end
+
+				local member = {
+					args = { ... },
+					timer = 0,
+					finished = false,
+					result = nil,
+				}
+
+				task.spawn(function()
+					local success, result
+					while not success do
+						success, result = pcall(function()
+							return { remote:InvokeServer(table.unpack(member.args)) }
+						end)
+					end
+
+					member.result = result
+					member.finished = true
+				end)
+
+				invokeQueue[remote] = member
+
+				return member
+			end
+
+			local checkDialogue =
+				knitServices:WaitForChild("DialogueService"):WaitForChild("RF"):WaitForChild("CheckDialogue")
+			local swordLocations
+			local function getSwords()
+				if not swordLocations then
+					local invokeResult = safeInvoke(checkDialogue, "Zoros_Swords_Adventure")
+					if invokeResult.finished and invokeResult.result[2] then
+						swordLocations = {}
+						for i, v in pairs(invokeResult.result[2].SwordLocations) do
+							swordLocations[i] = { pos = v.Location, finished = false }
+						end
+					else
+						return "break"
+					end
+				end
+			end
+
+			local function pickUpSwords()
+				local allFinished = false
+				for i, location in pairs(swordLocations) do
+					if not location.finished then
+						teleport(location.pos)
+						if safeInvoke(knitServices.AdventureService.RF.PickedUpSword).finished then
+							location.finished = true
+						end
+
+						break
+					else
+						if i == #swordLocations then
+							allFinished = true
+						end
+					end
+				end
+
+				if allFinished then
+					if safeInvoke(checkDialogue, "Zoros_Swords_Adventure").finished then
+						swordLocations = nil
+					end
+				end
+			end
+
+			steps.lostSwords = {
+				getSwords,
+				pickUpSwords,
+			}
+		end
+	elseif inTower then
+		--farm
+		do
+			local center = CFrame.new(259, 226, 39)
+			mobFilter = function(mob)
+				return (mob.HumanoidRootPart.Position - center.Position).Magnitude <= 300
+			end
+
+			chestFilter = function(chest)
+				return (chest.RootPart.Position - center.Position).Magnitude <= 50
+			end
+
+			steps.tower = {
+				pressButtons,
+				attemptSell,
+				attemptChests,
+				findMob,
+			}
+		end
 	end
 end
 
@@ -1399,74 +1442,75 @@ do
 		end,
 	}
 
-	features.autoStat = {
-		run = function()
-			local statsService = knitServices.StatService
-			local ability = data.Ability.Value
-			local stats = statsService.RF.GetAbilityStats:InvokeServer(ability)
-			if stats.StatPoints >= 1 then
-				statsService.RF.ApplyStats:InvokeServer(ability, {
-					Defense = 0,
-					Special = 0,
-					Health = 0,
-					Attack = stats.StatPoints,
-				})
-			end
-		end,
-	}
-
-	--auto delete
-	do
-		local inventoryService = knitServices:WaitForChild("InventoryService")
-		features.autoDeleteSkin = {
+	if inMainGame then
+		features.autoStat = {
 			run = function()
-				if not combatTagged then
-					local skinInventory = inventoryService.RF.GetItems:InvokeServer("SkinInventory")
-					local uuidsToRemove = { {} }
-					local biggerIndex = 1
-					local index = 0
-					for uuid, skin in pairs(skinInventory) do
-						if
-							not skinWhitelist[skin._Rarity]
-							and not skinWhitelistName[skin._DisplayName]
-							and not skin._UnusualInfo
-						then
-							table.insert(uuidsToRemove[biggerIndex], uuid)
-							index += 1
-							if index >= 100 then
-								biggerIndex += 1
-								uuidsToRemove[biggerIndex] = {}
-								index = 0
-							end
-						end
-					end
-
-					for _, v in pairs(uuidsToRemove) do
-						if #v > 0 then
-							inventoryService.RE.SkinInventory:FireServer({
-								UUIDS = v,
-								Remove = true,
-							})
-						end
-					end
+				local statsService = knitServices.StatService
+				local ability = data.Ability.Value
+				local stats = statsService.RF.GetAbilityStats:InvokeServer(ability)
+				if stats.StatPoints >= 1 then
+					statsService.RF.ApplyStats:InvokeServer(ability, {
+						Defense = 0,
+						Special = 0,
+						Health = 0,
+						Attack = stats.StatPoints,
+					})
 				end
 			end,
 		}
-	end
 
-	--auto rejoin
-	do
-		local attempting = false
-		local function rejoin()
-			if attempting or not state.enabledFeatures.autoRejoin then
-				return
-			end
-			attempting = true
+		--auto delete
+		do
+			local inventoryService = knitServices:WaitForChild("InventoryService")
+			features.autoDeleteSkin = {
+				run = function()
+					if not combatTagged then
+						local skinInventory = inventoryService.RF.GetItems:InvokeServer("SkinInventory")
+						local uuidsToRemove = { {} }
+						local biggerIndex = 1
+						local index = 0
+						for uuid, skin in pairs(skinInventory) do
+							if
+								not skinWhitelist[skin._Rarity]
+								and not skinWhitelistName[skin._DisplayName]
+								and not skin._UnusualInfo
+							then
+								table.insert(uuidsToRemove[biggerIndex], uuid)
+								index += 1
+								if index >= 100 then
+									biggerIndex += 1
+									uuidsToRemove[biggerIndex] = {}
+									index = 0
+								end
+							end
+						end
 
-			local encoded = HttpService:JSONEncode(_G.farmConfig)
-			queue_on_teleport(
-				`print("why tghe fuck")\n_G.farmConfig = '{encoded}'\n`
-					.. [[local isfile, writefile, readfile = isfile, writefile, readfile
+						for _, v in pairs(uuidsToRemove) do
+							if #v > 0 then
+								inventoryService.RE.SkinInventory:FireServer({
+									UUIDS = v,
+									Remove = true,
+								})
+							end
+						end
+					end
+				end,
+			}
+		end
+
+		--auto rejoin
+		do
+			local attempting = false
+			local function rejoin()
+				if attempting or not state.enabledFeatures.autoRejoin then
+					return
+				end
+				attempting = true
+
+				local encoded = HttpService:JSONEncode(_G.farmConfig)
+				queue_on_teleport(
+					`print("why tghe fuck")\n_G.farmConfig = '{encoded}'\n`
+						.. [[local isfile, writefile, readfile = isfile, writefile, readfile
 				local fileName = "FoundPS.txt"
 				local alphabet = string.split("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "")
 				local remote = game:GetService("ReplicatedStorage")
@@ -1507,45 +1551,46 @@ do
 						end)
 					end
 				end)]]
-			)
+				)
 
-			while task.wait(5) do
-				TeleportService:Teleport(5130598377)
-			end
-		end
-
-		GuiService.ErrorMessageChanged:Connect(function()
-			--local errorCode = GuiService:GetErrorCode()
-			local errorType = GuiService:GetErrorType()
-			if errorType == Enum.ConnectionError.DisconnectErrors then
-				rejoin()
-			end
-		end)
-
-		local function playerAdded(player)
-			if not playerWhitelist[player.Name] then
-				task.spawn(rejoin)
-			end
-		end
-
-		Players.PlayerAdded:Connect(playerAdded)
-
-		local function checkPlayers()
-			for _, player in pairs(Players:GetPlayers()) do
-				if player ~= localPlayer then
-					playerAdded(player)
+				while task.wait(5) do
+					TeleportService:Teleport(5130598377)
 				end
 			end
-		end
 
-		checkPlayers()
-		features.autoRejoin = {
-			onToggle = function(toggled)
-				if toggled then
-					checkPlayers()
+			GuiService.ErrorMessageChanged:Connect(function()
+				--local errorCode = GuiService:GetErrorCode()
+				local errorType = GuiService:GetErrorType()
+				if errorType == Enum.ConnectionError.DisconnectErrors then
+					rejoin()
 				end
-			end,
-		}
+			end)
+
+			local function playerAdded(player)
+				if not playerWhitelist[player.Name] then
+					task.spawn(rejoin)
+				end
+			end
+
+			Players.PlayerAdded:Connect(playerAdded)
+
+			local function checkPlayers()
+				for _, player in pairs(Players:GetPlayers()) do
+					if player ~= localPlayer then
+						playerAdded(player)
+					end
+				end
+			end
+
+			checkPlayers()
+			features.autoRejoin = {
+				onToggle = function(toggled)
+					if toggled then
+						checkPlayers()
+					end
+				end,
+			}
+		end
 	end
 
 	--disable effects
@@ -1716,7 +1761,10 @@ do
 		if tostring(fenv.script) == "UI_Engine" then
 			local parent = oldIndex(instance, "Parent")
 			if parent == oldIndex(localPlayer, "Character") then
-				if oldIndex(instance, "Name") == "HumanoidRootPart" and state.mode == "curses" then
+				if
+					oldIndex(instance, "Name") == "HumanoidRootPart"
+					and (state.mode == "curses" or state.mode == "tower")
+				then
 					local cfr = oldIndex(instance, "CFrame")
 					local old = cfr
 					cfr *= tbToCfr(_G.farmConfig.hitboxDistance)

@@ -1550,8 +1550,6 @@ do
 
 	--disable effects
 	do
-		local enabled = false
-
 		local vfxEvents = {
 			ReplicatedStorage.Remotes.Output,
 			knitServices.EffectService.RE.EffectSignal,
@@ -1559,10 +1557,9 @@ do
 
 		features.noEffects = {
 			onToggle = function(toggled)
-				enabled = toggled
 				for _, event in pairs(vfxEvents) do
 					for _, v in pairs(getconnections(event.OnClientEvent)) do
-						if enabled then
+						if toggled then
 							v:Disable()
 						else
 							v:Enable()

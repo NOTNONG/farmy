@@ -32,20 +32,11 @@ if not _G.farmConfig then
 			"Q",
 		},
 	}
-else
-	print(_G.farmConfig)
 end
 
 if game.PlaceId ~= 6846458508 then
 	return
 end
-
-if not getgenv().set_thread_identity then
-	repeat
-		task.wait()
-	until getgenv().set_thread_identity
-end
-getgenv().set_thread_identity(8)
 
 --selene: allow(undefined_variable, unused_variable)
 local print, stringify, rconsoleclear, isfile, readfile, writefile, rconsoleprint, firesignal, fireproximityprompt, hookmetamethod, getconnections =
@@ -89,6 +80,14 @@ local GuiService = game:GetService("GuiService")
 local TeleportService = game:GetService("TeleportService")
 local HttpService = game:GetService("HttpService")
 
+--player
+local localPlayer
+while not localPlayer or not getgenv().set_thread_identity do
+	RunService.Heartbeat:Wait()
+	localPlayer = Players.LocalPlayer
+end
+set_thread_identity(8)
+
 --connections
 do
 	if _G.farmConnections then
@@ -101,13 +100,6 @@ end
 local function addConn(connection)
 	table.insert(_G.farmConnections, connection)
 	return connection
-end
-
---player
-local localPlayer
-while not localPlayer do
-	RunService.Heartbeat:Wait()
-	localPlayer = Players.LocalPlayer
 end
 
 --character

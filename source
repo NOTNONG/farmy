@@ -1611,44 +1611,52 @@ do
 			end,
 		}
 
-		--auto delete
-		do
-			local inventoryService = knitServices:WaitForChild("InventoryService")
-			features.autoDeleteSkin = {
-				run = function()
-					if not combatTagged then
-						local skinInventory = inventoryService.RF.GetItems:InvokeServer("SkinInventory")
-						local uuidsToRemove = { {} }
-						local biggerIndex = 1
-						local index = 0
-						for uuid, skin in pairs(skinInventory) do
-							if
-								not skinWhitelist[skin._Rarity]
-								and not skinWhitelistName[skin._DisplayName]
-								and not skin._UnusualInfo
-							then
-								table.insert(uuidsToRemove[biggerIndex], uuid)
-								index += 1
-								if index >= 100 then
-									biggerIndex += 1
-									uuidsToRemove[biggerIndex] = {}
-									index = 0
-								end
-							end
-						end
+		local inventoryService = knitServices:WaitForChild("InventoryService")
+		features.autoChest = {
+			run = function()
+				local capacity = inventoryService.RF.GetCapacity:InvokeServer("SkinInventory")
 
-						for _, v in pairs(uuidsToRemove) do
-							if #v > 0 then
-								inventoryService.RE.SkinInventory:FireServer({
-									UUIDS = v,
-									Remove = true,
-								})
+				if data.Currency.Value >= 50000 and capacity.MaxCapacity - capacity.CurrentCapacity >= 10 then
+					knitServices.ShopService.RF.BuySkinCrate:InvokeServer("Skin_Crate", "UShards", 10)
+				end
+			end,
+		}
+
+		--auto delete
+		features.autoDeleteSkin = {
+			run = function()
+				if not combatTagged then
+					local skinInventory = inventoryService.RF.GetItems:InvokeServer("SkinInventory")
+					local uuidsToRemove = { {} }
+					local biggerIndex = 1
+					local index = 0
+					for uuid, skin in pairs(skinInventory) do
+						if
+							not skinWhitelist[skin._Rarity]
+							and not skinWhitelistName[skin._DisplayName]
+							and not skin._UnusualInfo
+						then
+							table.insert(uuidsToRemove[biggerIndex], uuid)
+							index += 1
+							if index >= 100 then
+								biggerIndex += 1
+								uuidsToRemove[biggerIndex] = {}
+								index = 0
 							end
 						end
 					end
-				end,
-			}
-		end
+
+					for _, v in pairs(uuidsToRemove) do
+						if #v > 0 then
+							inventoryService.RE.SkinInventory:FireServer({
+								UUIDS = v,
+								Remove = true,
+							})
+						end
+					end
+				end
+			end,
+		}
 
 		--auto rejoin
 		do

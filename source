@@ -1955,7 +1955,7 @@ do
 		textBox.Text = amount
 
 		textBox:GetPropertyChangedSignal("Text"):Connect(function()
-			textBox.Text = string.gsub(textBox.Text, "%a", "")
+			textBox.Text = string.gsub(textBox.Text, "%D", "")
 		end)
 
 		local typing = false
@@ -2022,7 +2022,6 @@ do
 					pulls = 1
 				end
 
-				print(pulls, remaining)
 				if data.Currency.Value >= chestPrice * pulls then
 					remaining -= pulls
 					local success, skins =
@@ -2040,7 +2039,7 @@ do
 					end
 				else
 					notify("not enough us")
-					break
+					return
 				end
 			end
 			pulling = false

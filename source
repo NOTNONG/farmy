@@ -1165,20 +1165,10 @@ do
 				if teleportMobsTo then
 					local own = true
 
-					--[[if inMainGame and not thisFoe:HasTag("__Hidden") then
-						thisFoe:AddTag("__Hidden")
-						for _, v in pairs(thisFoe:GetDescendants()) do
-							if v:IsA("BasePart") then
-								v.LocalTransparencyModifier = 1
-							end
-						end
-					end--]]
-
 					for _, v in pairs(foeRoot:GetConnectedParts(true)) do
 						if v:IsA("BasePart") then
-							if inMainGame then
-								v.LocalTransparencyModifier = 1
-							end
+							v.LocalTransparencyModifier = 1
+
 							if v.ReceiveAge ~= 0 then
 								own = false
 							end

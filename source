@@ -1202,7 +1202,7 @@ do
 
 		if foe then
 			local foeRoot = foe.HumanoidRootPart
-			teleport(CFrame.new(foeRoot.CFrame.Position) * tbToCfr(tpOffset))
+			teleport(foeRoot.CFrame * tbToCfr(tpOffset))
 			local keysList
 			local isSummoned = character:HasTag("Summoned")
 			if isSummoned ~= wasSummoned then

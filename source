@@ -1146,11 +1146,6 @@ do
 			traitPage.pity.Text = `{traitPity}/{traitPityAt}`
 		end
 
-		if state.enabledFeatures.deleteCamera then
-			camera.CameraType = Enum.CameraType.Scriptable
-			camera.CFrame = CFrame.new(0, 0, 0)
-		end
-
 		featureDebounce -= dt
 		if featureDebounce <= 0 then
 			featureDebounce = 1
@@ -1591,14 +1586,6 @@ end
 
 --FEATURE FUNCTIONS
 do
-	features.deleteCamera = {
-		onToggle = function(toggled)
-			if not toggled then
-				resetCamera()
-			end
-		end,
-	}
-
 	features.autoAscend = {
 		run = function()
 			if data.Ability:GetAttribute("AbilityLevel") >= 200 and data.UCoins.Value >= 1000000 then

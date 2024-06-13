@@ -2024,18 +2024,21 @@ do
 
 				if data.Currency.Value >= chestPrice * pulls then
 					remaining -= pulls
-					local success, skins =
+					local success, result =
 						knitServices.ShopService.RF.BuySkinCrate:InvokeServer("Skin_Crate", "UShards", pulls)
 					if success then
-						if type(skins) ~= "table" then
-							skins = { skins }
+						if type(result) ~= "table" then
+							result = { result }
 						end
-						for _, skin in pairs(skins) do
+						--[[for _, skin in pairs(result) do
 							local skinData = itemData.Skins[skin.ItemId]
 							if skinData then
 								print(skinData.Name)
 							end
-						end
+						end--]]
+					else
+						notify(result)
+						return
 					end
 				else
 					notify("not enough us")

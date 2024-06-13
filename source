@@ -151,7 +151,7 @@ end
 
 --aut stuff
 local traitPity = 0
-local combatTagged = false
+local chestPrice = 5000
 
 local ui = localPlayer.PlayerGui:WaitForChild("UI")
 local traitHandPrompt = ui.Gameplay.TraitHandPrompt
@@ -234,6 +234,7 @@ do
 	main.ClipsDescendants = true
 	main.Position = UDim2.fromScale(0.5, 0.5)
 	main.Size = UDim2.fromScale(0.9, 0.9)
+	main.Active = true
 
 	local uIAspectRatioConstraint1 = Instance.new("UIAspectRatioConstraint")
 	uIAspectRatioConstraint1.Name = "UIAspectRatioConstraint"
@@ -318,8 +319,16 @@ do
 	slider.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	slider.BorderSizePixel = 0
 	slider.Position = UDim2.fromScale(0.25, 0.5)
-	slider.Size = UDim2.fromScale(0.4, 0.8)
+	slider.Size = UDim2.fromScale(0.5, 1)
 	slider.Parent = button
+
+	local uIPadding = Instance.new("UIPadding")
+	uIPadding.Name = "UIPadding"
+	uIPadding.PaddingBottom = UDim.new(0.1, 0)
+	uIPadding.PaddingLeft = UDim.new(0.035, 0)
+	uIPadding.PaddingRight = UDim.new(0.035, 0)
+	uIPadding.PaddingTop = UDim.new(0.1, 0)
+	uIPadding.Parent = button
 
 	button.Parent = template
 
@@ -343,13 +352,112 @@ do
 
 	template.Parent = switches
 
-	local uIPadding = Instance.new("UIPadding")
-	uIPadding.Name = "UIPadding"
-	uIPadding.PaddingBottom = UDim.new(0.02, 0)
-	uIPadding.PaddingLeft = UDim.new(0.006, 0)
-	uIPadding.PaddingRight = UDim.new(0.006, 0)
-	uIPadding.PaddingTop = UDim.new(0.02, 0)
-	uIPadding.Parent = switches
+	local uIPadding1 = Instance.new("UIPadding")
+	uIPadding1.Name = "UIPadding"
+	uIPadding1.PaddingBottom = UDim.new(0.02, 0)
+	uIPadding1.PaddingLeft = UDim.new(0.006, 0)
+	uIPadding1.PaddingRight = UDim.new(0.006, 0)
+	uIPadding1.PaddingTop = UDim.new(0.02, 0)
+	uIPadding1.Parent = switches
+
+	local chests = Instance.new("Frame")
+	chests.Name = "openChests"
+	chests.BackgroundColor3 = Color3.fromRGB(31, 31, 31)
+	chests.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	chests.BorderSizePixel = 0
+	chests.Size = UDim2.fromScale(0.4, 0.235)
+
+	local uIStroke2 = Instance.new("UIStroke")
+	uIStroke2.Name = "UIStroke"
+	uIStroke2.Color = Color3.fromRGB(39, 39, 39)
+	uIStroke2.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke2.Thickness = 2
+	uIStroke2.Parent = chests
+
+	local textLabel1 = Instance.new("TextLabel")
+	textLabel1.Name = "TextLabel"
+	textLabel1.FontFace = Font.new("rbxasset://fonts/families/TitilliumWeb.json")
+	textLabel1.Text = "openChests"
+	textLabel1.TextColor3 = Color3.fromRGB(255, 255, 255)
+	textLabel1.TextScaled = true
+	textLabel1.TextSize = 25
+	textLabel1.TextWrapped = true
+	textLabel1.AnchorPoint = Vector2.new(0, 0.5)
+	textLabel1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	textLabel1.BackgroundTransparency = 1
+	textLabel1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	textLabel1.BorderSizePixel = 0
+	textLabel1.Position = UDim2.fromScale(0, 0.5)
+	textLabel1.Size = UDim2.fromScale(0.5, 0.75)
+	textLabel1.ZIndex = 3
+	textLabel1.Parent = chests
+
+	local frame = Instance.new("Frame")
+	frame.Name = "Frame"
+	frame.Active = true
+	frame.AnchorPoint = Vector2.new(0, 0.5)
+	frame.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+	frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	frame.BorderSizePixel = 0
+	frame.Position = UDim2.fromScale(0.505, 0.5)
+	frame.Selectable = true
+	frame.Size = UDim2.fromScale(0.24, 0.8)
+	frame.ZIndex = 2
+
+	local amount = Instance.new("TextBox")
+	amount.Name = "amount"
+	amount.FontFace = Font.new("rbxasset://fonts/families/TitilliumWeb.json")
+	amount.Text = "amount"
+	amount.TextColor3 = Color3.fromRGB(255, 255, 255)
+	amount.TextScaled = true
+	amount.TextSize = 25
+	amount.TextTransparency = 0.5
+	amount.TextWrapped = true
+	amount.Active = true
+	amount.AnchorPoint = Vector2.new(0.5, 0.5)
+	amount.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	amount.BackgroundTransparency = 1
+	amount.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	amount.BorderSizePixel = 0
+	amount.Position = UDim2.fromScale(0.5, 0.5)
+	amount.Selectable = false
+	amount.Size = UDim2.fromScale(0.97, 0.9)
+	amount.ZIndex = 3
+	amount.Parent = frame
+
+	frame.Parent = chests
+
+	local button1 = Instance.new("ImageButton")
+	button1.Name = "Button"
+	button1.AnchorPoint = Vector2.new(0, 0.5)
+	button1.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
+	button1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	button1.BorderSizePixel = 0
+	button1.Position = UDim2.fromScale(0.755, 0.5)
+	button1.Size = UDim2.fromScale(0.24, 0.8)
+	button1.ZIndex = 2
+
+	local textLabel2 = Instance.new("TextLabel")
+	textLabel2.Name = "TextLabel"
+	textLabel2.FontFace = Font.new("rbxasset://fonts/families/TitilliumWeb.json")
+	textLabel2.Text = "pull"
+	textLabel2.TextColor3 = Color3.fromRGB(255, 255, 255)
+	textLabel2.TextScaled = true
+	textLabel2.TextSize = 25
+	textLabel2.TextWrapped = true
+	textLabel2.AnchorPoint = Vector2.new(0.5, 0.5)
+	textLabel2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	textLabel2.BackgroundTransparency = 1
+	textLabel2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	textLabel2.BorderSizePixel = 0
+	textLabel2.Position = UDim2.fromScale(0.5, 0.5)
+	textLabel2.Size = UDim2.fromScale(0.97, 0.9)
+	textLabel2.ZIndex = 3
+	textLabel2.Parent = button1
+
+	button1.Parent = chests
+
+	chests.Parent = switches
 
 	switches.Parent = holder
 
@@ -392,12 +500,12 @@ do
 	ascension.Position = UDim2.fromScale(1, 1)
 	ascension.Size = UDim2.fromScale(1, 1)
 
-	local uIStroke2 = Instance.new("UIStroke")
-	uIStroke2.Name = "UIStroke"
-	uIStroke2.Color = Color3.fromRGB(48, 48, 48)
-	uIStroke2.LineJoinMode = Enum.LineJoinMode.Miter
-	uIStroke2.Thickness = 2
-	uIStroke2.Parent = ascension
+	local uIStroke3 = Instance.new("UIStroke")
+	uIStroke3.Name = "UIStroke"
+	uIStroke3.Color = Color3.fromRGB(48, 48, 48)
+	uIStroke3.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke3.Thickness = 2
+	uIStroke3.Parent = ascension
 
 	ascension.Parent = labels
 
@@ -419,12 +527,12 @@ do
 	mode.Position = UDim2.fromScale(1, 1)
 	mode.Size = UDim2.fromScale(1, 1)
 
-	local uIStroke3 = Instance.new("UIStroke")
-	uIStroke3.Name = "UIStroke"
-	uIStroke3.Color = Color3.fromRGB(48, 48, 48)
-	uIStroke3.LineJoinMode = Enum.LineJoinMode.Miter
-	uIStroke3.Thickness = 2
-	uIStroke3.Parent = mode
+	local uIStroke4 = Instance.new("UIStroke")
+	uIStroke4.Name = "UIStroke"
+	uIStroke4.Color = Color3.fromRGB(48, 48, 48)
+	uIStroke4.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke4.Thickness = 2
+	uIStroke4.Parent = mode
 
 	mode.Parent = labels
 
@@ -446,12 +554,12 @@ do
 	us.Position = UDim2.fromScale(1, 1)
 	us.Size = UDim2.fromScale(1, 1)
 
-	local uIStroke4 = Instance.new("UIStroke")
-	uIStroke4.Name = "UIStroke"
-	uIStroke4.Color = Color3.fromRGB(48, 48, 48)
-	uIStroke4.LineJoinMode = Enum.LineJoinMode.Miter
-	uIStroke4.Thickness = 2
-	uIStroke4.Parent = us
+	local uIStroke5 = Instance.new("UIStroke")
+	uIStroke5.Name = "UIStroke"
+	uIStroke5.Color = Color3.fromRGB(48, 48, 48)
+	uIStroke5.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke5.Thickness = 2
+	uIStroke5.Parent = us
 
 	us.Parent = labels
 
@@ -473,12 +581,12 @@ do
 	uc.Position = UDim2.fromScale(1, 1)
 	uc.Size = UDim2.fromScale(1, 1)
 
-	local uIStroke5 = Instance.new("UIStroke")
-	uIStroke5.Name = "UIStroke"
-	uIStroke5.Color = Color3.fromRGB(48, 48, 48)
-	uIStroke5.LineJoinMode = Enum.LineJoinMode.Miter
-	uIStroke5.Thickness = 2
-	uIStroke5.Parent = uc
+	local uIStroke6 = Instance.new("UIStroke")
+	uIStroke6.Name = "UIStroke"
+	uIStroke6.Color = Color3.fromRGB(48, 48, 48)
+	uIStroke6.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke6.Thickness = 2
+	uIStroke6.Parent = uc
 
 	uc.Parent = labels
 
@@ -591,11 +699,11 @@ do
 
 	template1.Parent = cardsHolder
 
-	local uIPadding1 = Instance.new("UIPadding")
-	uIPadding1.Name = "UIPadding"
-	uIPadding1.PaddingBottom = UDim.new(0.075, 0)
-	uIPadding1.PaddingTop = UDim.new(0.075, 0)
-	uIPadding1.Parent = cardsHolder
+	local uIPadding2 = Instance.new("UIPadding")
+	uIPadding2.Name = "UIPadding"
+	uIPadding2.PaddingBottom = UDim.new(0.075, 0)
+	uIPadding2.PaddingTop = UDim.new(0.075, 0)
+	uIPadding2.Parent = cardsHolder
 
 	local uIListLayout1 = Instance.new("UIListLayout")
 	uIListLayout1.Name = "UIListLayout"
@@ -616,23 +724,23 @@ do
 	discard.Size = UDim2.fromScale(0.25, 0.1)
 	discard.Visible = false
 
-	local textLabel1 = Instance.new("TextLabel")
-	textLabel1.Name = "TextLabel"
-	textLabel1.FontFace = Font.new("rbxasset://fonts/families/TitilliumWeb.json")
-	textLabel1.Text = "discard"
-	textLabel1.TextColor3 = Color3.fromRGB(255, 255, 255)
-	textLabel1.TextScaled = true
-	textLabel1.TextSize = 25
-	textLabel1.TextWrapped = true
-	textLabel1.AnchorPoint = Vector2.new(0, 0.5)
-	textLabel1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	textLabel1.BackgroundTransparency = 1
-	textLabel1.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	textLabel1.BorderSizePixel = 0
-	textLabel1.Position = UDim2.fromScale(0, 0.5)
-	textLabel1.Size = UDim2.fromScale(1, 1)
-	textLabel1.ZIndex = 3
-	textLabel1.Parent = discard
+	local textLabel3 = Instance.new("TextLabel")
+	textLabel3.Name = "TextLabel"
+	textLabel3.FontFace = Font.new("rbxasset://fonts/families/TitilliumWeb.json")
+	textLabel3.Text = "discard"
+	textLabel3.TextColor3 = Color3.fromRGB(255, 255, 255)
+	textLabel3.TextScaled = true
+	textLabel3.TextSize = 25
+	textLabel3.TextWrapped = true
+	textLabel3.AnchorPoint = Vector2.new(0, 0.5)
+	textLabel3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	textLabel3.BackgroundTransparency = 1
+	textLabel3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	textLabel3.BorderSizePixel = 0
+	textLabel3.Position = UDim2.fromScale(0, 0.5)
+	textLabel3.Size = UDim2.fromScale(1, 1)
+	textLabel3.ZIndex = 3
+	textLabel3.Parent = discard
 
 	discard.Parent = traitInfo
 
@@ -654,12 +762,12 @@ do
 	pity.Size = UDim2.fromScale(0.1, 0.1)
 	pity.Visible = false
 
-	local uIStroke6 = Instance.new("UIStroke")
-	uIStroke6.Name = "UIStroke"
-	uIStroke6.Color = Color3.fromRGB(39, 39, 39)
-	uIStroke6.LineJoinMode = Enum.LineJoinMode.Miter
-	uIStroke6.Thickness = 2
-	uIStroke6.Parent = pity
+	local uIStroke7 = Instance.new("UIStroke")
+	uIStroke7.Name = "UIStroke"
+	uIStroke7.Color = Color3.fromRGB(39, 39, 39)
+	uIStroke7.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke7.Thickness = 2
+	uIStroke7.Parent = pity
 
 	pity.Parent = traitInfo
 
@@ -678,12 +786,12 @@ do
 	none.BorderSizePixel = 0
 	none.Size = UDim2.fromScale(1, 1)
 
-	local uIStroke7 = Instance.new("UIStroke")
-	uIStroke7.Name = "UIStroke"
-	uIStroke7.Color = Color3.fromRGB(39, 39, 39)
-	uIStroke7.LineJoinMode = Enum.LineJoinMode.Miter
-	uIStroke7.Thickness = 2
-	uIStroke7.Parent = none
+	local uIStroke8 = Instance.new("UIStroke")
+	uIStroke8.Name = "UIStroke"
+	uIStroke8.Color = Color3.fromRGB(39, 39, 39)
+	uIStroke8.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke8.Thickness = 2
+	uIStroke8.Parent = none
 
 	none.Parent = traitInfo
 
@@ -703,12 +811,12 @@ do
 	used.Size = UDim2.fromScale(1, 1)
 	used.Visible = false
 
-	local uIStroke8 = Instance.new("UIStroke")
-	uIStroke8.Name = "UIStroke"
-	uIStroke8.Color = Color3.fromRGB(39, 39, 39)
-	uIStroke8.LineJoinMode = Enum.LineJoinMode.Miter
-	uIStroke8.Thickness = 2
-	uIStroke8.Parent = used
+	local uIStroke9 = Instance.new("UIStroke")
+	uIStroke9.Name = "UIStroke"
+	uIStroke9.Color = Color3.fromRGB(39, 39, 39)
+	uIStroke9.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke9.Thickness = 2
+	uIStroke9.Parent = used
 
 	used.Parent = traitInfo
 
@@ -723,23 +831,23 @@ do
 	confirm.Size = UDim2.fromScale(0.25, 0.1)
 	confirm.Visible = false
 
-	local textLabel2 = Instance.new("TextLabel")
-	textLabel2.Name = "TextLabel"
-	textLabel2.FontFace = Font.new("rbxasset://fonts/families/TitilliumWeb.json")
-	textLabel2.Text = "(nothing to confirm)"
-	textLabel2.TextColor3 = Color3.fromRGB(255, 255, 255)
-	textLabel2.TextScaled = true
-	textLabel2.TextSize = 25
-	textLabel2.TextWrapped = true
-	textLabel2.AnchorPoint = Vector2.new(0, 0.5)
-	textLabel2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	textLabel2.BackgroundTransparency = 1
-	textLabel2.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	textLabel2.BorderSizePixel = 0
-	textLabel2.Position = UDim2.fromScale(0, 0.5)
-	textLabel2.Size = UDim2.fromScale(1, 1)
-	textLabel2.ZIndex = 3
-	textLabel2.Parent = confirm
+	local textLabel4 = Instance.new("TextLabel")
+	textLabel4.Name = "TextLabel"
+	textLabel4.FontFace = Font.new("rbxasset://fonts/families/TitilliumWeb.json")
+	textLabel4.Text = "nothing to confirm"
+	textLabel4.TextColor3 = Color3.fromRGB(255, 255, 255)
+	textLabel4.TextScaled = true
+	textLabel4.TextSize = 25
+	textLabel4.TextWrapped = true
+	textLabel4.AnchorPoint = Vector2.new(0, 0.5)
+	textLabel4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	textLabel4.BackgroundTransparency = 1
+	textLabel4.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	textLabel4.BorderSizePixel = 0
+	textLabel4.Position = UDim2.fromScale(0, 0.5)
+	textLabel4.Size = UDim2.fromScale(1, 1)
+	textLabel4.ZIndex = 3
+	textLabel4.Parent = confirm
 
 	confirm.Parent = traitInfo
 
@@ -791,11 +899,11 @@ do
 	hide.Position = UDim2.fromScale(1, 0)
 	hide.Size = UDim2.fromScale(0.333, 1)
 
-	local uIStroke9 = Instance.new("UIStroke")
-	uIStroke9.Name = "UIStroke"
-	uIStroke9.Color = Color3.fromRGB(39, 39, 39)
-	uIStroke9.LineJoinMode = Enum.LineJoinMode.Miter
-	uIStroke9.Parent = hide
+	local uIStroke10 = Instance.new("UIStroke")
+	uIStroke10.Name = "UIStroke"
+	uIStroke10.Color = Color3.fromRGB(39, 39, 39)
+	uIStroke10.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke10.Parent = hide
 
 	hide.Parent = topButtons
 
@@ -823,11 +931,11 @@ do
 	prev.Position = UDim2.fromScale(1, 0)
 	prev.Size = UDim2.fromScale(0.333, 1)
 
-	local uIStroke10 = Instance.new("UIStroke")
-	uIStroke10.Name = "UIStroke"
-	uIStroke10.Color = Color3.fromRGB(39, 39, 39)
-	uIStroke10.LineJoinMode = Enum.LineJoinMode.Miter
-	uIStroke10.Parent = prev
+	local uIStroke11 = Instance.new("UIStroke")
+	uIStroke11.Name = "UIStroke"
+	uIStroke11.Color = Color3.fromRGB(39, 39, 39)
+	uIStroke11.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke11.Parent = prev
 
 	prev.Parent = topButtons
 
@@ -848,11 +956,11 @@ do
 	next.Position = UDim2.fromScale(1, 0)
 	next.Size = UDim2.fromScale(0.333, 1)
 
-	local uIStroke11 = Instance.new("UIStroke")
-	uIStroke11.Name = "UIStroke"
-	uIStroke11.Color = Color3.fromRGB(39, 39, 39)
-	uIStroke11.LineJoinMode = Enum.LineJoinMode.Miter
-	uIStroke11.Parent = next
+	local uIStroke12 = Instance.new("UIStroke")
+	uIStroke12.Name = "UIStroke"
+	uIStroke12.Color = Color3.fromRGB(39, 39, 39)
+	uIStroke12.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke12.Parent = next
 
 	next.Parent = topButtons
 
@@ -1105,6 +1213,8 @@ local features = {}
 
 --STEP
 local levelService = knitServices:WaitForChild("LevelService")
+local inventoryService = knitServices:WaitForChild("InventoryService")
+
 local steps = {
 	stopped = {},
 }
@@ -1190,18 +1300,6 @@ addConn(UserInputService.InputBegan:Connect(function(inputObject, processed)
 			end
 			state.mode = modeToSwitch
 			stateUpdated()
-		end
-	end
-end))
-
---combat tag
-addConn(ReplicatedStorage.Remotes.UIOutput.OnClientEvent:Connect(function(...)
-	local args = { ... }
-	if args[1] == "Notify" and args[2] == "COMBAT TAG" then
-		if args[3] == [[<font color="#FF0000">YOU HAVE BEEN COMBAT TAGGED</font>]] then
-			combatTagged = true
-		elseif args[3] == [[<font color="#00FF00">YOU ARE NO LONGER COMBAT TAGGED</font>]] then
-			combatTagged = false
 		end
 	end
 end))
@@ -1586,9 +1684,10 @@ end
 
 --FEATURE FUNCTIONS
 do
+	local getPveInfo = levelService:WaitForChild("RF"):WaitForChild("GetAbilityPVEInfo")
 	features.autoAscend = {
 		run = function()
-			if data.Ability:GetAttribute("AbilityLevel") >= 200 and data.UCoins.Value >= 1000000 then
+			if getPveInfo:InvokeServer(data.Ability.Value).CurrentLevel >= 200 and data.UCoins.Value >= 1000000 then
 				levelService.RF.AscendAbility:InvokeServer(data.Ability.Value)
 			end
 		end,
@@ -1611,12 +1710,11 @@ do
 			end,
 		}
 
-		local inventoryService = knitServices:WaitForChild("InventoryService")
 		features.autoCrate = {
 			run = function()
 				local capacity = inventoryService.RF.GetCapacity:InvokeServer("SkinInventory")
 
-				if data.Currency.Value >= 50000 and capacity.MaxCapacity - capacity.CurrentCapacity >= 10 then
+				if data.Currency.Value >= chestPrice * 10 and capacity.MaxCapacity - capacity.CurrentCapacity >= 10 then
 					knitServices.ShopService.RF.BuySkinCrate:InvokeServer("Skin_Crate", "UShards", 10)
 				end
 			end,
@@ -1625,7 +1723,7 @@ do
 		--auto delete
 		features.autoDeleteSkin = {
 			run = function()
-				if not combatTagged then
+				if character and not character:GetAttribute("InCombat") then
 					local skinInventory = inventoryService.RF.GetItems:InvokeServer("SkinInventory")
 					local uuidsToRemove = { {} }
 					local biggerIndex = 1
@@ -1804,102 +1902,209 @@ do
 		end))
 	end
 
-	for name, feature in pairs(features) do
-		local clone = holder.switches.template:Clone()
-		clone.Visible = true
-		clone.Name = name
-		clone.TextLabel.Text = name
-		clone.Parent = holder.switches
+	--switches
+	do
+		for name, feature in pairs(features) do
+			local clone = holder.switches.template:Clone()
+			clone.Visible = true
+			clone.Name = name
+			clone.TextLabel.Text = name
+			clone.Parent = holder.switches
 
-		local function toggle(toggled)
-			state.enabledFeatures[name] = toggled
-			stateUpdated()
+			local function toggle(toggled)
+				state.enabledFeatures[name] = toggled
+				stateUpdated()
 
-			if feature.onToggle then
-				task.spawn(feature.onToggle, toggled)
+				if feature.onToggle then
+					task.spawn(feature.onToggle, toggled)
+				end
+
+				if toggled then
+					tween(
+						clone.Button.Slider,
+						TweenInfo.new(0.1),
+						{ BackgroundColor3 = Color3.new(0, 1, 0), Position = UDim2.fromScale(0.75, 0.5) }
+					)
+				else
+					tween(
+						clone.Button.Slider,
+						TweenInfo.new(0.1),
+						{ BackgroundColor3 = Color3.new(1, 0, 0), Position = UDim2.fromScale(0.25, 0.5) }
+					)
+				end
 			end
 
-			if toggled then
-				tween(
-					clone.Button.Slider,
-					TweenInfo.new(0.1),
-					{ BackgroundColor3 = Color3.new(0, 1, 0), Position = UDim2.fromScale(0.75, 0.5) }
-				)
+			if state.enabledFeatures[name] == nil then
+				state.enabledFeatures[name] = false
 			else
-				tween(
-					clone.Button.Slider,
-					TweenInfo.new(0.1),
-					{ BackgroundColor3 = Color3.new(1, 0, 0), Position = UDim2.fromScale(0.25, 0.5) }
-				)
+				toggle(state.enabledFeatures[name])
 			end
+
+			clone.Button.MouseButton1Click:Connect(function()
+				local toggled = not state.enabledFeatures[name]
+				toggle(toggled)
+			end)
+		end
+	end
+
+	--open chests
+	do
+		local openChests = holder.switches.openChests
+		local amount = 1
+		local textBox = openChests.Frame.amount
+		textBox.Text = amount
+
+		textBox:GetPropertyChangedSignal("Text"):Connect(function()
+			textBox.Text = string.gsub(textBox.Text, "%a", "")
+		end)
+
+		local typing = false
+		textBox.Focused:Connect(function()
+			typing = true
+		end)
+
+		textBox.FocusLost:Connect(function(entered)
+			typing = false
+			if entered then
+				local number = tonumber(textBox.Text) or 1
+				amount = math.round(number)
+				if amount < 1 then
+					amount = 1
+				end
+				textBox.Text = amount
+			else
+				textBox.Text = amount
+			end
+		end)
+
+		local notifyThread
+		local function notify(text)
+			if notifyThread then
+				task.cancel(notifyThread)
+			end
+
+			openChests.TextLabel.Text = text
+			notifyThread = task.delay(2.5, function()
+				openChests.TextLabel.Text = "openChests"
+				notifyThread = nil
+			end)
 		end
 
-		if state.enabledFeatures[name] == nil then
-			state.enabledFeatures[name] = false
-		else
-			toggle(state.enabledFeatures[name])
-		end
+		local pulling = false
+		openChests.Button.MouseButton1Click:Connect(function()
+			if pulling then
+				return
+			end
 
-		clone.Button.MouseButton1Click:Connect(function()
-			local toggled = not state.enabledFeatures[name]
-			toggle(toggled)
+			if typing then
+				notify("finish typing first")
+				return
+			end
+
+			local capacity = inventoryService.RF.GetCapacity:InvokeServer("SkinInventory")
+			if capacity.MaxCapacity - capacity.CurrentCapacity - amount < 0 then
+				notify("not enough inventory")
+				return
+			end
+			if data.Currency.Value < chestPrice * amount then
+				notify("not enough us")
+				return
+			end
+
+			pulling = true
+			openChests.TextLabel.Text = "pulling"
+			local remaining = amount
+			while remaining > 0 do
+				local pulls = remaining
+				if pulls > 10 then
+					pulls = 10
+				else
+					pulls = 1
+				end
+
+				print(pulls, remaining)
+				if data.Currency.Value >= chestPrice * pulls then
+					remaining -= pulls
+					local success, skins =
+						knitServices.ShopService.RF.BuySkinCrate:InvokeServer("Skin_Crate", "UShards", pulls)
+					if success then
+						if type(skins) ~= "table" then
+							skins = { skins }
+						end
+						for _, skin in pairs(skins) do
+							local skinData = itemData.Skins[skin.ItemId]
+							if skinData then
+								print(skinData.Name)
+							end
+						end
+					end
+				else
+					notify("not enough us")
+					break
+				end
+			end
+			pulling = false
+			notify("done")
 		end)
 	end
 
-	local pages = scriptUI.Main.Pages.UIPageLayout
-	scriptUI.Main.TopButtons.Next.MouseButton1Click:Connect(function()
-		pages:Next()
-	end)
-	scriptUI.Main.TopButtons.Prev.MouseButton1Click:Connect(function()
-		pages:Previous()
-	end)
+	--top buttons
+	do
+		local pages = scriptUI.Main.Pages.UIPageLayout
+		scriptUI.Main.TopButtons.Next.MouseButton1Click:Connect(function()
+			pages:Next()
+		end)
+		scriptUI.Main.TopButtons.Prev.MouseButton1Click:Connect(function()
+			pages:Previous()
+		end)
 
-	local hidden = false
-	scriptUI.Main.TopButtons.Hide.MouseButton1Click:Connect(function()
-		tween(
-			scriptUI.Main,
-			TweenInfo.new(0.25),
-			{ Size = UDim2.fromScale(0, 0), Position = UDim2.fromScale(1, 1) },
-			function()
-				scriptUI.Main.Visible = false
-				scriptUI.Hidden.Size = UDim2.fromScale(0.1, 0.1)
-				tween(
-					scriptUI.Hidden,
-					TweenInfo.new(0.25, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out),
-					{ Transparency = 0, Size = UDim2.fromScale(0.25, 0.25) },
-					function()
-						tween(
-							scriptUI.Hidden,
-							TweenInfo.new(1, Enum.EasingStyle.Cubic, Enum.EasingDirection.In),
-							{ Transparency = 1, Size = UDim2.fromScale(0.2, 0.2) }
-						)
-					end
-				)
-			end
-		)
-
-		hidden = true
-	end)
-
-	scriptUI.Hidden.InputBegan:Connect(function(input)
-		if
-			input.UserInputType == Enum.UserInputType.MouseButton1
-			or input.UserInputType == Enum.UserInputType.Touch
-		then
-			if hidden then
-				hidden = false
-				scriptUI.Hidden.Size = UDim2.fromScale(0.2, 0.2)
-				tween(scriptUI.Hidden, TweenInfo.new(0.1), { Transparency = 1 }, function()
-					scriptUI.Main.Visible = true
+		local hidden = false
+		scriptUI.Main.TopButtons.Hide.MouseButton1Click:Connect(function()
+			tween(
+				scriptUI.Main,
+				TweenInfo.new(0.25),
+				{ Size = UDim2.fromScale(0, 0), Position = UDim2.fromScale(1, 1) },
+				function()
+					scriptUI.Main.Visible = false
+					scriptUI.Hidden.Size = UDim2.fromScale(0.1, 0.1)
 					tween(
-						scriptUI.Main,
+						scriptUI.Hidden,
 						TweenInfo.new(0.25, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out),
-						{ Size = UDim2.fromScale(0.9, 0.9), Position = UDim2.fromScale(0.5, 0.5) }
+						{ Transparency = 0, Size = UDim2.fromScale(0.25, 0.25) },
+						function()
+							tween(
+								scriptUI.Hidden,
+								TweenInfo.new(1, Enum.EasingStyle.Cubic, Enum.EasingDirection.In),
+								{ Transparency = 1, Size = UDim2.fromScale(0.2, 0.2) }
+							)
+						end
 					)
-				end)
+				end
+			)
+
+			hidden = true
+		end)
+
+		scriptUI.Hidden.InputBegan:Connect(function(input)
+			if
+				input.UserInputType == Enum.UserInputType.MouseButton1
+				or input.UserInputType == Enum.UserInputType.Touch
+			then
+				if hidden then
+					hidden = false
+					scriptUI.Hidden.Size = UDim2.fromScale(0.2, 0.2)
+					tween(scriptUI.Hidden, TweenInfo.new(0.1), { Transparency = 1 }, function()
+						scriptUI.Main.Visible = true
+						tween(
+							scriptUI.Main,
+							TweenInfo.new(0.25, Enum.EasingStyle.Cubic, Enum.EasingDirection.Out),
+							{ Size = UDim2.fromScale(0.9, 0.9), Position = UDim2.fromScale(0.5, 0.5) }
+						)
+					end)
+				end
 			end
-		end
-	end)
+		end)
+	end
 end
 
 --Hitbox stuff

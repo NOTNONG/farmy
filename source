@@ -1474,6 +1474,7 @@ do
 			end
 
 			local function farmMobs()
+				teleport(center)
 				local foe = findMob()
 
 				camera.CameraType = Enum.CameraType.Scriptable

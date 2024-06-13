@@ -1080,11 +1080,16 @@ do
 		end
 	end
 
-	addConn(data.Ability:GetAttributeChangedSignal("UUID"):Connect(function()
-		none()
+	local function checkPreviousTraits()
 		if _G.currentTraits[data.Ability:GetAttribute("UUID")] then
 			handle(_G.currentTraits[data.Ability:GetAttribute("UUID")])
 		end
+	end
+	checkPreviousTraits()
+
+	addConn(data.Ability:GetAttributeChangedSignal("UUID"):Connect(function()
+		none()
+		checkPreviousTraits()
 	end))
 
 	addConn(traitHandEvent.onClientEvent:Connect(function(traitsInfo)
@@ -1139,6 +1144,11 @@ do
 				traitPityAt = 100
 			end
 			traitPage.pity.Text = `{traitPity}/{traitPityAt}`
+		end
+
+		if state.enabledFeatures.deleteCamera then
+			camera.CameraType = Enum.CameraType.Scriptable
+			camera.CFrame = CFrame.new(0, 0, 0)
 		end
 
 		featureDebounce -= dt
@@ -1237,22 +1247,38 @@ do
 			then
 				if teleportMobsTo then
 					local own = true
+					if foeHumanoid.Health >= foeHumanoid.MaxHealth then
+						own = false
+					end
 
-					for _, v in pairs(foeRoot:GetConnectedParts(true)) do
-						if v:IsA("BasePart") then
-							v.LocalTransparencyModifier = 1
-
-							if v.ReceiveAge ~= 0 then
-								own = false
+					if not thisFoe:HasTag("_Uncollided") then
+						thisFoe:AddTag("_Uncollided")
+						for _, v in pairs(thisFoe:GetDescendants()) do
+							if v:IsA("BasePart") then
+								v.CollisionGroup = "BypassAll"
 							end
 						end
 					end
 
 					if own then
+						if not thisFoe:HasTag("gotten") then
+							thisFoe:AddTag("gotten")
+							local attachment = Instance.new("Attachment")
+							attachment.Name = "Attachment"
+							attachment.Parent = foeRoot
+
+							local alignPosition = Instance.new("AlignPosition")
+							alignPosition.Mode = Enum.PositionAlignmentMode.OneAttachment
+							alignPosition.RigidityEnabled = true
+							alignPosition.Attachment0 = attachment
+							alignPosition.Position = teleportMobsTo.Position
+							alignPosition.Parent = attachment
+						end
+						--[[foeHumanoid:ChangeState(Enum.HumanoidStateType.Physics)
 						thisFoe:PivotTo(teleportMobsTo)
 						foeRoot.CanCollide = false
 						foeRoot.AssemblyLinearVelocity = Vector3.zero
-						foeRoot.AssemblyAngularVelocity = Vector3.zero
+						foeRoot.AssemblyAngularVelocity = Vector3.zero--]]
 					end
 
 					local dist = (foeRoot.Position - teleportMobsTo.Position).Magnitude
@@ -1568,6 +1594,14 @@ end
 
 --FEATURE FUNCTIONS
 do
+	features.deleteCamera = {
+		onToggle = function(toggled)
+			if not toggled then
+				resetCamera()
+			end
+		end,
+	}
+
 	features.autoAscend = {
 		run = function()
 			if data.Ability:GetAttribute("AbilityLevel") >= 200 and data.UCoins.Value >= 1000000 then
@@ -1735,6 +1769,7 @@ do
 			ReplicatedStorage.Remotes.CombatService.Stunned,
 			ReplicatedStorage.Remotes.CombatService.StunEnded,
 			ReplicatedStorage.BridgeNet2.dataRemoteEvent,
+			ReplicatedStorage.Remotes.CombatService.ActiveChanged,
 		}
 
 		features.noEffects = {

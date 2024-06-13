@@ -6,9 +6,12 @@ if not _G.farmConfig then
 		hitboxDistance = { position = { 0, 0, -8.5 }, angle = { 0, 0, 0 } },
 		hpFilterUsePercentage = false,
 		sellAt = 1,
-		serverWhitelist = {},
+		serverWhitelist = {
+			"5412366La",
+		},
 		skinWhitelist = {
 			"Mythic",
+			"Legendary",
 		},
 		skinWhitelistName = {},
 		modeKeys = {
@@ -20,6 +23,7 @@ if not _G.farmConfig then
 		--{"Q", "Press"}
 		loopKeys = {
 			"E",
+			"T",
 			"MOUSEBUTTON1",
 			{ "Q", "Press" },
 		},
@@ -146,7 +150,7 @@ local function tbToCfr(tb)
 end
 
 --aut stuff
-local ascensions = 0
+local traitPity = 0
 local combatTagged = false
 
 local ui = localPlayer.PlayerGui:WaitForChild("UI")
@@ -193,6 +197,7 @@ end
 if CoreGui:FindFirstChild("cheatt") then
 	CoreGui.cheatt:Destroy()
 end
+--selene:allow(shadowing)
 do
 	local cheatt = Instance.new("ScreenGui")
 	cheatt.Name = "cheatt"
@@ -249,6 +254,7 @@ do
 	pages.BackgroundTransparency = 1
 	pages.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	pages.BorderSizePixel = 0
+	pages.ClipsDescendants = true
 	pages.Size = UDim2.fromScale(1, 1)
 
 	local holder = Instance.new("Frame")
@@ -606,8 +612,8 @@ do
 	discard.BackgroundColor3 = Color3.fromRGB(31, 31, 31)
 	discard.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	discard.BorderSizePixel = 0
-	discard.Position = UDim2.fromScale(0.475, 0.865)
-	discard.Size = UDim2.fromScale(0.5, 0.1)
+	discard.Position = UDim2.fromScale(0.345, 0.865)
+	discard.Size = UDim2.fromScale(0.25, 0.1)
 	discard.Visible = false
 
 	local textLabel1 = Instance.new("TextLabel")
@@ -705,6 +711,37 @@ do
 	uIStroke8.Parent = used
 
 	used.Parent = traitInfo
+
+	local confirm = Instance.new("ImageButton")
+	confirm.Name = "confirm"
+	confirm.ImageTransparency = 1
+	confirm.AnchorPoint = Vector2.new(0.5, 0)
+	confirm.BackgroundColor3 = Color3.fromRGB(31, 31, 31)
+	confirm.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	confirm.BorderSizePixel = 0
+	confirm.Position = UDim2.fromScale(0.605, 0.865)
+	confirm.Size = UDim2.fromScale(0.25, 0.1)
+	confirm.Visible = false
+
+	local textLabel2 = Instance.new("TextLabel")
+	textLabel2.Name = "TextLabel"
+	textLabel2.FontFace = Font.new("rbxasset://fonts/families/TitilliumWeb.json")
+	textLabel2.Text = "(nothing to confirm)"
+	textLabel2.TextColor3 = Color3.fromRGB(255, 255, 255)
+	textLabel2.TextScaled = true
+	textLabel2.TextSize = 25
+	textLabel2.TextWrapped = true
+	textLabel2.AnchorPoint = Vector2.new(0, 0.5)
+	textLabel2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	textLabel2.BackgroundTransparency = 1
+	textLabel2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	textLabel2.BorderSizePixel = 0
+	textLabel2.Position = UDim2.fromScale(0, 0.5)
+	textLabel2.Size = UDim2.fromScale(1, 1)
+	textLabel2.ZIndex = 3
+	textLabel2.Parent = confirm
+
+	confirm.Parent = traitInfo
 
 	traitInfo.Parent = pages
 
@@ -847,26 +884,46 @@ end
 
 --TRAIT UI
 local hideTraitUIs = false
+local traitPage = scriptUI.Main.Pages.TraitInfo
+local gettingPity = false
+
 do
 	local traitService = knitServices:WaitForChild("TraitService")
 	local traitHandEvent = traitService:WaitForChild("RE"):WaitForChild("TraitHand")
 
-	local traitPage = scriptUI.Main.Pages.TraitInfo
+	if not _G.currentTraits then
+		_G.currentTraits = {}
+	end
+
 	local cardsHolder = traitPage.CardsHolder
 	local template = cardsHolder.template
 	local cards = {}
 	local availableTraits = {}
 	local inProgress = false
+	local action
 
-	local function chosen()
+	local function none()
+		action = nil
 		inProgress = false
 		availableTraits = {}
+		traitPage.confirm.TextLabel.Text = "(nothing to confirm)"
 		traitPage.none.Visible = true
 		traitPage.discard.Visible = false
+		traitPage.confirm.Visible = false
 		traitPage.pity.Visible = false
 		for _, card in pairs(cards) do
 			card.Parent.Visible = false
 		end
+	end
+
+	local function chosen()
+		_G.currentTraits[data.Ability:GetAttribute("UUID")] = nil
+		none()
+	end
+
+	local function setAction(name, callback)
+		action = callback
+		traitPage.confirm.TextLabel.Text = `confirm ({name})`
 	end
 
 	for i = 1, 3 do
@@ -879,18 +936,32 @@ do
 
 		card.MouseButton1Click:Connect(function()
 			if availableTraits[i] then
-				local pickTrait = traitService.RF.PickTrait
-				task.spawn(pickTrait.InvokeServer, pickTrait, i)
-				chosen()
+				setAction("pick " .. i, function()
+					chosen()
+					traitService.RF.PickTrait:InvokeServer(i)
+				end)
 			end
 		end)
 		cards[i] = card
 	end
 
-	traitPage.discard.MouseButton1Click:Connect(function()
-		local discardTraits = traitService.RF.DiscardTraits
-		task.spawn(discardTraits.InvokeServer, discardTraits)
+	local function discard()
 		chosen()
+		traitService.RF.DiscardTraits:InvokeServer()
+	end
+
+	traitPage.discard.MouseButton1Click:Connect(function()
+		if availableTraits.rolledValuable then
+			setAction("discard valuable", discard)
+		else
+			discard()
+		end
+	end)
+
+	traitPage.confirm.MouseButton1Click:Connect(function()
+		if action then
+			task.spawn(action)
+		end
 	end)
 
 	--fuck with AUT's trait ui
@@ -945,30 +1016,20 @@ do
 		end
 	end
 
-	addConn(data.Ability.Changed:Connect(function()
-		chosen()
-	end))
-
 	--replace AUT's trait ui
 	local function handle(traitsInfo)
 		inProgress = true
 		traitPage.used.Visible = false
 		traitPage.none.Visible = false
 		traitPage.discard.Visible = true
+		traitPage.confirm.Visible = true
 		traitPage.pity.Text = "getting pity data"
 		traitPage.pity.Visible = true
+		gettingPity = true
 		task.spawn(function()
 			local info = knitServices.ShopService.RF.GetPityInfo:InvokeServer()
-			local max
-			if ascensions <= 5 then
-				max = 60
-			elseif ascensions <= 10 then
-				max = 80
-			elseif ascensions > 10 then
-				max = 100
-			end
-
-			traitPage.pity.Text = `{info.TraitRerollPity}/{max}`
+			traitPity = info.TraitRerollPity
+			gettingPity = false
 		end)
 
 		for i, info in pairs(traitsInfo) do
@@ -977,15 +1038,16 @@ do
 			local card = cards[i]
 
 			if info.Hexed then
-				card.name.Text = `{trait.HexPrefix} {info.Trait} ({info.Rarity})`
+				card.name.Text = `{trait.HexPrefix} {info.Trait} (Hexed) ({info.Rarity})`
 				card.description.Text = trait.HexDescription
 			else
 				card.name.Text = `{info.Trait} ({info.Rarity})`
 				card.description.Text = trait.Description
 			end
 
-			if info.Hexed or info.Rarity == "Mythic" then
+			if info.Hexed or info.Rarity == "Mythic" or info.Rarity == "Legendary" then
 				card.name.Text = `!!! {card.name.Text} !!!`
+				availableTraits.rolledValuable = true
 			end
 
 			card.Parent.Visible = true
@@ -1018,12 +1080,16 @@ do
 		end
 	end
 
-	if _G.currentTraits then
-		handle(_G.currentTraits)
-	end
+	addConn(data.Ability:GetAttributeChangedSignal("UUID"):Connect(function()
+		none()
+		if _G.currentTraits[data.Ability:GetAttribute("UUID")] then
+			handle(_G.currentTraits[data.Ability:GetAttribute("UUID")])
+		end
+	end))
 
 	addConn(traitHandEvent.onClientEvent:Connect(function(traitsInfo)
-		_G.currentTraits = traitsInfo
+		print(traitsInfo)
+		_G.currentTraits[data.Ability:GetAttribute("UUID")] = traitsInfo
 		handle(traitsInfo)
 	end))
 end
@@ -1057,20 +1123,27 @@ do
 			state.mode = "stopped"
 		end
 
+		local ascensions = data.Ability:GetAttribute("AscensionRank")
 		labels.mode.Text = `mode: {state.mode}`
 		labels.uc.Text = `uc: {data.UCoins.Value}`
 		labels.us.Text = `us: {data.Currency.Value}`
+		holder.labels.ascension.Text = `ascension: {ascensions}`
+
+		if not gettingPity then
+			local traitPityAt
+			if ascensions <= 5 then
+				traitPityAt = 60
+			elseif ascensions <= 10 then
+				traitPityAt = 80
+			elseif ascensions > 10 then
+				traitPityAt = 100
+			end
+			traitPage.pity.Text = `{traitPity}/{traitPityAt}`
+		end
 
 		featureDebounce -= dt
 		if featureDebounce <= 0 then
 			featureDebounce = 1
-
-			task.spawn(function()
-				local info = levelService.RF.GetAbilityPVEInfo:InvokeServer(data.Ability.Value)
-				ascensions = info.AscensionRank
-				holder.labels.ascension.Text = `ascension: {tostring(info.AscensionRank)}`
-				task.spawn(features.autoAscend.check, info)
-			end)
 
 			for name, info in pairs(features) do
 				if state.enabledFeatures[name] and info.run then
@@ -1496,8 +1569,8 @@ end
 --FEATURE FUNCTIONS
 do
 	features.autoAscend = {
-		check = function(info)
-			if info.CurrentLevel >= 200 and data.UCoins.Value >= 1000000 then
+		run = function()
+			if data.Ability:GetAttribute("AbilityLevel") >= 200 and data.UCoins.Value >= 1000000 then
 				levelService.RF.AscendAbility:InvokeServer(data.Ability.Value)
 			end
 		end,

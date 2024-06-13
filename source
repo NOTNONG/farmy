@@ -1612,7 +1612,7 @@ do
 		}
 
 		local inventoryService = knitServices:WaitForChild("InventoryService")
-		features.autoChest = {
+		features.autoCrate = {
 			run = function()
 				local capacity = inventoryService.RF.GetCapacity:InvokeServer("SkinInventory")
 

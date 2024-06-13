@@ -2,6 +2,7 @@ if not _G.farmConfig then
 	--default
 	_G.farmConfig = {
 		tpOffset = { position = { 0, 17, 0 }, angle = { -90, 0, 0 } },
+		towerTpOffset = { position = { 0, -17, 0 }, angle = { 90, 0, 0 } },
 		hitboxDistance = { position = { 0, 0, -8.5 }, angle = { 0, 0, 0 } },
 		hpFilterUsePercentage = false,
 		sellAt = 1,
@@ -19,8 +20,8 @@ if not _G.farmConfig then
 		--{"Q", "Press"}
 		loopKeys = {
 			"E",
-			"R",
 			"MOUSEBUTTON1",
+			{ "Q", "Press" },
 		},
 		standOnKeys = {
 			"E",
@@ -104,6 +105,7 @@ local function addConn(connection)
 end
 
 --character
+local camera = workspace.CurrentCamera
 local character
 local root
 do
@@ -1097,8 +1099,11 @@ addConn(UserInputService.InputBegan:Connect(function(inputObject, processed)
 		local modeToSwitch = _G.farmConfig.modeKeys[inputObject.KeyCode.Name]
 		if modeToSwitch and steps[modeToSwitch] then
 			if state.mode ~= modeToSwitch then
-				if modeToSwitch == "stopped" and inMainGame then
-					teleport(CFrame.new(2096, 974, 287)) --park
+				if modeToSwitch == "stopped" then
+					camera.CameraType = Enum.CameraType.Custom
+					if inMainGame then
+						teleport(CFrame.new(2096, 974, 287)) --park
+					end
 				end
 			end
 			state.mode = modeToSwitch
@@ -1136,58 +1141,85 @@ do
 	local fireInput = knitServices:WaitForChild("MoveInputService"):WaitForChild("RF"):WaitForChild("FireInput")
 	local keyIndex = 0
 	local wasSummoned = false
-	local function input()
-		local keysList
-		local isSummoned = character:HasTag("Summoned")
-		if isSummoned ~= wasSummoned then
-			keyIndex = 0
-			wasSummoned = isSummoned
-		end
 
-		keysList = if isSummoned then _G.farmConfig.standOnKeys else _G.farmConfig.loopKeys
-		keyIndex += 1
-		if keyIndex > #keysList then
-			keyIndex = 1
-		end
-
-		local key = keysList[keyIndex]
-		if type(key) == "table" then
-			if key[2] == "Press" then
-				task.delay(0.1, fireInput.InvokeServer, fireInput, `END-{key[1]}`)
-			end
-			key = key[1]
-		end
-		task.spawn(fireInput.InvokeServer, fireInput, key)
-	end
-
+	local tpOffset
+	local teleportMobsTo
 	local mobFilter
 	local function findMob()
-		local mostHp = math.huge
+		local most
 		local foe
 		for _, thisFoe in pairs(workspace.Living:GetChildren()) do
 			local foeHumanoid = thisFoe:FindFirstChildWhichIsA("Humanoid")
 			local foeRoot = thisFoe:FindFirstChild("HumanoidRootPart")
+
 			if
 				foeHumanoid
 				and foeRoot
 				and (if mobFilter then mobFilter(thisFoe) else true)
 				and not Players:GetPlayerFromCharacter(thisFoe)
 			then
-				local hp = foeHumanoid.Health
-				if _G.farmConfig.hpFilterUsePercentage then
-					hp /= foeHumanoid.MaxHealth
-				end
-				if hp < mostHp then
-					mostHp = hp
-					foe = thisFoe
+				if teleportMobsTo then
+					local own = true
+					for _, v in pairs(thisFoe:GetDescendants()) do
+						if v:IsA("BasePart") then
+							if inMainGame then
+								v.LocalTransparencyModifier = 1
+							end
+							if v.ReceiveAge ~= 0 then
+								own = false
+							end
+						end
+					end
+
+					if own then
+						thisFoe:PivotTo(teleportMobsTo)
+						foeRoot.CanCollide = false
+						foeRoot.AssemblyLinearVelocity = Vector3.zero
+						foeRoot.AssemblyAngularVelocity = Vector3.zero
+					end
+
+					local dist = (foeRoot.Position - teleportMobsTo.Position).Magnitude
+					if not most or dist > most then
+						most = dist
+						foe = thisFoe
+					end
+				else
+					local hp = foeHumanoid.Health
+					if _G.farmConfig.hpFilterUsePercentage then
+						hp /= foeHumanoid.MaxHealth
+					end
+					if not most or hp < most then
+						most = hp
+						foe = thisFoe
+					end
 				end
 			end
 		end
 
 		if foe then
-			teleport(CFrame.new(foe.HumanoidRootPart.CFrame.Position) * tbToCfr(_G.farmConfig.tpOffset))
-			input()
-			return "break"
+			local foeRoot = foe.HumanoidRootPart
+			teleport(CFrame.new(foeRoot.CFrame.Position) * tbToCfr(tpOffset))
+			local keysList
+			local isSummoned = character:HasTag("Summoned")
+			if isSummoned ~= wasSummoned then
+				keyIndex = 0
+				wasSummoned = isSummoned
+			end
+
+			keysList = if isSummoned then _G.farmConfig.standOnKeys else _G.farmConfig.loopKeys
+			keyIndex += 1
+			if keyIndex > #keysList then
+				keyIndex = 1
+			end
+
+			local key = keysList[keyIndex]
+			if type(key) == "table" then
+				if key[2] == "Press" then
+					task.delay(0.1, fireInput.InvokeServer, fireInput, `END-{key[1]}`)
+				end
+				key = key[1]
+			end
+			task.spawn(fireInput.InvokeServer, fireInput, key)
 		end
 	end
 
@@ -1293,7 +1325,9 @@ do
 	if inMainGame then
 		--curses
 		do
-			local desertCfr = CFrame.new(1982, 928, -1573)
+			tpOffset = _G.farmConfig.tpOffset
+			local desertCfr = CFrame.new(1956, 923, -1614)
+			teleportMobsTo = desertCfr
 			local bmCfrs = {
 				CFrame.new(2454, 982, 119), --station
 				CFrame.new(2051, 922, 1062), --port
@@ -1313,16 +1347,16 @@ do
 				["Roppongi Curse"] = true,
 			}
 			mobFilter = function(mob)
-				return curses[mob.Name] and (mob.HumanoidRootPart.Position - desertCfr.Position).Magnitude <= 300
+				return curses[mob.Name] and (mob.HumanoidRootPart.Position - desertCfr.Position).Magnitude <= 1000
+			end
+
+			chestFilter = function(chest)
+				return (chest.RootPart.Position - desertCfr.Position).Magnitude <= 550
 			end
 
 			local function farmMobs()
 				teleport(desertCfr)
 				return findMob()
-			end
-
-			chestFilter = function(chest)
-				return (chest.RootPart.Position - desertCfr.Position).Magnitude <= 300
 			end
 
 			steps.curses = {
@@ -1413,20 +1447,28 @@ do
 	elseif inTower then
 		--farm
 		do
+			tpOffset = _G.farmConfig.towerTpOffset
 			local center = CFrame.new(259, 226, 39)
+			teleportMobsTo = center
 			mobFilter = function(mob)
-				return (mob.HumanoidRootPart.Position - center.Position).Magnitude <= 300
+				return (mob.HumanoidRootPart.Position - center.Position).Magnitude <= 500
 			end
 
 			chestFilter = function(chest)
 				return (chest.RootPart.Position - center.Position).Magnitude <= 50
 			end
 
+			local function farmMobs()
+				camera.CameraType = Enum.CameraType.Scriptable
+				camera.CFrame = center * CFrame.new(30, 2.5, 0) * CFrame.Angles(0, math.rad(90), 0)
+				return findMob()
+			end
+
 			steps.tower = {
 				pressButtons,
 				attemptSell,
 				attemptChests,
-				findMob,
+				farmMobs,
 			}
 		end
 	end
@@ -1598,6 +1640,9 @@ do
 		local vfxEvents = {
 			ReplicatedStorage.Remotes.Output,
 			knitServices.EffectService.RE.EffectSignal,
+			ReplicatedStorage.Remotes.CombatService.Stunned,
+			ReplicatedStorage.Remotes.CombatService.StunEnded,
+			ReplicatedStorage.BridgeNet2.dataRemoteEvent,
 		}
 
 		features.noEffects = {

@@ -1251,18 +1251,15 @@ do
 						own = false
 					end
 
-					if not thisFoe:HasTag("_Uncollided") then
-						thisFoe:AddTag("_Uncollided")
-						for _, v in pairs(thisFoe:GetDescendants()) do
-							if v:IsA("BasePart") then
-								v.CollisionGroup = "BypassAll"
-							end
-						end
-					end
-
 					if own then
 						if not thisFoe:HasTag("gotten") then
 							thisFoe:AddTag("gotten")
+							for _, v in pairs(thisFoe:GetDescendants()) do
+								if v:IsA("BasePart") then
+									v.CollisionGroup = "BypassAll"
+								end
+							end
+
 							local attachment = Instance.new("Attachment")
 							attachment.Name = "Attachment"
 							attachment.Parent = foeRoot
@@ -1766,10 +1763,6 @@ do
 		local vfxEvents = {
 			ReplicatedStorage.Remotes.Output,
 			knitServices.EffectService.RE.EffectSignal,
-			ReplicatedStorage.Remotes.CombatService.Stunned,
-			ReplicatedStorage.Remotes.CombatService.StunEnded,
-			ReplicatedStorage.BridgeNet2.dataRemoteEvent,
-			ReplicatedStorage.Remotes.CombatService.ActiveChanged,
 		}
 
 		features.noEffects = {

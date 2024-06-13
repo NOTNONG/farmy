@@ -105,7 +105,6 @@ local function addConn(connection)
 end
 
 --character
-local camera = workspace.CurrentCamera
 local character
 local root
 do
@@ -124,6 +123,11 @@ do
 		character = nil
 		root = nil
 	end))
+end
+local camera = workspace.CurrentCamera
+local function resetCamera()
+	character.Humanoid.CameraOffset = Vector3.zero
+	camera.CameraType = Enum.CameraType.Custom
 end
 
 local function teleport(pos)
@@ -1100,7 +1104,7 @@ addConn(UserInputService.InputBegan:Connect(function(inputObject, processed)
 		if modeToSwitch and steps[modeToSwitch] then
 			if state.mode ~= modeToSwitch then
 				if modeToSwitch == "stopped" then
-					camera.CameraType = Enum.CameraType.Custom
+					resetCamera()
 					if inMainGame then
 						teleport(CFrame.new(2096, 974, 287)) --park
 					end
@@ -1160,7 +1164,17 @@ do
 			then
 				if teleportMobsTo then
 					local own = true
-					for _, v in pairs(thisFoe:GetDescendants()) do
+
+					--[[if inMainGame and not thisFoe:HasTag("__Hidden") then
+						thisFoe:AddTag("__Hidden")
+						for _, v in pairs(thisFoe:GetDescendants()) do
+							if v:IsA("BasePart") then
+								v.LocalTransparencyModifier = 1
+							end
+						end
+					end--]]
+
+					for _, v in pairs(foeRoot:GetConnectedParts(true)) do
 						if v:IsA("BasePart") then
 							if inMainGame then
 								v.LocalTransparencyModifier = 1
@@ -1220,6 +1234,7 @@ do
 				key = key[1]
 			end
 			task.spawn(fireInput.InvokeServer, fireInput, key)
+			return foe
 		end
 	end
 
@@ -1356,7 +1371,7 @@ do
 
 			local function farmMobs()
 				teleport(desertCfr)
-				return findMob()
+				findMob()
 			end
 
 			steps.curses = {
@@ -1459,12 +1474,20 @@ do
 			end
 
 			local function farmMobs()
+				local foe = findMob()
+
 				camera.CameraType = Enum.CameraType.Scriptable
-				camera.CFrame = center * CFrame.new(30, 2.5, 0) * CFrame.Angles(0, math.rad(90), 0)
-				return findMob()
+				if foe and (foe.HumanoidRootPart.Position - center.Position).Magnitude > 10 then
+					camera.CFrame = foe.HumanoidRootPart.CFrame
+						* CFrame.new(0, 0, -20)
+						* CFrame.Angles(0, math.rad(180), 0)
+				else
+					camera.CFrame = center * CFrame.new(30, 2.5, 0) * CFrame.Angles(0, math.rad(90), 0)
+				end
 			end
 
 			steps.tower = {
+				resetCamera,
 				pressButtons,
 				attemptSell,
 				attemptChests,

@@ -2002,17 +2002,20 @@ do
 				return
 			end
 
+			pulling = true
+
 			local capacity = inventoryService.RF.GetCapacity:InvokeServer("SkinInventory")
 			if capacity.MaxCapacity - capacity.CurrentCapacity - amount < 0 then
 				notify("not enough inventory")
+				pulling = false
 				return
 			end
 			if data.Currency.Value < chestPrice * amount then
 				notify("not enough us")
+				pulling = false
 				return
 			end
 
-			pulling = true
 			openChests.TextLabel.Text = "pulling"
 			local remaining = amount
 			while remaining > 0 do
@@ -2039,10 +2042,12 @@ do
 						end--]]
 					else
 						notify(result)
+						pulling = false
 						return
 					end
 				else
 					notify("not enough us")
+					pulling = false
 					return
 				end
 			end

@@ -1268,7 +1268,6 @@ do
 		end
 
 		local ascensions = data.Ability:GetAttribute("AscensionRank")
-		labels.mode.Text = `mode: {state.mode}`
 		labels.uc.Text = `uc: {data.UCoins.Value}`
 		labels.us.Text = `us: {data.Currency.Value}`
 		labels.ascension.Text = `ascension: {ascensions}`
@@ -1293,7 +1292,10 @@ do
 			end)
 		end
 
-		if not rejoining then
+		if rejoining then
+			labels.mode.Text = `mode: rejoining`
+		else
+			labels.mode.Text = `mode: {state.mode}`
 			featureDebounce -= dt
 			if featureDebounce <= 0 then
 				featureDebounce = 1
@@ -1807,7 +1809,7 @@ do
 
 				local encoded = HttpService:JSONEncode(_G.farmConfig)
 				queue_on_teleport(
-					`_G.farmConfig = '{encoded}'\nloadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/rj"))()`
+					`print('{encoded}');_G.farmConfig = '{encoded}';loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/rj"))()`
 				)
 
 				while task.wait(5) do
@@ -1962,18 +1964,14 @@ do
 			typing = true
 		end)
 
-		textBox.FocusLost:Connect(function(entered)
+		textBox.FocusLost:Connect(function()
 			typing = false
-			if entered then
-				local number = tonumber(textBox.Text) or 1
-				amount = math.round(number)
-				if amount < 1 then
-					amount = 1
-				end
-				textBox.Text = amount
-			else
-				textBox.Text = amount
+			local number = tonumber(textBox.Text) or 1
+			amount = math.round(number)
+			if amount < 1 then
+				amount = 1
 			end
+			textBox.Text = amount
 		end)
 
 		local notifyThread

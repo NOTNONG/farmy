@@ -1259,6 +1259,9 @@ end
 
 --
 local refreshDebounce = 0
+local fps
+local fpsTable = {}
+local fpsCalcTimer = 0
 local rejoinTimers = {
 	notFullMeter = { now = 0, max = 60 },
 	lowFPS = { now = 0, max = 60 },
@@ -1315,6 +1318,22 @@ do
 			end)
 		end
 
+		table.insert(fpsTable, dt)
+		fpsCalcTimer += dt
+		if fpsCalcTimer >= 1 then
+			fpsCalcTimer = 0
+			local sum = 0
+			local count = 0
+
+			for _, v in pairs(fpsTable) do
+				sum = sum + v
+				count = count + 1
+			end
+
+			fps = 1 / (sum / count)
+			fpsTable = {}
+		end
+
 		if not rejoining then
 			if state.enabledFeatures.autoRejoin and state.mode == "curses" then
 				if character then
@@ -1326,7 +1345,7 @@ do
 					end
 				end
 
-				if 1 / dt <= 10 then
+				if fps <= 10 then
 					rejoinTimers.lowFPS.now += dt
 				else
 					rejoinTimers.lowFPS.now = 0
@@ -1334,7 +1353,7 @@ do
 
 				for _, timer in pairs(rejoinTimers) do
 					if timer.now >= timer.max then
-						print(_, timer.now)
+						--print(_, timer.now)
 						rejoin()
 					end
 				end

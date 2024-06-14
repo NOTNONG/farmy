@@ -5,7 +5,7 @@ if not _G.farmConfig then
 		towerTpOffset = { position = { 0, -17, 0 }, angle = { 90, 0, 0 } },
 		hitboxDistance = { position = { 0, 0, -8.5 }, angle = { 0, 0, 0 } },
 		hpFilterUsePercentage = false,
-		sellAt = 1,
+		sellAt = 276,
 		serverWhitelist = {},
 		skinWhitelist = {
 			"Universal",
@@ -149,6 +149,7 @@ local function tbToCfr(tb)
 end
 
 --aut stuff
+local rejoining = false
 local traitPity = 0
 local chestPrice = 5000
 
@@ -1229,6 +1230,10 @@ do
 
 	_G.farmStepConn = true
 	RunService:BindToRenderStep("abcdefg", 1, function(dt)
+		if rejoining then
+			return
+		end
+
 		if hideTraitUIs then
 			traitHandPrompt.Visible = false
 		end
@@ -1762,6 +1767,7 @@ do
 				if attempting or not state.enabledFeatures.autoRejoin then
 					return
 				end
+				rejoining = true
 				attempting = true
 
 				local encoded = HttpService:JSONEncode(_G.farmConfig)

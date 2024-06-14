@@ -1239,14 +1239,37 @@ local features = {}
 --STEP
 local levelService = knitServices:WaitForChild("LevelService")
 local inventoryService = knitServices:WaitForChild("InventoryService")
+local attempting = false
+local function rejoin()
+	if attempting or not state.enabledFeatures.autoRejoin then
+		return
+	end
+	rejoining = true
+	attempting = true
+
+	local encoded = HttpService:JSONEncode(_G.farmConfig)
+	queue_on_teleport(
+		`print('{encoded}');_G.farmConfig = '{encoded}';loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/rj"))()`
+	)
+
+	while task.wait(5) do
+		TeleportService:Teleport(5130598377)
+	end
+end
 
 --
 local refreshDebounce = 0
+local rejoinTimers = {
+	notFullMeter = { now = 0, max = 60 },
+	lowFPS = { now = 0, max = 60 },
+}
 
 local steps = {
 	stopped = {},
 }
 local invokeQueue = {}
+
+--step connection
 do
 	if _G.farmStepConn then
 		if typeof(_G.farmStepConn) == "RBXScriptConnection" then
@@ -1290,6 +1313,36 @@ do
 			task.spawn(function()
 				labels.pity.Text = `crate pity: {knitServices.ShopService.RF.GetPityInfo:InvokeServer().SkinCrate}/100`
 			end)
+		end
+
+		if not rejoining then
+			if state.enabledFeatures.autoRejoin and state.mode == "curses" then
+				if character then
+					local meter = character:GetAttribute("Meter")
+					if meter and meter < character:GetAttribute("MaxMeter") then
+						rejoinTimers.notFullMeter.now += dt
+					else
+						rejoinTimers.notFullMeter.now = 0
+					end
+				end
+
+				if 1 / dt <= 10 then
+					rejoinTimers.lowFPS.now += dt
+				else
+					rejoinTimers.lowFPS.now = 0
+				end
+
+				for _, timer in pairs(rejoinTimers) do
+					if timer.now >= timer.max then
+						print(_, timer.now)
+						rejoin()
+					end
+				end
+			else
+				for _, timer in pairs(rejoinTimers) do
+					timer.now = 0
+				end
+			end
 		end
 
 		if rejoining then
@@ -1799,24 +1852,6 @@ do
 
 		--auto rejoin
 		do
-			local attempting = false
-			local function rejoin()
-				if attempting or not state.enabledFeatures.autoRejoin then
-					return
-				end
-				rejoining = true
-				attempting = true
-
-				local encoded = HttpService:JSONEncode(_G.farmConfig)
-				queue_on_teleport(
-					`print('{encoded}');_G.farmConfig = '{encoded}';loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/rj"))()`
-				)
-
-				while task.wait(5) do
-					TeleportService:Teleport(5130598377)
-				end
-			end
-
 			GuiService.ErrorMessageChanged:Connect(function()
 				--local errorCode = GuiService:GetErrorCode()
 				local errorType = GuiService:GetErrorType()

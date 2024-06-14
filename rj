@@ -35,7 +35,7 @@ conn = game:GetService("RunService").Heartbeat:Connect(function()
 					if not found then
 						found = true
 						queue_on_teleport(
-							`print(_G.farmConfig);_G.farmConfig=game:GetService("HttpService"):JSONDecode('{_G.farmConfig}');loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/source"))()`
+							`_G.farmConfig=game:GetService("HttpService"):JSONDecode('{_G.farmConfig}');loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/source"))()`
 						)
 					end
 				end

@@ -1289,7 +1289,7 @@ do
 		if refreshDebounce <= 0 then
 			refreshDebounce = 0.1
 			task.spawn(function()
-				labels.pity.Text = `crate pity: {knitServices.ShopService.RF.GetPityInfo:InvokeServer().SkinCrate}`
+				labels.pity.Text = `crate pity: {knitServices.ShopService.RF.GetPityInfo:InvokeServer().SkinCrate}/100`
 			end)
 		end
 

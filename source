@@ -1227,12 +1227,9 @@ do
 		end
 	end
 
-	_G.farmStepConn = true
-	RunService:BindToRenderStep("abcdefg", 1, function(dt)
-		if rejoining then
-			return
-		end
-
+	--_G.farmStepConn = true
+	--RunService:BindToRenderStep("abcdefg", 1, function(dt)
+	_G.farmStepConn = RunService.Heartbeat:Connect(function(dt)
 		if hideTraitUIs then
 			traitHandPrompt.Visible = false
 		end
@@ -1259,24 +1256,26 @@ do
 			traitPage.pity.Text = `{traitPity}/{traitPityAt}`
 		end
 
-		featureDebounce -= dt
-		if featureDebounce <= 0 then
-			featureDebounce = 1
+		if not rejoining then
+			featureDebounce -= dt
+			if featureDebounce <= 0 then
+				featureDebounce = 1
 
-			for name, info in pairs(features) do
-				if state.enabledFeatures[name] and info.run then
-					task.spawn(info.run)
+				for name, info in pairs(features) do
+					if state.enabledFeatures[name] and info.run then
+						task.spawn(info.run)
+					end
 				end
 			end
-		end
 
-		if not root or state.mode == "stopped" then
-			return
-		end
+			if not root or state.mode == "stopped" then
+				return
+			end
 
-		for _, step in pairs(steps[state.mode]) do
-			if step(dt) == "break" then
-				break
+			for _, step in pairs(steps[state.mode]) do
+				if step(dt) == "break" then
+					break
+				end
 			end
 		end
 

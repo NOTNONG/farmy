@@ -227,6 +227,7 @@ do
 
 	local main = Instance.new("Frame")
 	main.Name = "Main"
+	main.Active = true
 	main.AnchorPoint = Vector2.new(0.5, 0.5)
 	main.BackgroundColor3 = Color3.fromRGB(44, 44, 44)
 	main.BorderColor3 = Color3.fromRGB(0, 0, 0)
@@ -234,7 +235,6 @@ do
 	main.ClipsDescendants = true
 	main.Position = UDim2.fromScale(0.5, 0.5)
 	main.Size = UDim2.fromScale(0.9, 0.9)
-	main.Active = true
 
 	local uIAspectRatioConstraint1 = Instance.new("UIAspectRatioConstraint")
 	uIAspectRatioConstraint1.Name = "UIAspectRatioConstraint"
@@ -361,7 +361,7 @@ do
 	uIPadding1.Parent = switches
 
 	local chests = Instance.new("Frame")
-	chests.Name = "openChests"
+	chests.Name = "openCrates"
 	chests.BackgroundColor3 = Color3.fromRGB(31, 31, 31)
 	chests.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	chests.BorderSizePixel = 0
@@ -377,7 +377,7 @@ do
 	local textLabel1 = Instance.new("TextLabel")
 	textLabel1.Name = "TextLabel"
 	textLabel1.FontFace = Font.new("rbxasset://fonts/families/TitilliumWeb.json")
-	textLabel1.Text = "openChests"
+	textLabel1.Text = "openCrates"
 	textLabel1.TextColor3 = Color3.fromRGB(255, 255, 255)
 	textLabel1.TextScaled = true
 	textLabel1.TextSize = 25
@@ -413,7 +413,6 @@ do
 	amount.TextSize = 25
 	amount.TextTransparency = 0.5
 	amount.TextWrapped = true
-	amount.Active = true
 	amount.AnchorPoint = Vector2.new(0.5, 0.5)
 	amount.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
 	amount.BackgroundTransparency = 1
@@ -496,7 +495,7 @@ do
 	ascension.BackgroundTransparency = 1
 	ascension.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	ascension.BorderSizePixel = 0
-	ascension.LayoutOrder = 2
+	ascension.LayoutOrder = 3
 	ascension.Position = UDim2.fromScale(1, 1)
 	ascension.Size = UDim2.fromScale(1, 1)
 
@@ -550,7 +549,7 @@ do
 	us.BackgroundTransparency = 1
 	us.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	us.BorderSizePixel = 0
-	us.LayoutOrder = 3
+	us.LayoutOrder = 4
 	us.Position = UDim2.fromScale(1, 1)
 	us.Size = UDim2.fromScale(1, 1)
 
@@ -577,7 +576,7 @@ do
 	uc.BackgroundTransparency = 1
 	uc.BorderColor3 = Color3.fromRGB(0, 0, 0)
 	uc.BorderSizePixel = 0
-	uc.LayoutOrder = 4
+	uc.LayoutOrder = 5
 	uc.Position = UDim2.fromScale(1, 1)
 	uc.Size = UDim2.fromScale(1, 1)
 
@@ -589,6 +588,33 @@ do
 	uIStroke6.Parent = uc
 
 	uc.Parent = labels
+
+	local pity = Instance.new("TextLabel")
+	pity.Name = "pity"
+	pity.FontFace = Font.new("rbxasset://fonts/families/TitilliumWeb.json")
+	pity.Text = "chest pity"
+	pity.TextColor3 = Color3.fromRGB(255, 255, 255)
+	pity.TextScaled = true
+	pity.TextSize = 14
+	pity.TextStrokeColor3 = Color3.fromRGB(39, 39, 39)
+	pity.TextWrapped = true
+	pity.AnchorPoint = Vector2.new(1, 1)
+	pity.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	pity.BackgroundTransparency = 1
+	pity.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	pity.BorderSizePixel = 0
+	pity.LayoutOrder = 2
+	pity.Position = UDim2.fromScale(1, 1)
+	pity.Size = UDim2.fromScale(1, 1)
+
+	local uIStroke7 = Instance.new("UIStroke")
+	uIStroke7.Name = "UIStroke"
+	uIStroke7.Color = Color3.fromRGB(48, 48, 48)
+	uIStroke7.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke7.Thickness = 2
+	uIStroke7.Parent = pity
+
+	pity.Parent = labels
 
 	labels.Parent = holder
 
@@ -744,32 +770,32 @@ do
 
 	discard.Parent = traitInfo
 
-	local pity = Instance.new("TextLabel")
-	pity.Name = "pity"
-	pity.FontFace = Font.new("rbxasset://fonts/families/TitilliumWeb.json")
-	pity.Text = "pity"
-	pity.TextColor3 = Color3.fromRGB(255, 255, 255)
-	pity.TextScaled = true
-	pity.TextSize = 14
-	pity.TextStrokeColor3 = Color3.fromRGB(39, 39, 39)
-	pity.TextWrapped = true
-	pity.AnchorPoint = Vector2.new(1, 0)
-	pity.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-	pity.BackgroundTransparency = 1
-	pity.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	pity.BorderSizePixel = 0
-	pity.Position = UDim2.fromScale(1, 0.865)
-	pity.Size = UDim2.fromScale(0.1, 0.1)
-	pity.Visible = false
+	local pity1 = Instance.new("TextLabel")
+	pity1.Name = "pity"
+	pity1.FontFace = Font.new("rbxasset://fonts/families/TitilliumWeb.json")
+	pity1.Text = "pity"
+	pity1.TextColor3 = Color3.fromRGB(255, 255, 255)
+	pity1.TextScaled = true
+	pity1.TextSize = 14
+	pity1.TextStrokeColor3 = Color3.fromRGB(39, 39, 39)
+	pity1.TextWrapped = true
+	pity1.AnchorPoint = Vector2.new(1, 0)
+	pity1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	pity1.BackgroundTransparency = 1
+	pity1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	pity1.BorderSizePixel = 0
+	pity1.Position = UDim2.fromScale(1, 0.865)
+	pity1.Size = UDim2.fromScale(0.1, 0.1)
+	pity1.Visible = false
 
-	local uIStroke7 = Instance.new("UIStroke")
-	uIStroke7.Name = "UIStroke"
-	uIStroke7.Color = Color3.fromRGB(39, 39, 39)
-	uIStroke7.LineJoinMode = Enum.LineJoinMode.Miter
-	uIStroke7.Thickness = 2
-	uIStroke7.Parent = pity
+	local uIStroke8 = Instance.new("UIStroke")
+	uIStroke8.Name = "UIStroke"
+	uIStroke8.Color = Color3.fromRGB(39, 39, 39)
+	uIStroke8.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke8.Thickness = 2
+	uIStroke8.Parent = pity1
 
-	pity.Parent = traitInfo
+	pity1.Parent = traitInfo
 
 	local none = Instance.new("TextLabel")
 	none.Name = "none"
@@ -786,12 +812,12 @@ do
 	none.BorderSizePixel = 0
 	none.Size = UDim2.fromScale(1, 1)
 
-	local uIStroke8 = Instance.new("UIStroke")
-	uIStroke8.Name = "UIStroke"
-	uIStroke8.Color = Color3.fromRGB(39, 39, 39)
-	uIStroke8.LineJoinMode = Enum.LineJoinMode.Miter
-	uIStroke8.Thickness = 2
-	uIStroke8.Parent = none
+	local uIStroke9 = Instance.new("UIStroke")
+	uIStroke9.Name = "UIStroke"
+	uIStroke9.Color = Color3.fromRGB(39, 39, 39)
+	uIStroke9.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke9.Thickness = 2
+	uIStroke9.Parent = none
 
 	none.Parent = traitInfo
 
@@ -811,12 +837,12 @@ do
 	used.Size = UDim2.fromScale(1, 1)
 	used.Visible = false
 
-	local uIStroke9 = Instance.new("UIStroke")
-	uIStroke9.Name = "UIStroke"
-	uIStroke9.Color = Color3.fromRGB(39, 39, 39)
-	uIStroke9.LineJoinMode = Enum.LineJoinMode.Miter
-	uIStroke9.Thickness = 2
-	uIStroke9.Parent = used
+	local uIStroke10 = Instance.new("UIStroke")
+	uIStroke10.Name = "UIStroke"
+	uIStroke10.Color = Color3.fromRGB(39, 39, 39)
+	uIStroke10.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke10.Thickness = 2
+	uIStroke10.Parent = used
 
 	used.Parent = traitInfo
 
@@ -899,11 +925,11 @@ do
 	hide.Position = UDim2.fromScale(1, 0)
 	hide.Size = UDim2.fromScale(0.333, 1)
 
-	local uIStroke10 = Instance.new("UIStroke")
-	uIStroke10.Name = "UIStroke"
-	uIStroke10.Color = Color3.fromRGB(39, 39, 39)
-	uIStroke10.LineJoinMode = Enum.LineJoinMode.Miter
-	uIStroke10.Parent = hide
+	local uIStroke11 = Instance.new("UIStroke")
+	uIStroke11.Name = "UIStroke"
+	uIStroke11.Color = Color3.fromRGB(39, 39, 39)
+	uIStroke11.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke11.Parent = hide
 
 	hide.Parent = topButtons
 
@@ -931,11 +957,11 @@ do
 	prev.Position = UDim2.fromScale(1, 0)
 	prev.Size = UDim2.fromScale(0.333, 1)
 
-	local uIStroke11 = Instance.new("UIStroke")
-	uIStroke11.Name = "UIStroke"
-	uIStroke11.Color = Color3.fromRGB(39, 39, 39)
-	uIStroke11.LineJoinMode = Enum.LineJoinMode.Miter
-	uIStroke11.Parent = prev
+	local uIStroke12 = Instance.new("UIStroke")
+	uIStroke12.Name = "UIStroke"
+	uIStroke12.Color = Color3.fromRGB(39, 39, 39)
+	uIStroke12.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke12.Parent = prev
 
 	prev.Parent = topButtons
 
@@ -956,11 +982,11 @@ do
 	next.Position = UDim2.fromScale(1, 0)
 	next.Size = UDim2.fromScale(0.333, 1)
 
-	local uIStroke12 = Instance.new("UIStroke")
-	uIStroke12.Name = "UIStroke"
-	uIStroke12.Color = Color3.fromRGB(39, 39, 39)
-	uIStroke12.LineJoinMode = Enum.LineJoinMode.Miter
-	uIStroke12.Parent = next
+	local uIStroke13 = Instance.new("UIStroke")
+	uIStroke13.Name = "UIStroke"
+	uIStroke13.Color = Color3.fromRGB(39, 39, 39)
+	uIStroke13.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke13.Parent = next
 
 	next.Parent = topButtons
 
@@ -1214,6 +1240,9 @@ local features = {}
 local levelService = knitServices:WaitForChild("LevelService")
 local inventoryService = knitServices:WaitForChild("InventoryService")
 
+--
+local refreshDebounce = 0
+
 local steps = {
 	stopped = {},
 }
@@ -1242,7 +1271,7 @@ do
 		labels.mode.Text = `mode: {state.mode}`
 		labels.uc.Text = `uc: {data.UCoins.Value}`
 		labels.us.Text = `us: {data.Currency.Value}`
-		holder.labels.ascension.Text = `ascension: {ascensions}`
+		labels.ascension.Text = `ascension: {ascensions}`
 
 		if not gettingPity then
 			local traitPityAt
@@ -1254,6 +1283,14 @@ do
 				traitPityAt = 100
 			end
 			traitPage.pity.Text = `{traitPity}/{traitPityAt}`
+		end
+
+		refreshDebounce -= dt
+		if refreshDebounce <= 0 then
+			refreshDebounce = 0.1
+			task.spawn(function()
+				labels.pity.Text = `crate pity: {knitServices.ShopService.RF.GetPityInfo:InvokeServer().SkinCrate}`
+			end)
 		end
 
 		if not rejoining then
@@ -1911,9 +1948,9 @@ do
 
 	--open chests
 	do
-		local openChests = holder.switches.openChests
+		local openCrates = holder.switches.openCrates
 		local amount = 1
-		local textBox = openChests.Frame.amount
+		local textBox = openCrates.Frame.amount
 		textBox.Text = amount
 
 		textBox:GetPropertyChangedSignal("Text"):Connect(function()
@@ -1945,15 +1982,15 @@ do
 				task.cancel(notifyThread)
 			end
 
-			openChests.TextLabel.Text = text
+			openCrates.TextLabel.Text = text
 			notifyThread = task.delay(2.5, function()
-				openChests.TextLabel.Text = "openChests"
+				openCrates.TextLabel.Text = "openCrates"
 				notifyThread = nil
 			end)
 		end
 
 		local pulling = false
-		openChests.Button.MouseButton1Click:Connect(function()
+		openCrates.Button.MouseButton1Click:Connect(function()
 			if pulling then
 				return
 			end
@@ -1977,7 +2014,7 @@ do
 				return
 			end
 
-			openChests.TextLabel.Text = "pulling"
+			openCrates.TextLabel.Text = "pulling"
 			local remaining = amount
 			while remaining > 0 do
 				local pulls = remaining

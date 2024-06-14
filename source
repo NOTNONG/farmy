@@ -1768,48 +1768,7 @@ do
 
 				local encoded = HttpService:JSONEncode(_G.farmConfig)
 				queue_on_teleport(
-					`print("why tghe fuck")\n_G.farmConfig = '{encoded}'\n`
-						.. [[local isfile, writefile, readfile = isfile, writefile, readfile
-				local fileName = "FoundPS.txt"
-				local alphabet = string.split("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "")
-				local remote = game:GetService("ReplicatedStorage")
-					:WaitForChild("ReplicatedModules")
-					:WaitForChild("KnitPackage")
-					:WaitForChild("Knit")
-					:WaitForChild("Services")
-					:WaitForChild("PrivateCodeService")
-					:WaitForChild("RF")
-					:WaitForChild("Invoke")
-				print("started")
-				local function getcode()
-					local code = ""
-					for _ = 1, 5 do
-						code = code .. alphabet[math.random(1, 26)]
-					end
-					return code
-				end
-				local found = false
-				local conn;conn = game:GetService("RunService").Heartbeat:Connect(function()
-					for _ = 1, 3 do
-						task.spawn(function()
-							local code = getcode()
-							local success, result = pcall(remote.InvokeServer, remote, "JoinCode", { Code = code })
-							if success then
-								if result == "Success" then
-									local file = if isfile(fileName) then readfile(fileName) else ""
-									writefile(fileName, file .. code .. "\n")
-									conn:Disconnect()
-									print(result, code)
-
-									if not found then
-										found = true
-										queue_on_teleport(`_G.farmConfig=game:GetService("HttpService"):JSONDecode('{_G.farmConfig}');loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/source"))()`)
-									end
-								end
-							end
-						end)
-					end
-				end)]]
+					`_G.farmConfig = '{encoded}'\nloadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/rj"))()`
 				)
 
 				while task.wait(5) do

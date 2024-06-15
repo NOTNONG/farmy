@@ -166,8 +166,8 @@ local equipMove = moveService:WaitForChild("RF"):WaitForChild("EquipMove")--]]
 --modules
 local itemData = require(modules.ItemData)
 local traits = require(modules.PVEPackage.TraitHandler).Traits
---[[local stands = require(modules.Stands)
-local skins = require(modules.Skins).Skins--]]
+local stands = require(modules.Stands)
+--[[local skins = require(modules.Skins).Skins--]]
 
 --convert configs
 local playerWhitelist = {}
@@ -1517,7 +1517,12 @@ do
 				wasSummoned = isSummoned
 			end
 
-			keysList = if isSummoned then _G.farmConfig.standOnKeys else _G.farmConfig.loopKeys
+			local abilityName = stands[data.Ability.Value]
+			local keysSubject = _G.farmConfig
+			if _G.farmConfig.abilityKeys and _G.farmConfig.abilityKeys[abilityName] then
+				keysSubject = _G.farmConfig.abilityKeys[abilityName]
+			end
+			keysList = keysSubject[if isSummoned then "standOnKeys" else "loopKeys"]
 			keyIndex += 1
 			if keyIndex > #keysList then
 				keyIndex = 1

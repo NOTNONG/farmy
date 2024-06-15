@@ -1523,19 +1523,22 @@ do
 				keysSubject = _G.farmConfig.abilityKeys[abilityName]
 			end
 			keysList = keysSubject[if isSummoned then "standOnKeys" else "loopKeys"]
-			keyIndex += 1
-			if keyIndex > #keysList then
-				keyIndex = 1
-			end
 
-			local key = keysList[keyIndex]
-			if type(key) == "table" then
-				if key[2] == "Press" then
-					task.delay(0.1, fireInput.InvokeServer, fireInput, `END-{key[1]}`)
+			if keysList then
+				keyIndex += 1
+				if keyIndex > #keysList then
+					keyIndex = 1
 				end
-				key = key[1]
+
+				local key = keysList[keyIndex]
+				if type(key) == "table" then
+					if key[2] == "Press" then
+						task.delay(0.1, fireInput.InvokeServer, fireInput, `END-{key[1]}`)
+					end
+					key = key[1]
+				end
+				task.spawn(fireInput.InvokeServer, fireInput, key)
 			end
-			task.spawn(fireInput.InvokeServer, fireInput, key)
 			return foe
 		end
 	end

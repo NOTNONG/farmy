@@ -52,15 +52,17 @@ if TeleportService:GetTeleportSetting("farming") then
 					end
 				end)
 			end)
-			return
 		elseif session.dest == "game" then
 			print("success")
 			_G.farmConfig = session.config
+
+			TeleportService:SetTeleportSetting("farming", false)
+			delfile("farmSession")
 			--selene:allow(incorrect_standard_library_use)
 			loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/source"))()
 		end
+	else
+		TeleportService:SetTeleportSetting("farming", false)
+		delfile("farmSession")
 	end
-
-	TeleportService:SetTeleportSetting("farming", false)
-	delfile("farmSession")
 end

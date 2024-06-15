@@ -1297,6 +1297,7 @@ do
 		labels.uc.Text = `uc: {data.UCoins.Value}`
 		labels.us.Text = `us: {data.Currency.Value}`
 		labels.ascension.Text = `ascension: {ascensions}`
+		labels.mode.Text = `mode: {if rejoining then "rejoining" else state.mode}`
 
 		if not gettingPity then
 			local traitPityAt
@@ -1354,7 +1355,8 @@ do
 				for _, timer in pairs(rejoinTimers) do
 					if timer.now >= timer.max then
 						--print(_, timer.now)
-						rejoin()
+						rejoining = true
+						task.spawn(rejoin)
 					end
 				end
 			else
@@ -1364,10 +1366,7 @@ do
 			end
 		end
 
-		if rejoining then
-			labels.mode.Text = `mode: rejoining`
-		else
-			labels.mode.Text = `mode: {state.mode}`
+		if not rejoining then
 			featureDebounce -= dt
 			if featureDebounce <= 0 then
 				featureDebounce = 1

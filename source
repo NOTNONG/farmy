@@ -1508,7 +1508,7 @@ do
 			end
 			teleport(tpOrigin * tbToCfr(tpOffset))
 			local keysList
-			local isSummoned = character:HasTag("Summoned")
+			local isSummoned = character:HasTag("Summoned") or character:GetAttribute("SixEyes")
 			if isSummoned ~= wasSummoned then
 				keyIndex = 0
 				wasSummoned = isSummoned

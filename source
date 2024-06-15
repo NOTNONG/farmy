@@ -1344,7 +1344,7 @@ do
 					end
 				end
 
-				if fps <= 10 then
+				if fps and fps <= 10 then
 					rejoinTimers.lowFPS.now += dt
 				else
 					rejoinTimers.lowFPS.now = 0

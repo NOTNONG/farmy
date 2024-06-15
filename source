@@ -1888,7 +1888,7 @@ do
 
 			local function playerAdded(player)
 				if not playerWhitelist[player.Name] then
-					task.spawn(rejoin)
+					rejoin()
 				end
 			end
 
@@ -1897,7 +1897,7 @@ do
 			local function checkPlayers()
 				for _, player in pairs(Players:GetPlayers()) do
 					if player ~= localPlayer then
-						playerAdded(player)
+						task.spawn(playerAdded, player)
 					end
 				end
 			end

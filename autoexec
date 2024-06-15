@@ -21,7 +21,7 @@ if TeleportService:GetTeleportSetting("farming") then
 				:WaitForChild("PrivateCodeService")
 				:WaitForChild("RF")
 				:WaitForChild("Invoke")
-			print("started")
+			print("started (SLOW MODE)")
 			local function getcode()
 				local code = ""
 				for _ = 1, 5 do

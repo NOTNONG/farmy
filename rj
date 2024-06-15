@@ -29,8 +29,8 @@ conn = game:GetService("RunService").Heartbeat:Connect(function()
 				if result == "Success" then
 					if not found then
 						found = true
-						local file = if isfile(fileName) then readfile(fileName) else ""
-						writefile(fileName, file .. code .. "\n")
+						local file = isfile(fileName) and readfile(fileName)
+						writefile(fileName, (file or "") .. code .. "\n")
 						conn:Disconnect()
 
 						print(result, code)

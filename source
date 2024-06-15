@@ -1249,7 +1249,7 @@ local function rejoin()
 
 	local encoded = HttpService:JSONEncode(_G.farmConfig)
 	queue_on_teleport(
-		`print(game:GetService("HttpService"):GenerateGUID(false));print('{encoded}');_G.farmConfig = '{encoded}';loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/rj"))()`
+		`print('{HttpService:GenerateGUID(false)}');print('{encoded}');_G.farmConfig = '{encoded}';loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/rj"))()`
 	)
 
 	while task.wait(5) do

@@ -1353,8 +1353,8 @@ do
 				for _, timer in pairs(rejoinTimers) do
 					if timer.now >= timer.max then
 						--print(_, timer.now)
-						attempting = true
 						task.spawn(rejoin)
+						attempting = true
 					end
 				end
 			else

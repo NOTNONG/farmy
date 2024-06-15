@@ -1291,32 +1291,6 @@ do
 			state.mode = "stopped"
 		end
 
-		local ascensions = data.Ability:GetAttribute("AscensionRank")
-		labels.uc.Text = `uc: {data.UCoins.Value}`
-		labels.us.Text = `us: {data.Currency.Value}`
-		labels.ascension.Text = `ascension: {ascensions}`
-		labels.mode.Text = `mode: {if attempting then "rejoining" else state.mode}`
-
-		if not gettingPity then
-			local traitPityAt
-			if ascensions <= 5 then
-				traitPityAt = 60
-			elseif ascensions <= 10 then
-				traitPityAt = 80
-			elseif ascensions > 10 then
-				traitPityAt = 100
-			end
-			traitPage.pity.Text = `{traitPity}/{traitPityAt}`
-		end
-
-		refreshDebounce -= dt
-		if refreshDebounce <= 0 then
-			refreshDebounce = 0.1
-			task.spawn(function()
-				labels.pity.Text = `crate pity: {knitServices.ShopService.RF.GetPityInfo:InvokeServer().SkinCrate}/100`
-			end)
-		end
-
 		table.insert(fpsTable, dt)
 		fpsCalcTimer += dt
 		if fpsCalcTimer >= 1 then
@@ -1362,6 +1336,32 @@ do
 					timer.now = 0
 				end
 			end
+		end
+
+		local ascensions = data.Ability:GetAttribute("AscensionRank")
+		labels.uc.Text = `uc: {data.UCoins.Value}`
+		labels.us.Text = `us: {data.Currency.Value}`
+		labels.ascension.Text = `ascension: {ascensions}`
+		labels.mode.Text = `mode: {if attempting then "rejoining" else state.mode}`
+
+		if not gettingPity then
+			local traitPityAt
+			if ascensions <= 5 then
+				traitPityAt = 60
+			elseif ascensions <= 10 then
+				traitPityAt = 80
+			elseif ascensions > 10 then
+				traitPityAt = 100
+			end
+			traitPage.pity.Text = `{traitPity}/{traitPityAt}`
+		end
+
+		refreshDebounce -= dt
+		if refreshDebounce <= 0 then
+			refreshDebounce = 0.1
+			task.spawn(function()
+				labels.pity.Text = `crate pity: {knitServices.ShopService.RF.GetPityInfo:InvokeServer().SkinCrate}/100`
+			end)
 		end
 
 		if not attempting then

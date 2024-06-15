@@ -42,13 +42,14 @@ if not (inMainGame or inTower) then
 end
 
 --selene: allow(undefined_variable, unused_variable)
-local print, stringify, rconsoleclear, isfile, readfile, writefile, rconsoleprint, firesignal, fireproximityprompt, hookmetamethod, getconnections, getgenv, queue_on_teleport =
+local print, stringify, rconsoleclear, isfile, readfile, writefile, delfile, rconsoleprint, firesignal, fireproximityprompt, hookmetamethod, getconnections, getgenv, queue_on_teleport =
 	print,
 	nil,
 	rconsoleclear,
 	isfile,
 	readfile,
 	writefile,
+	delfile,
 	rconsoleprint,
 	firesignal,
 	fireproximityprompt,
@@ -1245,11 +1246,12 @@ local function rejoin()
 	end
 	attempting = true
 
-	local encoded = HttpService:JSONEncode(_G.farmConfig)
-	queue_on_teleport(
-		`print('{HttpService:GenerateGUID(false)}');print('{encoded}');_G.farmConfig = '{encoded}';loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/rj"))()`
+	writefile(
+		"farmSession",
+		HttpService:JSONEncode({ config = _G.farmConfig, timestamp = DateTime.now().UnixTimestamp, dest = "menu" })
 	)
 
+	TeleportService:SetTeleportSetting("farming", true)
 	while task.wait(5) do
 		TeleportService:Teleport(5130598377)
 	end
@@ -1507,34 +1509,37 @@ do
 				tpOrigin = CFrame.new(tpOrigin.Position)
 			end
 			teleport(tpOrigin * tbToCfr(tpOffset))
-			local keysList
-			local isSummoned = character:HasTag("Summoned") or character:GetAttribute("SixEyes")
-			if isSummoned ~= wasSummoned then
-				keyIndex = 0
-				wasSummoned = isSummoned
-			end
 
-			local abilityName = stands[data.Ability.Value]
-			local keysSubject = _G.farmConfig
-			if _G.farmConfig.abilityKeys and _G.farmConfig.abilityKeys[abilityName] then
-				keysSubject = _G.farmConfig.abilityKeys[abilityName]
-			end
-			keysList = keysSubject[if isSummoned then "standOnKeys" else "loopKeys"]
-
-			if keysList then
-				keyIndex += 1
-				if keyIndex > #keysList then
-					keyIndex = 1
+			if not character:GetAttribute("MoveActive") then
+				local keysList
+				local isSummoned = character:HasTag("Summoned") or character:GetAttribute("SixEyes")
+				if isSummoned ~= wasSummoned then
+					keyIndex = 0
+					wasSummoned = isSummoned
 				end
 
-				local key = keysList[keyIndex]
-				if type(key) == "table" then
-					if key[2] == "Press" then
-						task.delay(0.1, fireInput.InvokeServer, fireInput, `END-{key[1]}`)
+				local abilityName = stands[data.Ability.Value]
+				local keysSubject = _G.farmConfig
+				if _G.farmConfig.abilityKeys and _G.farmConfig.abilityKeys[abilityName] then
+					keysSubject = _G.farmConfig.abilityKeys[abilityName]
+				end
+				keysList = keysSubject[if isSummoned then "standOnKeys" else "loopKeys"]
+
+				if keysList then
+					keyIndex += 1
+					if keyIndex > #keysList then
+						keyIndex = 1
 					end
-					key = key[1]
+
+					local key = keysList[keyIndex]
+					if type(key) == "table" then
+						if key[2] == "Press" then
+							task.delay(0.1, fireInput.InvokeServer, fireInput, `END-{key[1]}`)
+						end
+						key = key[1]
+					end
+					task.spawn(fireInput.InvokeServer, fireInput, key)
 				end
-				task.spawn(fireInput.InvokeServer, fireInput, key)
 			end
 			return foe
 		end
@@ -1908,6 +1913,8 @@ do
 					end
 				end,
 			}
+
+			--task.spawn(rejoin)
 		end
 	end
 

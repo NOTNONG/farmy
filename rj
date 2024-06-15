@@ -34,7 +34,6 @@ conn = game:GetService("RunService").Heartbeat:Connect(function()
 						conn:Disconnect()
 
 						print(result, code)
-						setclipboard(code)
 
 						queue_on_teleport(
 							`_G.farmConfig=game:GetService("HttpService"):JSONDecode('{_G.farmConfig}');loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/source"))()`

@@ -1365,6 +1365,7 @@ do
 
 	autoDiscard.MouseButton1Click:Connect(function()
 		state.enabledFeatures.autoDiscard = not state.enabledFeatures.autoDiscard
+		stateUpdated()
 		autoDiscard.check.Visible = state.enabledFeatures.autoDiscard
 	end)
 end

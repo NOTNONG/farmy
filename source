@@ -1147,6 +1147,7 @@ do
 	local template = cardsHolder.template
 	local cards = {}
 	local availableTraits = {}
+	local autoDiscarding = false
 	local inProgress = false
 	local action
 
@@ -1183,7 +1184,7 @@ do
 		clone.Parent = cardsHolder
 
 		card.MouseButton1Click:Connect(function()
-			if availableTraits[i] then
+			if not autoDiscarding and availableTraits[i] then
 				setAction("pick " .. i, function()
 					chosen()
 					traitService.RF.PickTrait:InvokeServer(i)
@@ -1199,10 +1200,12 @@ do
 	end
 
 	traitPage.discard.MouseButton1Click:Connect(function()
-		if availableTraits.rolledValuable then
-			setAction("discard valuable", discard)
-		else
-			discard()
+		if not autoDiscarding then
+			if availableTraits.rolledValuable then
+				setAction("discard valuable", discard)
+			else
+				discard()
+			end
 		end
 	end)
 
@@ -1329,7 +1332,13 @@ do
 		end
 
 		if state.enabledFeatures.autoDiscard and not availableTraits.rolledValuable then
-			discard()
+			autoDiscarding = true
+			traitPage.discard.TextLabel.Text = "discarding..."
+			task.spawn(traitService.RF.DiscardTraits.InvokeServer, traitService.RF.DiscardTraits)
+			task.wait(0.1)
+			chosen()
+			autoDiscarding = false
+			traitPage.discard.TextLabel.Text = "discarding"
 		end
 	end
 

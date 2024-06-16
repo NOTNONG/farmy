@@ -1326,7 +1326,7 @@ local fpsTable = {}
 local fpsCalcTimer = 0
 local rejoinTimers = {
 	notFullMeter = { now = 0, max = 60 },
-	lowFPS = { now = 0, max = 60 },
+	lowFPS = { now = 0, max = 60 * 3 },
 }
 
 local steps = {

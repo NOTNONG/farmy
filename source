@@ -2080,7 +2080,7 @@ do
 	end
 
 	for name, _ in pairs(state.enabledFeatures) do
-		if not features[name] then
+		if not features[name] and name ~= "autoDiscard" then
 			state.enabledFeatures[name] = nil
 		end
 	end

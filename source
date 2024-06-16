@@ -282,7 +282,7 @@ do
 	local uIGridLayout = Instance.new("UIGridLayout")
 	uIGridLayout.Name = "UIGridLayout"
 	uIGridLayout.CellPadding = UDim2.fromScale(0.006, 0.02)
-	uIGridLayout.CellSize = UDim2.fromScale(0.4, 0.235)
+	uIGridLayout.CellSize = UDim2.fromScale(0.3, 0.15)
 	uIGridLayout.FillDirection = Enum.FillDirection.Vertical
 	uIGridLayout.SortOrder = Enum.SortOrder.LayoutOrder
 	uIGridLayout.Parent = switches
@@ -939,15 +939,15 @@ do
 
 	confirm.Parent = traitInfo
 
-	local autoDiscard = Instance.new("ImageButton")
-	autoDiscard.Name = "autoDiscard"
-	autoDiscard.AnchorPoint = Vector2.new(0, 1)
-	autoDiscard.BackgroundColor3 = Color3.fromRGB(31, 31, 31)
-	autoDiscard.BorderColor3 = Color3.fromRGB(0, 0, 0)
-	autoDiscard.BorderSizePixel = 0
-	autoDiscard.Position = UDim2.fromScale(0, 1)
-	autoDiscard.Selectable = false
-	autoDiscard.Size = UDim2.fromScale(0.061, 0.2)
+	local discard1 = Instance.new("ImageButton")
+	discard1.Name = "autoDiscard"
+	discard1.AnchorPoint = Vector2.new(0, 1)
+	discard1.BackgroundColor3 = Color3.fromRGB(31, 31, 31)
+	discard1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	discard1.BorderSizePixel = 0
+	discard1.Position = UDim2.fromScale(0, 1)
+	discard1.Selectable = false
+	discard1.Size = UDim2.fromScale(0.061, 0.2)
 
 	local textLabel6 = Instance.new("TextLabel")
 	textLabel6.Name = "TextLabel"
@@ -973,12 +973,11 @@ do
 	uIStroke13.Thickness = 2
 	uIStroke13.Parent = textLabel6
 
-	textLabel6.Parent = autoDiscard
+	textLabel6.Parent = discard1
 
 	local check = Instance.new("ImageLabel")
 	check.Name = "check"
 	check.Image = "rbxassetid://1202200114"
-	check.Active = false
 	check.AnchorPoint = Vector2.new(0.5, 0.5)
 	check.BackgroundTransparency = 1
 	check.LayoutOrder = 4
@@ -987,9 +986,9 @@ do
 	check.Size = UDim2.fromScale(1, 1)
 	check.Visible = false
 	check.ZIndex = 2
-	check.Parent = autoDiscard
+	check.Parent = discard1
 
-	autoDiscard.Parent = traitInfo
+	discard1.Parent = traitInfo
 
 	traitInfo.Parent = pages
 
@@ -1690,7 +1689,7 @@ do
 	local dealerLocations
 	local function attemptSell(dt)
 		local dealer = workspace.NPCS:FindFirstChild("Black Market")
-		if localPlayer:FindFirstChild("Backpack") and dealer then
+		if localPlayer:FindFirstChild("Backpack") then
 			local items = {}
 			for _, v in pairs(localPlayer.Backpack:GetChildren()) do
 				if v:IsA("Tool") and v:GetAttribute("ItemId") then
@@ -1698,9 +1697,10 @@ do
 				end
 			end
 
-			if #items == 0 and isSelling then
+			if (#items == 0 and isSelling) or not dealer or not state.enabledFeatures.autoSell then
 				isSelling = false
 				sellDebounce = 0
+				return
 			end
 
 			if #items >= _G.farmConfig.sellAt or isSelling then
@@ -1955,6 +1955,8 @@ do
 			end
 		end,
 	}
+
+	features.autoSell = {}
 
 	if inMainGame then
 		features.autoStat = {

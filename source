@@ -939,6 +939,58 @@ do
 
 	confirm.Parent = traitInfo
 
+	local autoDiscard = Instance.new("ImageButton")
+	autoDiscard.Name = "autoDiscard"
+	autoDiscard.AnchorPoint = Vector2.new(0, 1)
+	autoDiscard.BackgroundColor3 = Color3.fromRGB(31, 31, 31)
+	autoDiscard.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	autoDiscard.BorderSizePixel = 0
+	autoDiscard.Position = UDim2.fromScale(0, 1)
+	autoDiscard.Selectable = false
+	autoDiscard.Size = UDim2.fromScale(0.061, 0.2)
+
+	local textLabel6 = Instance.new("TextLabel")
+	textLabel6.Name = "TextLabel"
+	textLabel6.FontFace = Font.new("rbxasset://fonts/families/TitilliumWeb.json")
+	textLabel6.Text = "autoDiscard"
+	textLabel6.TextColor3 = Color3.fromRGB(255, 255, 255)
+	textLabel6.TextScaled = true
+	textLabel6.TextSize = 14
+	textLabel6.TextStrokeColor3 = Color3.fromRGB(39, 39, 39)
+	textLabel6.TextWrapped = true
+	textLabel6.AnchorPoint = Vector2.new(0, 0.5)
+	textLabel6.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+	textLabel6.BackgroundTransparency = 1
+	textLabel6.BorderColor3 = Color3.fromRGB(0, 0, 0)
+	textLabel6.BorderSizePixel = 0
+	textLabel6.Position = UDim2.fromScale(1.1, 0.5)
+	textLabel6.Size = UDim2.fromScale(2, 0.8)
+
+	local uIStroke13 = Instance.new("UIStroke")
+	uIStroke13.Name = "UIStroke"
+	uIStroke13.Color = Color3.fromRGB(39, 39, 39)
+	uIStroke13.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke13.Thickness = 2
+	uIStroke13.Parent = textLabel6
+
+	textLabel6.Parent = autoDiscard
+
+	local check = Instance.new("ImageLabel")
+	check.Name = "check"
+	check.Image = "rbxassetid://1202200114"
+	check.Active = false
+	check.AnchorPoint = Vector2.new(0.5, 0.5)
+	check.BackgroundTransparency = 1
+	check.LayoutOrder = 4
+	check.Position = UDim2.fromScale(0.5, 0.5)
+	check.Selectable = true
+	check.Size = UDim2.fromScale(1, 1)
+	check.Visible = false
+	check.ZIndex = 2
+	check.Parent = autoDiscard
+
+	autoDiscard.Parent = traitInfo
+
 	traitInfo.Parent = pages
 
 	local uIPageLayout = Instance.new("UIPageLayout")
@@ -987,11 +1039,11 @@ do
 	hide.Position = UDim2.fromScale(1, 0)
 	hide.Size = UDim2.fromScale(0.333, 1)
 
-	local uIStroke13 = Instance.new("UIStroke")
-	uIStroke13.Name = "UIStroke"
-	uIStroke13.Color = Color3.fromRGB(39, 39, 39)
-	uIStroke13.LineJoinMode = Enum.LineJoinMode.Miter
-	uIStroke13.Parent = hide
+	local uIStroke14 = Instance.new("UIStroke")
+	uIStroke14.Name = "UIStroke"
+	uIStroke14.Color = Color3.fromRGB(39, 39, 39)
+	uIStroke14.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke14.Parent = hide
 
 	hide.Parent = topButtons
 
@@ -1019,11 +1071,11 @@ do
 	prev.Position = UDim2.fromScale(1, 0)
 	prev.Size = UDim2.fromScale(0.333, 1)
 
-	local uIStroke14 = Instance.new("UIStroke")
-	uIStroke14.Name = "UIStroke"
-	uIStroke14.Color = Color3.fromRGB(39, 39, 39)
-	uIStroke14.LineJoinMode = Enum.LineJoinMode.Miter
-	uIStroke14.Parent = prev
+	local uIStroke15 = Instance.new("UIStroke")
+	uIStroke15.Name = "UIStroke"
+	uIStroke15.Color = Color3.fromRGB(39, 39, 39)
+	uIStroke15.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke15.Parent = prev
 
 	prev.Parent = topButtons
 
@@ -1044,11 +1096,11 @@ do
 	next.Position = UDim2.fromScale(1, 0)
 	next.Size = UDim2.fromScale(0.333, 1)
 
-	local uIStroke15 = Instance.new("UIStroke")
-	uIStroke15.Name = "UIStroke"
-	uIStroke15.Color = Color3.fromRGB(39, 39, 39)
-	uIStroke15.LineJoinMode = Enum.LineJoinMode.Miter
-	uIStroke15.Parent = next
+	local uIStroke16 = Instance.new("UIStroke")
+	uIStroke16.Name = "UIStroke"
+	uIStroke16.Color = Color3.fromRGB(39, 39, 39)
+	uIStroke16.LineJoinMode = Enum.LineJoinMode.Miter
+	uIStroke16.Parent = next
 
 	next.Parent = topButtons
 
@@ -1063,7 +1115,7 @@ local labels = holder.labels
 --state
 local state = {
 	mode = "stopped",
-	enabledFeatures = {},
+	enabledFeatures = { autoDiscard = false },
 }
 
 local stateFileName = "farmState"
@@ -1222,6 +1274,7 @@ do
 		traitPage.pity.Text = "getting pity data"
 		traitPage.pity.Visible = true
 		gettingPity = true
+
 		task.spawn(function()
 			local info = knitServices.ShopService.RF.GetPityInfo:InvokeServer()
 			traitPity = info.TraitRerollPity
@@ -1274,6 +1327,10 @@ do
 				end
 			end
 		end
+
+		if state.enabledFeatures.autoDiscard and not availableTraits.rolledValuable then
+			discard()
+		end
 	end
 
 	local function checkPreviousTraits()
@@ -1292,6 +1349,16 @@ do
 		_G.currentTraits[data.Ability:GetAttribute("UUID")] = traitsInfo
 		handle(traitsInfo)
 	end))
+
+	local autoDiscard = traitPage.autoDiscard
+	if state.enabledFeatures.autoDiscard then
+		autoDiscard.check.Visible = true
+	end
+
+	autoDiscard.MouseButton1Click:Connect(function()
+		state.enabledFeatures.autoDiscard = not state.enabledFeatures.autoDiscard
+		autoDiscard.check.Visible = state.enabledFeatures.autoDiscard
+	end)
 end
 
 --features

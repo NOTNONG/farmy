@@ -32,25 +32,27 @@ if TeleportService:GetTeleportSetting("farming") then
 			local found = false
 			local conn
 			conn = game:GetService("RunService").Heartbeat:Connect(function()
-				task.spawn(function()
-					local code = getcode()
-					local success, result = pcall(remote.InvokeServer, remote, "JoinCode", { Code = code })
-					if success then
-						if result == "Success" then
-							if not found then
-								found = true
-								local file = isfile(fileName) and readfile(fileName)
-								writefile(fileName, (file or "") .. code .. "\n")
-								conn:Disconnect()
-								print(result, code)
+				for _ = 1, 2 do
+					task.spawn(function()
+						local code = getcode()
+						local success, result = pcall(remote.InvokeServer, remote, "JoinCode", { Code = code })
+						if success then
+							if result == "Success" then
+								if not found then
+									found = true
+									local file = isfile(fileName) and readfile(fileName)
+									writefile(fileName, (file or "") .. code .. "\n")
+									conn:Disconnect()
+									print(result, code)
 
-								session.timestamp = DateTime.now().UnixTimestamp
-								session.dest = "game"
-								writefile("farmSession", HttpService:JSONEncode(session))
+									session.timestamp = DateTime.now().UnixTimestamp
+									session.dest = "game"
+									writefile("farmSession", HttpService:JSONEncode(session))
+								end
 							end
 						end
-					end
-				end)
+					end)
+				end
 			end)
 		elseif session.dest == "game" then
 			print("success")

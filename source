@@ -1136,7 +1136,7 @@ local labels = holder.labels
 --state
 local state = {
 	mode = "stopped",
-	enabledFeatures = { autoDiscard = false },
+	enabledFeatures = {},
 }
 
 local stateFileName = "farmState"
@@ -1150,6 +1150,7 @@ end
 if isfile(stateFileName) then
 	state = HttpService:JSONDecode(readfile(stateFileName))
 end
+state.enabledFeatures.autoDiscard = false
 
 --TRAIT UI
 local hideTraitUIs = false

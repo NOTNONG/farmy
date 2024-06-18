@@ -163,6 +163,28 @@ local knitServices = modules:WaitForChild("KnitPackage"):WaitForChild("Knit"):Wa
 local getKeyMap = moveService:WaitForChild("RF"):WaitForChild("GetKeybindsMap")
 local equipMove = moveService:WaitForChild("RF"):WaitForChild("EquipMove")--]]
 
+local meteors = {
+	Vector3.new(1987.052490234375, 971.3591918945312, 397.0255126953125),
+	Vector3.new(1971.270263671875, 996.0906982421875, 511.0933837890625),
+	Vector3.new(2418.409423828125, 971.3395385742188, 207.31932067871094),
+	Vector3.new(1913.7769775390625, 917.4690551757812, -1714.150634765625),
+	Vector3.new(2078.90625, 915.7373657226562, -1096.42333984375),
+	Vector3.new(1861.3138427734375, 914.9898681640625, -1068.3548583984375),
+	Vector3.new(1696.970947265625, 936.5970458984375, -2095.71240234375),
+	Vector3.new(2165.525390625, 936.9059448242188, 849.872802734375),
+	Vector3.new(1930.3643798828125, 918.7839965820312, 1086.077392578125),
+	Vector3.new(1756.9989013671875, 918.84375, 1181.3677978515625),
+	Vector3.new(1747.33935546875, 918.2639770507812, 1039.6375732421875),
+	Vector3.new(1927.6475830078125, 972.7254028320312, -316.91998291015625),
+	Vector3.new(1981.0384521484375, 974.5810546875, -472.798095703125),
+	Vector3.new(2095.86376953125, 916.1185913085938, -975.6954345703125),
+	Vector3.new(364.78033447265625, 908.3250122070312, -2135.43701171875),
+	Vector3.new(364.78033447265625, 908.3250122070312, -2067.528076171875),
+	Vector3.new(364.78033447265625, 908.3250122070312, -2003.9190673828125),
+	Vector3.new(352.1943664550781, 908.3250122070312, -1926.0960693359375),
+	Vector3.new(341.737060546875, 908.3250122070312, -1891.4969482421875),
+}
+
 --modules
 local itemData = require(modules.ItemData)
 local traits = require(modules.PVEPackage.TraitHandler).Traits
@@ -1397,6 +1419,8 @@ end
 
 --
 local refreshDebounce = 0
+local meteorCheckTimer = 0
+local meteorDebounce = 0
 local fps
 local fpsTable = {}
 local fpsCalcTimer = 0
@@ -1447,37 +1471,6 @@ do
 			fpsTable = {}
 		end
 
-		if not attempting then
-			if state.enabledFeatures.autoRejoin and state.mode == "curses" then
-				if character then
-					local meter = character:GetAttribute("Meter")
-					if meter and meter < character:GetAttribute("MaxMeter") then
-						rejoinTimers.notFullMeter.now += dt
-					else
-						rejoinTimers.notFullMeter.now = 0
-					end
-				end
-
-				if fps and fps <= 10 then
-					rejoinTimers.lowFPS.now += dt
-				else
-					rejoinTimers.lowFPS.now = 0
-				end
-
-				for _, timer in pairs(rejoinTimers) do
-					if timer.now >= timer.max then
-						--print(_, timer.now)
-						task.spawn(rejoin)
-						attempting = true
-					end
-				end
-			else
-				for _, timer in pairs(rejoinTimers) do
-					timer.now = 0
-				end
-			end
-		end
-
 		local ascensions = data.Ability:GetAttribute("AscensionRank")
 		labels.uc.Text = `uc: {data.UCoins.Value}`
 		labels.us.Text = `us: {data.Currency.Value}`
@@ -1521,9 +1514,47 @@ do
 				return
 			end
 
-			for _, step in pairs(steps[state.mode]) do
-				if step(dt) == "break" then
-					break
+			local proceed = true
+			if state.enabledFeatures.autoMeteor then
+				meteorCheckTimer += dt
+				if meteorCheckTimer >= 10 then
+					meteorCheckTimer = 0
+					task.spawn(function()
+						for _, pos in pairs(meteors) do
+							localPlayer:RequestStreamAroundAsync(pos)
+						end
+					end)
+				end
+
+				if meteorDebounce <= 0 then
+					for _, spawn in pairs(workspace.ItemSpawns.Meteors:GetChildren()) do
+						if
+							spawn:FindFirstChild("Meteor")
+							and spawn.Meteor:FindFirstChild("ProximityAttachment")
+							and spawn.Meteor.ProximityAttachment:FindFirstChild("Interaction")
+							and not spawn.Meteor:HasTag("found1")
+						then
+							spawn.Meteor:AddTag("found1")
+							teleport(spawn.Position)
+							task.delay(0.25, fireproximityprompt, spawn.Meteor.ProximityAttachment.Interaction)
+							meteorDebounce = 0.5
+							proceed = false
+							break
+						end
+					end
+				else
+					meteorDebounce -= dt
+					proceed = false
+				end
+			else
+				meteorCheckTimer = 0
+			end
+
+			if proceed then
+				for _, step in pairs(steps[state.mode]) do
+					if step(dt) == "break" then
+						break
+					end
 				end
 			end
 		end
@@ -1692,7 +1723,12 @@ do
 		if localPlayer:FindFirstChild("Backpack") then
 			local items = {}
 			for _, v in pairs(localPlayer.Backpack:GetChildren()) do
-				if v:IsA("Tool") and v:GetAttribute("ItemId") then
+				if
+					v:IsA("Tool")
+					and v:GetAttribute("ItemId")
+					and v.Name ~= "Sanji's Cookbook"
+					and v.Name ~= "Arrow"
+				then
 					items[#items + 1] = v
 				end
 			end
@@ -1821,7 +1857,37 @@ do
 				findMob()
 			end
 
+			local function checkRejoin(dt)
+				if state.enabledFeatures.autoRejoin then
+					local meter = character:GetAttribute("Meter")
+					if meter and meter < character:GetAttribute("MaxMeter") then
+						rejoinTimers.notFullMeter.now += dt
+					else
+						rejoinTimers.notFullMeter.now = 0
+					end
+
+					if fps and fps <= 10 then
+						rejoinTimers.lowFPS.now += dt
+					else
+						rejoinTimers.lowFPS.now = 0
+					end
+
+					for _, timer in pairs(rejoinTimers) do
+						if timer.now >= timer.max then
+							task.spawn(rejoin)
+							attempting = true
+							return "break"
+						end
+					end
+				else
+					for _, timer in pairs(rejoinTimers) do
+						timer.now = 0
+					end
+				end
+			end
+
 			steps.curses = {
+				checkRejoin,
 				pressButtons,
 				attemptSell,
 				attemptChests,
@@ -1957,6 +2023,7 @@ do
 	}
 
 	features.autoSell = {}
+	features.autoMeteor = {}
 
 	if inMainGame then
 		features.autoStat = {

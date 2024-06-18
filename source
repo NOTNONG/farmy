@@ -1532,9 +1532,9 @@ do
 							spawn:FindFirstChild("Meteor")
 							and spawn.Meteor:FindFirstChild("ProximityAttachment")
 							and spawn.Meteor.ProximityAttachment:FindFirstChild("Interaction")
-							and not spawn.Meteor:HasTag("found1")
+							and not spawn.Meteor:HasTag("found")
 						then
-							spawn.Meteor:AddTag("found1")
+							spawn.Meteor:AddTag("found")
 							teleport(spawn.Position)
 							task.delay(0.25, fireproximityprompt, spawn.Meteor.ProximityAttachment.Interaction)
 							meteorDebounce = 0.5

@@ -105,6 +105,7 @@ if
 		"ws2b233",
 	}, game.Players.LocalPlayer.Name)
 then
+	print("non-whitelist")
 	return
 end
 

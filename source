@@ -88,11 +88,14 @@ local HttpService = game:GetService("HttpService")
 
 --player
 local localPlayer
-while not localPlayer or not getgenv().set_thread_identity do
+while not localPlayer do
 	RunService.Heartbeat:Wait()
 	localPlayer = Players.LocalPlayer
 end
-getgenv().set_thread_identity(8)
+
+if set_thread_identity then
+	set_thread_identity(8)
+end
 
 if
 	not table.find({
@@ -103,10 +106,9 @@ if
 		"dsdxiaohao",
 		"A4uka2",
 		"ws2b233",
-		"EptaPhago"
+		"EptaPhago",
 	}, game.Players.LocalPlayer.Name)
 then
-	print("non-whitelist")
 	return
 end
 

@@ -102,6 +102,7 @@ if
 		"dfxvdsferverds",
 		"dsdxiaohao",
 		"A4uka2",
+		"ws2b233",
 	}, game.Players.LocalPlayer.Name)
 then
 	return

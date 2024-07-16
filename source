@@ -103,6 +103,7 @@ if
 		"dsdxiaohao",
 		"A4uka2",
 		"ws2b233",
+		"EptaPhago"
 	}, game.Players.LocalPlayer.Name)
 then
 	print("non-whitelist")

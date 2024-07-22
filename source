@@ -107,7 +107,8 @@ if
 		"A4uka2",
 		"ws2b233",
 		"EptaPhago",
-		"2767qwq"
+		"2767qwq",
+		"autian52"
 	}, game.Players.LocalPlayer.Name)
 then
 	return

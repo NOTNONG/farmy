@@ -97,23 +97,6 @@ if set_thread_identity then
 	set_thread_identity(8)
 end
 
-if
-	not table.find({
-		"QrWind",
-		"dsdjdgjjdd",
-		"1I45l4",
-		"dfxvdsferverds",
-		"dsdxiaohao",
-		"A4uka2",
-		"ws2b233",
-		"EptaPhago",
-		"2767qwq",
-		"autian52"
-	}, game.Players.LocalPlayer.Name)
-then
-	return
-end
-
 --connections
 do
 	if _G.farmConnections then

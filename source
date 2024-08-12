@@ -1,16 +1,38 @@
+--[[TODO:
+Rewrite core
+Revamp ui
+Remove config in script
+Prisoner farm
+Mob timer (if a mob won't get attracted then skip it)
+Disambiguation autocrate (which automatically opens skin crates instead of mob dropped crates)
+Optimization
+Replace all the teleports used for loading area with the stream api (like autometeor did)
+Replace heat autorejoin with dps autorejoin
+Only do other shit when there's no mobs
+Filter to only do move under certain circumstances (e. G only do lmb when the heat bear is emptied)
+Remove mob knockback in order to optimize physics
+Auto open inventory skin crates
+Disable mob crates ui entirely
+Make the step connection use Heartbeat
+Restrict BodyMovers and Constraints in order to switch to Heartbeat
+AlignPosition use responsiveness 200 instead of rigidity enabled
+]]
+
 if not _G.farmConfig then
 	--default
 	_G.farmConfig = {
 		tpOffset = { position = { 0, 17, 0 }, angle = { -90, 0, 0 } },
 		towerTpOffset = { position = { 0, -17, 0 }, angle = { 90, 0, 0 } },
 		hitboxDistance = { position = { 0, 0, -8.5 }, angle = { 0, 0, 0 } },
-		hpFilterUsePercentage = false,
 		sellAt = 1,
-		serverWhitelist = {},
+		serverWhitelist = { "FenChenP" },
 		skinWhitelist = {
+			"Limited",
+			"Unobtainable",
 			"Universal",
 			"Mythic",
 			"Legendary",
+			"Event",
 		},
 		skinWhitelistName = {},
 		modeKeys = {
@@ -22,9 +44,9 @@ if not _G.farmConfig then
 		--{"Q", "Press"}
 		loopKeys = {
 			"E",
-			"T",
+			"R",
+			"Q",
 			"MOUSEBUTTON1",
-			{ "Q", "Press" },
 		},
 		standOnKeys = {
 			"E",
@@ -92,9 +114,8 @@ while not localPlayer do
 	RunService.Heartbeat:Wait()
 	localPlayer = Players.LocalPlayer
 end
-
-if set_thread_identity then
-	set_thread_identity(8)
+if localPlayer.Name == "2767Oi" or localPlayer.Name == "27670I" then
+	return
 end
 
 --connections

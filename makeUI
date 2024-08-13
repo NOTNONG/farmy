@@ -2935,4 +2935,40 @@ tb["cover"].BorderColor3 = Color3.fromRGB(0, 0, 0)
 tb["cover"].BorderSizePixel = 0
 tb["cover"].Size = UDim2.fromScale(1, 1)
 tb["cover"].Parent = tb["autianessentials"]
+
+local hidden = Instance.new("Frame")
+hidden.Name = "Hidden"
+hidden.AnchorPoint = Vector2.new(1, 1)
+hidden.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+hidden.BackgroundTransparency = 1
+hidden.BorderColor3 = Color3.fromRGB(0, 0, 0)
+hidden.BorderSizePixel = 0
+hidden.Position = UDim2.fromScale(1, 1)
+hidden.Size = UDim2.fromScale(0.1, 0.1)
+
+local uiaspectratioconstraint = Instance.new("UIAspectRatioConstraint")
+uiaspectratioconstraint.Name = "UIAspectRatioConstraint"
+uiaspectratioconstraint.Parent = hidden
+
+local button = Instance.new("ImageButton")
+button.Name = "Button"
+button.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
+button.ImageTransparency = 1
+button.AutoButtonColor = false
+button.AnchorPoint = Vector2.new(0.5, 0.5)
+button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+button.BackgroundTransparency = 0.5
+button.BorderColor3 = Color3.fromRGB(0, 0, 0)
+button.BorderSizePixel = 0
+button.Position = UDim2.fromScale(1, 1)
+button.Size = UDim2.fromScale(2, 2)
+
+local uicorner = Instance.new("UICorner")
+uicorner.Name = "UICorner"
+uicorner.CornerRadius = UDim.new(1, 0)
+uicorner.Parent = button
+
+button.Parent = hidden
+hidden.Parent = tb["autianessentials"]
+
 return tb["autianessentials"]

@@ -1,0 +1,460 @@
+local players = game:GetService("Players")
+
+local localPlayer = players.LocalPlayer
+
+local function createUI()
+	--selene:allow(incorrect_standard_library_use)
+	return loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/makeUI"))()
+end
+
+return function(config)
+	--
+	local control = {}
+	local janitorList = {}
+
+	--fundamental functions
+	local function janitor<T>(object: T & (RBXScriptConnection | Instance)): T
+		table.insert(janitorList, object)
+		return object
+	end
+
+	--instances
+	local uiInstance = createUI()
+	uiInstance.Parent = localPlayer.PlayerGui
+	janitor(uiInstance)
+
+	local main = uiInstance.Main
+	local pages = main.Pages
+	local infoPage = pages.Information
+	local featuresPage = pages.Features
+
+	local currentPage = 1
+	local pagesIndex = {}
+
+	--sort pages and make indexes table
+	do
+		for _, pageInstance in pairs(main.Pages:GetChildren()) do
+			if pageInstance:IsA("Frame") then
+				table.insert(pagesIndex, pageInstance)
+			end
+		end
+		table.sort(pagesIndex, function(a, b)
+			return a.LayoutOrder < b.LayoutOrder
+		end)
+	end
+
+	--sidebar
+	do
+		local pageLayout = main.Pages.UIPageLayout
+		local sidebar = main.Sidebar
+		local template = sidebar.List.Template
+		local highlight = sidebar.SelectedHighlight
+		local sidebarMask = Instance.new("Frame")
+		sidebarMask.ClipsDescendants = true
+		sidebarMask.BackgroundTransparency = 1
+		sidebarMask.Size = UDim2.fromScale(1, 1)
+		sidebarMask.Name = "Mask"
+		sidebarMask.Parent = sidebar
+		highlight.Parent = sidebarMask
+		pageLayout.ScrollWheelInputEnabled = false
+		template.Visible = false
+
+		local function sidebarItem(name: string)
+			local this = template:Clone()
+			this.Name = name
+			this.TextLabel.Text = name
+			this.Visible = true
+			this.Parent = sidebar.List
+			return this
+		end
+
+		for index, page in pairs(pagesIndex) do
+			sidebarItem(page.Name).Activated:Connect(function()
+				if currentPage ~= index then
+					currentPage = index
+					pageLayout:JumpTo(page)
+					local yPos = template.Size.Y.Scale * (index - 1)
+					highlight.Position = UDim2.fromScale(0, yPos)
+				end
+			end)
+		end
+	end
+
+	--info page
+	do
+		local textLabels = {}
+		local info = {}
+		local labels = infoPage.Container2.Fill.Labels
+		local template = labels.Template
+		template.Visible = false
+
+		local function newLabel(name, title)
+			local this = template:Clone()
+			this.Name = name
+			this.Title.Text = `{title}:`
+			this.Value.Text = "..."
+			this.Visible = true
+			info[name] = ""
+			textLabels[name] = this.Value
+			this.Parent = labels
+			return this
+		end
+
+		for i, v in pairs(config.labels) do
+			newLabel(v.name, v.title).LayoutOrder = i
+		end
+
+		for _, item in pairs(infoPage.Container1.List:GetChildren()) do
+			if item:IsA("Frame") then
+				info[item.Name] = "..."
+				textLabels[item.Name] = item.Fill.Content.Label
+				textLabels[item.Name].Text = "..."
+			end
+		end
+
+		control.info = (
+			setmetatable({}, {
+				__newindex = function(_, k, v)
+					if not info[k] then
+						return warn(`{k} doesn't exist in info`)
+					end
+					info[k] = v
+					textLabels[k].Text = v
+				end,
+				__index = info,
+			}) :: any
+		) :: { [string]: string? }
+	end
+
+	--features page
+	do
+		local features = {}
+		control.features = features
+		local frame = featuresPage.Frame
+
+		frame.UIListLayout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
+			featuresPage.Scroller.CanvasSize =
+				UDim2.fromOffset(0, frame.UIListLayout.AbsoluteContentSize.Y + uiInstance.AbsoluteSize.Y * 0.1)
+		end)
+		featuresPage.Scroller:GetPropertyChangedSignal("CanvasPosition"):Connect(function()
+			frame.Position = UDim2.fromOffset(0, -featuresPage.Scroller.CanvasPosition.Y)
+		end)
+
+		local templates = {}
+		for _, template in pairs(frame:GetChildren()) do
+			if template:IsA("Frame") then
+				template.Visible = false
+				templates[template.Name] = template
+			end
+		end
+
+		local handlers = {
+			Button = function(component: typeof(frame.Button), data)
+				component.FillTitle.Label.Text = data.title
+				component.Button.Activated:Connect(function()
+					if type(features[data.name]) == "function" then
+						task.spawn(features[data.name])
+					else
+						warn(`Button {data.name} has no callback`)
+					end
+				end)
+			end,
+			Switch = function(component: typeof(frame.Switch), data)
+				component.FillTitle.Label.Text = data.title
+				local states = component.ButtonHolder
+				local colors = {
+					[true] = {
+						states.On.BackgroundColor3,
+						states.On.Label.TextColor3,
+						states.On.Underline.BackgroundColor3,
+					},
+					[false] = {
+						states.On.BackgroundColor3,
+						states.Off.Label.TextColor3,
+						states.Off.Underline.BackgroundColor3,
+					},
+				}
+				local switched
+
+				local function switch(bool)
+					if switched ~= bool then
+						switched = bool
+						features[data.name] = switched
+						for _, state in pairs(states:GetChildren()) do
+							local i = switched
+							if state.Name == "Off" then
+								i = not i
+							end
+							state.BackgroundColor3 = colors[i][1]
+							state.Label.TextColor3 = colors[i][2]
+							state.Underline.BackgroundColor3 = colors[i][3]
+						end
+					end
+				end
+
+				switch(data.default)
+				states.On.Activated:Connect(function()
+					switch(true)
+				end)
+				states.Off.Activated:Connect(function()
+					switch(false)
+				end)
+			end,
+			InputField = function(component: typeof(frame.InputField), data)
+				component.FillTitle.Label.Text = data.title
+
+				local current = data.default or ""
+				local function update()
+					features[data.name] = current
+				end
+
+				local textBox = component.FillField.Label
+				textBox.Text = current
+				textBox.FocusLost:Connect(function(entered)
+					if entered then
+						current = textBox.Text
+						update()
+					else
+						textBox.Text = current
+					end
+				end)
+				update()
+			end,
+			Dropdown = function(component: typeof(frame.Dropdown), data)
+				local choices = data.choices
+				local expanded = component.Expanded
+				local itemsHolder = expanded.Below.Frame.Holder
+				local template = itemsHolder.Item
+				template.Visible = false
+
+				local switched = false
+				local function switch()
+					switched = not switched
+					expanded.Visible = switched
+				end
+
+				component.FillTitle.Label.Text = data.title
+				local function choose(i)
+					features[data.name] = choices[i]
+					component.Expand.Label.Text = choices[i]
+					if switched then
+						switch()
+					end
+				end
+
+				for i, name in pairs(choices) do
+					local item = template:Clone()
+					item.Label.Text = name
+					item.Name = name
+					item.Visible = true
+					item.LayoutOrder = template.LayoutOrder + i
+					item.Parent = itemsHolder
+					item.Activated:Connect(function()
+						choose(i)
+					end)
+				end
+
+				component.Expand.Activated:Connect(switch)
+				choose(1)
+			end,
+			Checklist = function(component: typeof(frame.Checklist), data)
+				features[data.name] = {}
+				local list = {}
+				local instanceList = {}
+				local searchBox = component.Top.Search.Label
+				local content = component.Content
+				local template = content.Item
+				template.Visible = false
+				component.Top.TitleHolder.Label.Text = data.title
+
+				local function toggle(name, bool)
+					list[name] = bool
+
+					local toggled = list[name]
+					instanceList[name].Checkbox[tostring(toggled)].Visible = true
+					instanceList[name].Checkbox[tostring(not toggled)].Visible = false
+
+					local callback = features[data.name].callback
+					if callback then
+						callback(name, bool)
+					end
+				end
+
+				local function filter(name)
+					if string.find(string.lower(name), string.lower(searchBox.Text)) then
+						return true
+					end
+				end
+
+				local function add(name, default)
+					if list[name] == nil then
+						local item = template:Clone()
+						item.Visible = filter(name)
+						item.Label.Text = name
+						item.Name = name
+						item.Parent = content
+						instanceList[name] = item
+
+						toggle(name, default)
+						item.Checkbox.Activated:Connect(function()
+							toggle(name, not list[name])
+						end)
+					end
+				end
+
+				searchBox.FocusLost:Connect(function(entered)
+					if not entered then
+						searchBox.Text = ""
+					end
+
+					for name, item in pairs(instanceList) do
+						item.Visible = filter(name)
+					end
+				end)
+
+				features[data.name].get = function(name)
+					return list[name]
+				end
+				features[data.name].add = add
+				features[data.name].set = function(name, value)
+					if list[name] ~= nil then
+						toggle(name, value)
+					end
+				end
+				features[data.name].remove = function(name)
+					if list[name] ~= nil then
+						list[name] = nil
+						instanceList[name]:Destroy()
+						instanceList[name] = nil
+					end
+				end
+
+				for name, default in pairs(data.list) do
+					add(name, default)
+				end
+			end,
+			List = function(component: typeof(frame.List), data)
+				features[data.name] = {}
+				local list = {}
+				local instanceList = {}
+				local searchBox = component.Top.Search.Label
+				local content = component.Content
+				local template = content.Item
+				template.Visible = false
+				component.Top.TitleHolder.Label.Text = data.title
+
+				local function fireCallback(name, value)
+					local callback = features[data.name].callback
+					if callback then
+						callback(name, value)
+					end
+				end
+
+				local function remove(name)
+					list[name] = nil
+					instanceList[name]:Destroy()
+					instanceList[name] = nil
+					fireCallback(name, false)
+				end
+
+				local function filter(name)
+					if string.find(string.lower(name), string.lower(searchBox.Text)) then
+						return true
+					end
+				end
+
+				local function add(name)
+					if list[name] then
+						warn(`item {name} already exists in list {data.name}`)
+					else
+						local item = template:Clone()
+						item.Visible = filter(name)
+						item.Label.Text = name
+						item.Name = name
+						item.Parent = content
+						list[name] = true
+						instanceList[name] = item
+						fireCallback(name, true)
+
+						item.Delete.Activated:Connect(function()
+							remove(name)
+						end)
+					end
+				end
+
+				searchBox.FocusLost:Connect(function(entered)
+					if not entered then
+						searchBox.Text = ""
+					end
+
+					for name, item in pairs(instanceList) do
+						item.Visible = filter(name)
+					end
+				end)
+
+				local addBox = component.Top.Add.Label
+				addBox.FocusLost:Connect(function(entered)
+					if entered then
+						add(addBox.Text)
+					end
+					addBox.Text = ""
+				end)
+
+				features[data.name].add = add
+				features[data.name].remove = remove
+				features[data.name].get = function(name)
+					return list[name]
+				end
+
+				for _, name in pairs(data.items) do
+					add(name)
+				end
+			end,
+		}
+
+		for name, v in pairs(config.features.sections) do
+			local section = templates.Section:Clone()
+			section.Fill.Label.Text = name
+			section.Visible = true
+			section.Parent = frame
+			local components = {}
+
+			for _, item in pairs(v) do
+				local template = templates[item.component]
+				if template then
+					local component = template:Clone()
+					component.Visible = true
+					handlers[item.component](component, item)
+					table.insert(components, component)
+					component.Parent = frame
+				else
+					warn(`{item.component} doesn't exist`)
+				end
+			end
+
+			local expanded = true
+			section.Fill.Expand.Activated:Connect(function()
+				expanded = not expanded
+				section.Fill.Expand.Rotation = if expanded then 0 else 180
+				for _, component in pairs(components) do
+					component.Visible = expanded
+				end
+			end)
+		end
+	end
+
+	control.clear = function()
+		for _, object in pairs(janitorList) do
+			if typeof(object) == "RBXScriptConnection" then
+				object:Disconnect()
+			elseif typeof(object) == "Instance" then
+				if object:IsA("Tween") then
+					object:Cancel()
+				end
+				object:Destroy()
+			end
+		end
+	end
+
+	return control
+end

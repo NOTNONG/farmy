@@ -1,7 +1,3 @@
-local players = game:GetService("Players")
-
-local localPlayer = players.LocalPlayer
-
 local function createUI()
 	--selene:allow(incorrect_standard_library_use)
 	return loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/makeUI"))()
@@ -20,7 +16,7 @@ return function(config)
 
 	--instances
 	local uiInstance = createUI()
-	uiInstance.Parent = localPlayer.PlayerGui
+	uiInstance.Parent = game.CoreGui
 	janitor(uiInstance)
 
 	local main = uiInstance.Main

@@ -333,9 +333,7 @@ return function(config)
 			end,
 			Checklist = function(component: typeof(frame.Checklist), data)
 				features[data.name] = {}
-				local order = 0
 				local list = {}
-				local instanceList = {}
 				local searchBox = component.Top.Search.Label
 				local content = component.Content
 				local template = content.Item
@@ -350,11 +348,11 @@ return function(config)
 				end
 
 				local function toggle(name, bool)
-					list[name] = bool
+					list[name].value = bool
 
-					local toggled = list[name]
-					instanceList[name].Checkbox[tostring(toggled)].Visible = true
-					instanceList[name].Checkbox[tostring(not toggled)].Visible = false
+					local checkbox = list[name].instance.Checkbox
+					checkbox[tostring(bool)].Visible = true
+					checkbox[tostring(not bool)].Visible = false
 
 					fireCallback(name, bool)
 				end
@@ -366,23 +364,19 @@ return function(config)
 				end
 
 				local function remove(name)
+					list[name].instance:Destroy()
 					list[name] = nil
-					instanceList[name]:Destroy()
-					instanceList[name] = nil
 					fireCallback(name, false)
 				end
 
-				local function add(name, default)
+				local function add(name, title, default)
 					if list[name] == nil then
-						order += 1
 						local item = template:Clone()
-						item.Visible = filter(name)
-						item.Label.Text = name
+						item.Visible = filter(title)
+						item.Label.Text = title
 						item.Name = name
-						item.LayoutOrder = order
 						item.Parent = content
-						instanceList[name] = item
-
+						list[name] = { title = title, instance = item }
 						toggle(name, default)
 						item.Checkbox.Activated:Connect(function()
 							toggle(name, not list[name])
@@ -395,8 +389,8 @@ return function(config)
 						searchBox.Text = ""
 					end
 
-					for name, item in pairs(instanceList) do
-						item.Visible = filter(name)
+					for _, v in pairs(list) do
+						v.instance.Visible = filter(v.title)
 					end
 				end)
 
@@ -424,13 +418,12 @@ return function(config)
 					end
 				end
 
-				for name, default in pairs(data.list) do
-					add(name, default)
+				for name, v in pairs(data.list) do
+					add(name, v.title, v.default)
 				end
 			end,
 			List = function(component: typeof(frame.List), data)
 				features[data.name] = {}
-				local order = 0
 				local list = {}
 				local instanceList = {}
 				local searchBox = component.Top.Search.Label
@@ -463,12 +456,10 @@ return function(config)
 					if list[name] then
 						warn(`item {name} already exists in list {data.name}`)
 					else
-						order += 1
 						local item = template:Clone()
 						item.Visible = filter(name)
 						item.Label.Text = name
 						item.Name = name
-						item.LayoutOrder = order
 						item.Parent = content
 						list[name] = true
 						instanceList[name] = item

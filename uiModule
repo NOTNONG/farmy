@@ -1,6 +1,8 @@
 local function createUI()
 	--selene:allow(incorrect_standard_library_use)
-	return loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/makeUI"))()
+	local ui = loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/makeUI"))()
+	ui.Parent = game.CoreGui
+	return ui
 end
 
 return function(config)
@@ -16,7 +18,6 @@ return function(config)
 
 	--instances
 	local uiInstance = createUI()
-	uiInstance.Parent = game.CoreGui
 	janitor(uiInstance)
 
 	local main = uiInstance.Main
@@ -72,6 +73,39 @@ return function(config)
 					local yPos = template.Size.Y.Scale * (index - 1)
 					highlight.Position = UDim2.fromScale(0, yPos)
 				end
+			end)
+		end
+
+		local bottom = sidebar.Bottom.Frame
+		--mode switch
+		--selene:allow(shadowing)
+		do
+			control.mode = "None"
+
+			local mode = bottom.Mode
+			local template = mode.Expanded.Item
+			template.Visible = false
+			table.insert(config.modes, "None")
+
+			local function switch()
+				mode.Expanded.Visible = not mode.Expanded.Visible
+			end
+
+			for _, name in pairs(config.modes) do
+				local item = template:Clone()
+				item.Visible = true
+				item.Name = name
+				item.TextLabel.Text = name
+				item.Parent = mode.Expanded
+				item.Activated:Connect(function()
+					control.mode = name
+					mode.TextLabel.Text = `Mode: {name}`
+					switch()
+				end)
+			end
+
+			mode.Activated:Connect(function()
+				switch()
 			end)
 		end
 	end

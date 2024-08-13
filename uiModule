@@ -87,6 +87,11 @@ return function(config)
 			template.Visible = false
 			table.insert(config.modes, "None")
 
+			local function setMode(name)
+				control.mode = name
+				mode.TextLabel.Text = `Mode: {name}`
+			end
+
 			local function switch()
 				mode.Expanded.Visible = not mode.Expanded.Visible
 			end
@@ -98,8 +103,7 @@ return function(config)
 				item.TextLabel.Text = name
 				item.Parent = mode.Expanded
 				item.Activated:Connect(function()
-					control.mode = name
-					mode.TextLabel.Text = `Mode: {name}`
+					setMode(name)
 					switch()
 				end)
 			end
@@ -107,6 +111,7 @@ return function(config)
 			mode.Activated:Connect(function()
 				switch()
 			end)
+			control.setMode = setMode
 		end
 	end
 

@@ -379,7 +379,7 @@ return function(config)
 						list[name] = { title = title, instance = item }
 						toggle(name, default)
 						item.Checkbox.Activated:Connect(function()
-							toggle(name, not list[name])
+							toggle(name, not list[name].value)
 						end)
 					end
 				end

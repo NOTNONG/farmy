@@ -2935,3 +2935,4 @@ tb["cover"].BorderColor3 = Color3.fromRGB(0, 0, 0)
 tb["cover"].BorderSizePixel = 0
 tb["cover"].Size = UDim2.fromScale(1, 1)
 tb["cover"].Parent = tb["autianessentials"]
+return tb["autianessentials"]

@@ -274,8 +274,9 @@ return function(config)
 					if choices[choice] then
 						features[data.name].selected = choice
 						component.Expand.Label.Text = choice
-						if switched then
-							switch()
+						local callback = features[data.name].callback
+						if callback then
+							task.spawn(callback, choice)
 						end
 					else
 						warn(`choice {choice} doesn't exist`)
@@ -292,6 +293,9 @@ return function(config)
 						item.Parent = itemsHolder
 						item.Activated:Connect(function()
 							choose(choice)
+							if switched then
+								switch()
+							end
 						end)
 
 						if not features[data.name].selected then
@@ -322,7 +326,7 @@ return function(config)
 
 					local callback = features[data.name].callback
 					if callback then
-						callback(name, bool)
+						task.spawn(callback, name, bool)
 					end
 				end
 
@@ -392,7 +396,7 @@ return function(config)
 				local function fireCallback(name, value)
 					local callback = features[data.name].callback
 					if callback then
-						callback(name, value)
+						task.spawn(callback, name, value)
 					end
 				end
 

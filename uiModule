@@ -256,7 +256,8 @@ return function(config)
 				update()
 			end,
 			Dropdown = function(component: typeof(frame.Dropdown), data)
-				local choices = data.choices
+				features[data.name] = {}
+				local choices = {}
 				local expanded = component.Expanded
 				local itemsHolder = expanded.Below.Frame.Holder
 				local template = itemsHolder.Item
@@ -269,28 +270,38 @@ return function(config)
 				end
 
 				component.FillTitle.Label.Text = data.title
-				local function choose(i)
-					features[data.name] = choices[i]
-					component.Expand.Label.Text = choices[i]
-					if switched then
-						switch()
+				local function choose(choice)
+					if choices[choice] then
+						features[data.name].selected = choice
+						component.Expand.Label.Text = choice
+						if switched then
+							switch()
+						end
+					else
+						warn(`choice {choice} doesn't exist`)
 					end
 				end
 
-				for i, name in pairs(choices) do
-					local item = template:Clone()
-					item.Label.Text = name
-					item.Name = name
-					item.Visible = true
-					item.LayoutOrder = template.LayoutOrder + i
-					item.Parent = itemsHolder
-					item.Activated:Connect(function()
-						choose(i)
-					end)
+				for _, choice in pairs(data.choices) do
+					if not choices[choice] then
+						choices[choice] = true
+						local item = template:Clone()
+						item.Label.Text = choice
+						item.Name = choice
+						item.Visible = true
+						item.Parent = itemsHolder
+						item.Activated:Connect(function()
+							choose(choice)
+						end)
+
+						if not features[data.name].selected then
+							choose(choice)
+						end
+					end
 				end
 
 				component.Expand.Activated:Connect(switch)
-				choose(1)
+				features[data.name].choose = choose
 			end,
 			Checklist = function(component: typeof(frame.Checklist), data)
 				features[data.name] = {}

@@ -113,6 +113,21 @@ return function(config)
 			end)
 			control.setMode = setMode
 		end
+
+		--minimize
+		do
+			local minimized = false
+			local hiddenButton = uiInstance.Hidden
+			local function switch()
+				minimized = not minimized
+				main.Visible = minimized
+				uiInstance.Cover.Visible = minimized
+				hiddenButton.Visible = not minimized
+			end
+
+			bottom.Minimize.Activated:Connect(switch)
+			hiddenButton.Button.Activated:Connect(switch)
+		end
 	end
 
 	--info page

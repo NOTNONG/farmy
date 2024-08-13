@@ -1,0 +1,2940 @@
+local AutianEssentials = Instance.new("ScreenGui")
+AutianEssentials.Name = "AutianEssentials"
+AutianEssentials.ClipToDeviceSafeArea = false
+AutianEssentials.IgnoreGuiInset = true
+AutianEssentials.ResetOnSpawn = false
+AutianEssentials.SafeAreaCompatibility = Enum.SafeAreaCompatibility.None
+AutianEssentials.ScreenInsets = Enum.ScreenInsets.None
+AutianEssentials.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+
+local Main = Instance.new("Frame")
+Main.Name = "Main"
+Main.AnchorPoint = Vector2.new(0.5, 0.5)
+Main.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Main.BackgroundTransparency = 1
+Main.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Main.BorderSizePixel = 0
+Main.Position = UDim2.new(0.5, 0, 0.5, 0)
+Main.Size = UDim2.new(1, 0, 1, 0)
+Main.ZIndex = 2
+
+local Sidebar = Instance.new("Frame")
+Sidebar.Name = "Sidebar"
+Sidebar.AnchorPoint = Vector2.new(0, 1)
+Sidebar.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Sidebar.BackgroundTransparency = 1
+Sidebar.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Sidebar.BorderSizePixel = 0
+Sidebar.Position = UDim2.new(0, 0, 1, 0)
+Sidebar.Size = UDim2.new(0.162, 0, 0.825, 0)
+
+local List = Instance.new("Frame")
+List.Name = "List"
+List.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+List.BackgroundTransparency = 1
+List.BorderColor3 = Color3.fromRGB(0, 0, 0)
+List.BorderSizePixel = 0
+List.Size = UDim2.new(1, 0, 1, 0)
+List.ZIndex = 2
+
+local UIListLayout = Instance.new("UIListLayout")
+UIListLayout.Name = "UIListLayout"
+UIListLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout.Parent = List
+
+local Template = Instance.new("ImageButton")
+Template.Name = "Template"
+Template.AutoButtonColor = false
+Template.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Template.BackgroundTransparency = 1
+Template.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Template.BorderSizePixel = 0
+Template.LayoutOrder = 1
+Template.Selectable = false
+Template.Size = UDim2.new(1, 0, 0.09, 0)
+Template.ZIndex = 2
+
+local TextLabel = Instance.new("TextLabel")
+TextLabel.Name = "TextLabel"
+TextLabel.AnchorPoint = Vector2.new(0, 0.5)
+TextLabel.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.BackgroundTransparency = 1
+TextLabel.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel.BorderSizePixel = 0
+TextLabel.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel.Position = UDim2.new(0.225, 0, 0.5, 0)
+TextLabel.Size = UDim2.new(0.75, 0, 0.6, 0)
+TextLabel.Text = "Template"
+TextLabel.TextColor3 = Color3.fromRGB(70, 70, 70)
+TextLabel.TextScaled = true
+TextLabel.TextSize = 14
+TextLabel.TextWrapped = true
+TextLabel.TextXAlignment = Enum.TextXAlignment.Left
+TextLabel.ZIndex = 2
+TextLabel.Parent = Template
+
+local Holder = Instance.new("Frame")
+Holder.Name = "Holder"
+Holder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Holder.BackgroundTransparency = 1
+Holder.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Holder.BorderSizePixel = 0
+Holder.Position = UDim2.new(0.075, 0, 0, 0)
+Holder.Size = UDim2.new(0.125, 0, 1, 0)
+
+local TextLabel1 = Instance.new("TextLabel")
+TextLabel1.Name = "TextLabel"
+TextLabel1.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel1.BackgroundColor3 = Color3.fromRGB(161, 171, 200)
+TextLabel1.BackgroundTransparency = 1
+TextLabel1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel1.BorderSizePixel = 0
+TextLabel1.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel1.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel1.Size = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel1.Text = "��"
+TextLabel1.TextColor3 = Color3.fromRGB(161, 171, 200)
+TextLabel1.TextScaled = true
+TextLabel1.TextSize = 14
+TextLabel1.TextWrapped = true
+
+local UIAspectRatioConstraint = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint.Parent = TextLabel1
+
+TextLabel1.Parent = Holder
+
+Holder.Parent = Template
+
+Template.Parent = List
+
+List.Parent = Sidebar
+
+local SelectedHighlight = Instance.new("Frame")
+SelectedHighlight.Name = "SelectedHighlight"
+SelectedHighlight.BackgroundColor3 = Color3.fromRGB(224, 236, 248)
+SelectedHighlight.BorderColor3 = Color3.fromRGB(0, 0, 0)
+SelectedHighlight.BorderSizePixel = 0
+SelectedHighlight.Size = UDim2.new(1, 0, 0.09, 0)
+
+local Color = Instance.new("Frame")
+Color.Name = "Color"
+Color.BackgroundColor3 = Color3.fromRGB(202, 219, 234)
+Color.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Color.BorderSizePixel = 0
+Color.Size = UDim2.new(0.02, 0, 1, 0)
+Color.ZIndex = 10
+Color.Parent = SelectedHighlight
+
+SelectedHighlight.Parent = Sidebar
+
+local Bottom = Instance.new("Frame")
+Bottom.Name = "Bottom"
+Bottom.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Bottom.BackgroundTransparency = 1
+Bottom.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Bottom.BorderSizePixel = 0
+Bottom.Size = UDim2.new(1, 0, 1, 0)
+
+local Frame = Instance.new("Frame")
+Frame.Name = "Frame"
+Frame.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Frame.BackgroundTransparency = 1
+Frame.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame.BorderSizePixel = 0
+Frame.Position = UDim2.new(0, 0, -0.025, 0)
+Frame.Size = UDim2.new(1, 0, 1, 0)
+
+local Minimize = Instance.new("ImageButton")
+Minimize.Name = "Minimize"
+Minimize.AnchorPoint = Vector2.new(0, 1)
+Minimize.AutoButtonColor = false
+Minimize.BackgroundColor3 = Color3.fromRGB(231, 233, 245)
+Minimize.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Minimize.BorderSizePixel = 0
+Minimize.ClipsDescendants = true
+Minimize.LayoutOrder = 3
+Minimize.Position = UDim2.new(0, 0, 1, 0)
+Minimize.Selectable = false
+Minimize.Size = UDim2.new(0.9, 0, 0.075, 0)
+
+local Holder1 = Instance.new("Frame")
+Holder1.Name = "Holder"
+Holder1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Holder1.BackgroundTransparency = 1
+Holder1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Holder1.BorderSizePixel = 0
+Holder1.Position = UDim2.new(0.037, 0, 0, 0)
+Holder1.Size = UDim2.new(0.125, 0, 1, 0)
+
+local TextLabel2 = Instance.new("TextLabel")
+TextLabel2.Name = "TextLabel"
+TextLabel2.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel2.BackgroundColor3 = Color3.fromRGB(161, 171, 200)
+TextLabel2.BackgroundTransparency = 1
+TextLabel2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel2.BorderSizePixel = 0
+TextLabel2.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel2.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel2.Size = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel2.Text = "��"
+TextLabel2.TextColor3 = Color3.fromRGB(161, 171, 200)
+TextLabel2.TextScaled = true
+TextLabel2.TextSize = 14
+TextLabel2.TextWrapped = true
+
+local UIAspectRatioConstraint1 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint1.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint1.Parent = TextLabel2
+
+TextLabel2.Parent = Holder1
+
+Holder1.Parent = Minimize
+
+local TextLabel3 = Instance.new("TextLabel")
+TextLabel3.Name = "TextLabel"
+TextLabel3.AnchorPoint = Vector2.new(0, 0.5)
+TextLabel3.BackgroundColor3 = Color3.fromRGB(29, 25, 43)
+TextLabel3.BackgroundTransparency = 1
+TextLabel3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel3.BorderSizePixel = 0
+TextLabel3.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel3.Position = UDim2.new(0.188, 0, 0.5, 0)
+TextLabel3.Size = UDim2.new(0.812, 0, 0.6, 0)
+TextLabel3.Text = "Minimize"
+TextLabel3.TextColor3 = Color3.fromRGB(116, 126, 160)
+TextLabel3.TextScaled = true
+TextLabel3.TextSize = 14
+TextLabel3.TextWrapped = true
+TextLabel3.TextXAlignment = Enum.TextXAlignment.Left
+TextLabel3.ZIndex = 2
+TextLabel3.Parent = Minimize
+
+Minimize.Parent = Frame
+
+local Mode = Instance.new("ImageButton")
+Mode.Name = "Mode"
+Mode.AnchorPoint = Vector2.new(0, 1)
+Mode.AutoButtonColor = false
+Mode.BackgroundColor3 = Color3.fromRGB(231, 233, 245)
+Mode.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Mode.BorderSizePixel = 0
+Mode.LayoutOrder = 1
+Mode.Position = UDim2.new(0, 0, 1, 0)
+Mode.Selectable = false
+Mode.Size = UDim2.new(0.9, 0, 0.075, 0)
+
+local TextLabel4 = Instance.new("TextLabel")
+TextLabel4.Name = "TextLabel"
+TextLabel4.AnchorPoint = Vector2.new(0, 0.5)
+TextLabel4.BackgroundColor3 = Color3.fromRGB(29, 25, 43)
+TextLabel4.BackgroundTransparency = 1
+TextLabel4.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel4.BorderSizePixel = 0
+TextLabel4.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel4.Position = UDim2.new(0.188, 0, 0.5, 0)
+TextLabel4.Size = UDim2.new(0.812, 0, 0.6, 0)
+TextLabel4.Text = "Mode: None"
+TextLabel4.TextColor3 = Color3.fromRGB(116, 126, 160)
+TextLabel4.TextScaled = true
+TextLabel4.TextSize = 14
+TextLabel4.TextWrapped = true
+TextLabel4.TextXAlignment = Enum.TextXAlignment.Left
+TextLabel4.ZIndex = 2
+TextLabel4.Parent = Mode
+
+local Triangle = Instance.new("ImageLabel")
+Triangle.Name = "Triangle"
+Triangle.AnchorPoint = Vector2.new(0.5, 0.5)
+Triangle.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Triangle.BackgroundTransparency = 1
+Triangle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Triangle.BorderSizePixel = 0
+Triangle.Image = "rbxassetid://18855979104"
+Triangle.ImageColor3 = Color3.fromRGB(161, 171, 200)
+Triangle.Position = UDim2.new(0.1, 0, 0.5, 0)
+Triangle.ScaleType = Enum.ScaleType.Fit
+Triangle.Size = UDim2.new(0.7, 0, 0.7, 0)
+
+local UIAspectRatioConstraint2 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint2.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint2.Parent = Triangle
+
+Triangle.Parent = Mode
+
+local Expanded = Instance.new("Frame")
+Expanded.Name = "Expanded"
+Expanded.AnchorPoint = Vector2.new(0, 1)
+Expanded.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Expanded.BackgroundTransparency = 1
+Expanded.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Expanded.BorderSizePixel = 0
+Expanded.Size = UDim2.new(1, 0, 1, 0)
+Expanded.Visible = false
+
+local UIListLayout1 = Instance.new("UIListLayout")
+UIListLayout1.Name = "UIListLayout"
+UIListLayout1.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout1.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout1.VerticalAlignment = Enum.VerticalAlignment.Bottom
+UIListLayout1.Parent = Expanded
+
+local ListHead = Instance.new("Frame")
+ListHead.Name = "ListHead"
+ListHead.BackgroundColor3 = Color3.fromRGB(116, 126, 160)
+ListHead.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ListHead.BorderSizePixel = 0
+ListHead.LayoutOrder = 999
+ListHead.Size = UDim2.new(1, 0, 1, 0)
+ListHead.ZIndex = 2
+
+local UIAspectRatioConstraint3 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint3.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint3.AspectRatio = 69.5
+UIAspectRatioConstraint3.Parent = ListHead
+
+local Dot = Instance.new("Frame")
+Dot.Name = "Dot"
+Dot.AnchorPoint = Vector2.new(0.5, 0.5)
+Dot.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+Dot.BackgroundTransparency = 1
+Dot.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Dot.BorderSizePixel = 0
+Dot.Position = UDim2.new(0.5, 0, 0.5, 0)
+Dot.Size = UDim2.new(2.5, 0, 2.5, 0)
+Dot.ZIndex = 2
+
+local UIAspectRatioConstraint4 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint4.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint4.Parent = Dot
+
+local TextLabel5 = Instance.new("TextLabel")
+TextLabel5.Name = "TextLabel"
+TextLabel5.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel5.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel5.BackgroundTransparency = 1
+TextLabel5.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel5.BorderSizePixel = 0
+TextLabel5.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel5.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel5.Size = UDim2.new(2, 0, 2, 0)
+TextLabel5.Text = "��"
+TextLabel5.TextColor3 = Color3.fromRGB(116, 126, 160)
+TextLabel5.TextScaled = true
+TextLabel5.TextSize = 100
+TextLabel5.TextWrapped = true
+TextLabel5.Parent = Dot
+
+Dot.Parent = ListHead
+
+local DotWhiteClip = Instance.new("Frame")
+DotWhiteClip.Name = "DotWhiteClip"
+DotWhiteClip.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+DotWhiteClip.BackgroundTransparency = 1
+DotWhiteClip.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DotWhiteClip.BorderSizePixel = 0
+DotWhiteClip.ClipsDescendants = true
+DotWhiteClip.Size = UDim2.new(1, 0, 1, 0)
+
+local DotWhite = Instance.new("Frame")
+DotWhite.Name = "DotWhite"
+DotWhite.AnchorPoint = Vector2.new(0.5, 0.5)
+DotWhite.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+DotWhite.BackgroundTransparency = 1
+DotWhite.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DotWhite.BorderSizePixel = 0
+DotWhite.Position = UDim2.new(0.5, 0, 0.5, 0)
+DotWhite.Size = UDim2.new(5, 0, 5, 0)
+
+local UIAspectRatioConstraint5 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint5.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint5.Parent = DotWhite
+
+local UICorner = Instance.new("UICorner")
+UICorner.Name = "UICorner"
+UICorner.CornerRadius = UDim.new(1, 0)
+UICorner.Parent = DotWhite
+
+local TextLabel6 = Instance.new("TextLabel")
+TextLabel6.Name = "TextLabel"
+TextLabel6.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel6.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel6.BackgroundTransparency = 1
+TextLabel6.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel6.BorderSizePixel = 0
+TextLabel6.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel6.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel6.Size = UDim2.new(2, 0, 2, 0)
+TextLabel6.Text = "��"
+TextLabel6.TextColor3 = Color3.fromRGB(231, 233, 245)
+TextLabel6.TextScaled = true
+TextLabel6.TextSize = 100
+TextLabel6.TextWrapped = true
+TextLabel6.Parent = DotWhite
+
+DotWhite.Parent = DotWhiteClip
+
+DotWhiteClip.Parent = ListHead
+
+ListHead.Parent = Expanded
+
+local Item = Instance.new("Frame")
+Item.Name = "Item"
+Item.BackgroundColor3 = Color3.fromRGB(231, 233, 245)
+Item.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Item.BorderSizePixel = 0
+Item.LayoutOrder = 1
+Item.Size = UDim2.new(1, 0, 1, 0)
+
+local TextLabel7 = Instance.new("TextLabel")
+TextLabel7.Name = "TextLabel"
+TextLabel7.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel7.BackgroundColor3 = Color3.fromRGB(29, 25, 43)
+TextLabel7.BackgroundTransparency = 1
+TextLabel7.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel7.BorderSizePixel = 0
+TextLabel7.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel7.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel7.Size = UDim2.new(1, 0, 0.6, 0)
+TextLabel7.Text = "None"
+TextLabel7.TextColor3 = Color3.fromRGB(116, 126, 160)
+TextLabel7.TextScaled = true
+TextLabel7.TextSize = 14
+TextLabel7.TextWrapped = true
+TextLabel7.ZIndex = 2
+TextLabel7.Parent = Item
+
+Item.Parent = Expanded
+
+local ListEnd = Instance.new("Frame")
+ListEnd.Name = "ListEnd"
+ListEnd.BackgroundColor3 = Color3.fromRGB(116, 126, 160)
+ListEnd.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ListEnd.BorderSizePixel = 0
+ListEnd.Size = UDim2.new(1, 0, 1, 0)
+
+local UIAspectRatioConstraint6 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint6.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint6.AspectRatio = 69.5
+UIAspectRatioConstraint6.Parent = ListEnd
+
+ListEnd.Parent = Expanded
+
+Expanded.Parent = Mode
+
+Mode.Parent = Frame
+
+local UIListLayout2 = Instance.new("UIListLayout")
+UIListLayout2.Name = "UIListLayout"
+UIListLayout2.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout2.Padding = UDim.new(0.025, 0)
+UIListLayout2.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout2.VerticalAlignment = Enum.VerticalAlignment.Bottom
+UIListLayout2.Parent = Frame
+
+Frame.Parent = Bottom
+
+Bottom.Parent = Sidebar
+
+Sidebar.Parent = Main
+
+local Background = Instance.new("Frame")
+Background.Name = "Background"
+Background.BackgroundColor3 = Color3.fromRGB(245, 248, 255)
+Background.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Background.BorderSizePixel = 0
+Background.Size = UDim2.new(1, 0, 1, 0)
+Background.ZIndex = 0
+Background.Parent = Main
+
+local Pages = Instance.new("Frame")
+Pages.Name = "Pages"
+Pages.BackgroundColor3 = Color3.fromRGB(240, 244, 250)
+Pages.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Pages.BorderSizePixel = 0
+Pages.ClipsDescendants = true
+Pages.Position = UDim2.new(0.162, 0, 0, 0)
+Pages.Size = UDim2.new(0.838, 0, 1, 0)
+
+local UIPageLayout = Instance.new("UIPageLayout")
+UIPageLayout.Name = "UIPageLayout"
+UIPageLayout.Animated = false
+UIPageLayout.EasingStyle = Enum.EasingStyle.Exponential
+UIPageLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIPageLayout.TouchInputEnabled = false
+UIPageLayout.TweenTime = 0.3
+UIPageLayout.Parent = Pages
+
+local Information = Instance.new("Frame")
+Information.Name = "Information"
+Information.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Information.BackgroundTransparency = 1
+Information.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Information.BorderSizePixel = 0
+Information.Size = UDim2.new(1, 0, 1, 0)
+
+local Container1 = Instance.new("Frame")
+Container1.Name = "Container1"
+Container1.AnchorPoint = Vector2.new(0.5, 0)
+Container1.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Container1.BackgroundTransparency = 1
+Container1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Container1.BorderSizePixel = 0
+Container1.Position = UDim2.new(0.5, 0, 0.025, 0)
+Container1.Size = UDim2.new(0.9, 0, 0.3, 0)
+
+local List1 = Instance.new("Frame")
+List1.Name = "List"
+List1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+List1.BackgroundTransparency = 1
+List1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+List1.BorderSizePixel = 0
+List1.Size = UDim2.new(1, 0, 1, 0)
+
+local Progress = Instance.new("Frame")
+Progress.Name = "progress"
+Progress.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Progress.BackgroundTransparency = 1
+Progress.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Progress.BorderSizePixel = 0
+Progress.LayoutOrder = 3
+Progress.Size = UDim2.new(0.333, 0, 1, 0)
+
+local UIAspectRatioConstraint7 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint7.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint7.Parent = Progress
+
+local Fill = Instance.new("Frame")
+Fill.Name = "Fill"
+Fill.BackgroundColor3 = Color3.fromRGB(250, 252, 255)
+Fill.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Fill.BorderSizePixel = 0
+Fill.Size = UDim2.new(1, 0, 1, 0)
+Fill.ZIndex = 2
+
+local UIPadding = Instance.new("UIPadding")
+UIPadding.Name = "UIPadding"
+UIPadding.PaddingBottom = UDim.new(0.1, 0)
+UIPadding.PaddingLeft = UDim.new(0.1, 0)
+UIPadding.PaddingRight = UDim.new(0.1, 0)
+UIPadding.PaddingTop = UDim.new(0.1, 0)
+UIPadding.Parent = Fill
+
+local Content = Instance.new("Frame")
+Content.Name = "Content"
+Content.AnchorPoint = Vector2.new(0.5, 0.5)
+Content.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Content.BackgroundTransparency = 1
+Content.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Content.BorderSizePixel = 0
+Content.Position = UDim2.new(0.5, 0, 0.5, 0)
+Content.Size = UDim2.new(1, 0, 1, 0)
+
+local DecorU = Instance.new("Frame")
+DecorU.Name = "DecorU"
+DecorU.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+DecorU.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DecorU.BorderSizePixel = 0
+DecorU.Position = UDim2.new(0, 0, 0.325, 0)
+DecorU.Size = UDim2.new(1, 0, 0.0172, 0)
+DecorU.Parent = Content
+
+local Label = Instance.new("TextLabel")
+Label.Name = "Label"
+Label.AnchorPoint = Vector2.new(0, 0.5)
+Label.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label.BackgroundTransparency = 1
+Label.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label.BorderSizePixel = 0
+Label.FontFace = Font.new("rbxassetid://11598121416")
+Label.Position = UDim2.new(0, 0, 0.7, 0)
+Label.Size = UDim2.new(1, 0, 0.5, 0)
+Label.Text = "27%"
+Label.TextColor3 = Color3.fromRGB(69, 72, 79)
+Label.TextScaled = true
+Label.TextSize = 14
+Label.TextWrapped = true
+Label.Parent = Content
+
+local Title = Instance.new("TextLabel")
+Title.Name = "Title"
+Title.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Title.BackgroundTransparency = 1
+Title.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Title.BorderSizePixel = 0
+Title.FontFace = Font.new("rbxassetid://11598121416")
+Title.Size = UDim2.new(1, 0, 0.25, 0)
+Title.Text = "EXP Progress"
+Title.TextColor3 = Color3.fromRGB(112, 113, 128)
+Title.TextScaled = true
+Title.TextSize = 14
+Title.TextWrapped = true
+Title.Parent = Content
+
+Content.Parent = Fill
+
+local UICorner1 = Instance.new("UICorner")
+UICorner1.Name = "UICorner"
+UICorner1.CornerRadius = UDim.new(0.05, 0)
+UICorner1.Parent = Fill
+
+Fill.Parent = Progress
+
+Progress.Parent = List1
+
+local UIListLayout3 = Instance.new("UIListLayout")
+UIListLayout3.Name = "UIListLayout"
+UIListLayout3.FillDirection = Enum.FillDirection.Horizontal
+UIListLayout3.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout3.Padding = UDim.new(0.1, 0)
+UIListLayout3.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout3.Parent = List1
+
+local Ascensions = Instance.new("Frame")
+Ascensions.Name = "ascensions"
+Ascensions.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Ascensions.BackgroundTransparency = 1
+Ascensions.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Ascensions.BorderSizePixel = 0
+Ascensions.LayoutOrder = 1
+Ascensions.Size = UDim2.new(0.333, 0, 1, 0)
+
+local Fill1 = Instance.new("Frame")
+Fill1.Name = "Fill"
+Fill1.BackgroundColor3 = Color3.fromRGB(250, 252, 255)
+Fill1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Fill1.BorderSizePixel = 0
+Fill1.Size = UDim2.new(1, 0, 1, 0)
+Fill1.ZIndex = 2
+
+local UIPadding1 = Instance.new("UIPadding")
+UIPadding1.Name = "UIPadding"
+UIPadding1.PaddingBottom = UDim.new(0.1, 0)
+UIPadding1.PaddingLeft = UDim.new(0.1, 0)
+UIPadding1.PaddingRight = UDim.new(0.1, 0)
+UIPadding1.PaddingTop = UDim.new(0.1, 0)
+UIPadding1.Parent = Fill1
+
+local Content1 = Instance.new("Frame")
+Content1.Name = "Content"
+Content1.AnchorPoint = Vector2.new(0.5, 0.5)
+Content1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Content1.BackgroundTransparency = 1
+Content1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Content1.BorderSizePixel = 0
+Content1.Position = UDim2.new(0.5, 0, 0.5, 0)
+Content1.Size = UDim2.new(1, 0, 1, 0)
+
+local DecorU1 = Instance.new("Frame")
+DecorU1.Name = "DecorU"
+DecorU1.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+DecorU1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DecorU1.BorderSizePixel = 0
+DecorU1.Position = UDim2.new(0, 0, 0.325, 0)
+DecorU1.Size = UDim2.new(1, 0, 0.0172, 0)
+DecorU1.Parent = Content1
+
+local Label1 = Instance.new("TextLabel")
+Label1.Name = "Label"
+Label1.AnchorPoint = Vector2.new(0, 0.5)
+Label1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label1.BackgroundTransparency = 1
+Label1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label1.BorderSizePixel = 0
+Label1.FontFace = Font.new("rbxassetid://11598121416")
+Label1.Position = UDim2.new(0, 0, 0.7, 0)
+Label1.Size = UDim2.new(1, 0, 0.5, 0)
+Label1.Text = "276"
+Label1.TextColor3 = Color3.fromRGB(69, 72, 79)
+Label1.TextScaled = true
+Label1.TextSize = 14
+Label1.TextWrapped = true
+Label1.Parent = Content1
+
+local Title1 = Instance.new("TextLabel")
+Title1.Name = "Title"
+Title1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Title1.BackgroundTransparency = 1
+Title1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Title1.BorderSizePixel = 0
+Title1.FontFace = Font.new("rbxassetid://11598121416")
+Title1.Size = UDim2.new(1, 0, 0.25, 0)
+Title1.Text = "Ascensions"
+Title1.TextColor3 = Color3.fromRGB(112, 113, 128)
+Title1.TextScaled = true
+Title1.TextSize = 14
+Title1.TextWrapped = true
+Title1.Parent = Content1
+
+Content1.Parent = Fill1
+
+local UICorner2 = Instance.new("UICorner")
+UICorner2.Name = "UICorner"
+UICorner2.CornerRadius = UDim.new(0.05, 0)
+UICorner2.Parent = Fill1
+
+Fill1.Parent = Ascensions
+
+local UIAspectRatioConstraint8 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint8.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint8.Parent = Ascensions
+
+Ascensions.Parent = List1
+
+local Levels = Instance.new("Frame")
+Levels.Name = "levels"
+Levels.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Levels.BackgroundTransparency = 1
+Levels.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Levels.BorderSizePixel = 0
+Levels.LayoutOrder = 2
+Levels.Size = UDim2.new(0.333, 0, 1, 0)
+
+local UIAspectRatioConstraint9 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint9.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint9.Parent = Levels
+
+local Fill2 = Instance.new("Frame")
+Fill2.Name = "Fill"
+Fill2.BackgroundColor3 = Color3.fromRGB(250, 252, 255)
+Fill2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Fill2.BorderSizePixel = 0
+Fill2.Size = UDim2.new(1, 0, 1, 0)
+Fill2.ZIndex = 2
+
+local UIPadding2 = Instance.new("UIPadding")
+UIPadding2.Name = "UIPadding"
+UIPadding2.PaddingBottom = UDim.new(0.1, 0)
+UIPadding2.PaddingLeft = UDim.new(0.1, 0)
+UIPadding2.PaddingRight = UDim.new(0.1, 0)
+UIPadding2.PaddingTop = UDim.new(0.1, 0)
+UIPadding2.Parent = Fill2
+
+local Content2 = Instance.new("Frame")
+Content2.Name = "Content"
+Content2.AnchorPoint = Vector2.new(0.5, 0.5)
+Content2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Content2.BackgroundTransparency = 1
+Content2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Content2.BorderSizePixel = 0
+Content2.Position = UDim2.new(0.5, 0, 0.5, 0)
+Content2.Size = UDim2.new(1, 0, 1, 0)
+
+local DecorU2 = Instance.new("Frame")
+DecorU2.Name = "DecorU"
+DecorU2.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+DecorU2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DecorU2.BorderSizePixel = 0
+DecorU2.Position = UDim2.new(0, 0, 0.325, 0)
+DecorU2.Size = UDim2.new(1, 0, 0.0172, 0)
+DecorU2.Parent = Content2
+
+local Label2 = Instance.new("TextLabel")
+Label2.Name = "Label"
+Label2.AnchorPoint = Vector2.new(0, 0.5)
+Label2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label2.BackgroundTransparency = 1
+Label2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label2.BorderSizePixel = 0
+Label2.FontFace = Font.new("rbxassetid://11598121416")
+Label2.Position = UDim2.new(0, 0, 0.7, 0)
+Label2.Size = UDim2.new(1, 0, 0.5, 0)
+Label2.Text = "154"
+Label2.TextColor3 = Color3.fromRGB(69, 72, 79)
+Label2.TextScaled = true
+Label2.TextSize = 14
+Label2.TextWrapped = true
+Label2.Parent = Content2
+
+local Title2 = Instance.new("TextLabel")
+Title2.Name = "Title"
+Title2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Title2.BackgroundTransparency = 1
+Title2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Title2.BorderSizePixel = 0
+Title2.FontFace = Font.new("rbxassetid://11598121416")
+Title2.Size = UDim2.new(1, 0, 0.25, 0)
+Title2.Text = "Levels"
+Title2.TextColor3 = Color3.fromRGB(112, 113, 128)
+Title2.TextScaled = true
+Title2.TextSize = 14
+Title2.TextWrapped = true
+Title2.Parent = Content2
+
+Content2.Parent = Fill2
+
+local UICorner3 = Instance.new("UICorner")
+UICorner3.Name = "UICorner"
+UICorner3.CornerRadius = UDim.new(0.05, 0)
+UICorner3.Parent = Fill2
+
+Fill2.Parent = Levels
+
+Levels.Parent = List1
+
+List1.Parent = Container1
+
+Container1.Parent = Information
+
+local Container2 = Instance.new("Frame")
+Container2.Name = "Container2"
+Container2.AnchorPoint = Vector2.new(0.5, 0)
+Container2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Container2.BackgroundTransparency = 1
+Container2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Container2.BorderSizePixel = 0
+Container2.Position = UDim2.new(0.5, 0, 0.375, 0)
+Container2.Size = UDim2.new(0.925, 0, 0.6, 0)
+
+local Fill3 = Instance.new("Frame")
+Fill3.Name = "Fill"
+Fill3.BackgroundColor3 = Color3.fromRGB(250, 252, 255)
+Fill3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Fill3.BorderSizePixel = 0
+Fill3.Size = UDim2.new(1, 0, 1, 0)
+Fill3.ZIndex = 2
+
+local UIPadding3 = Instance.new("UIPadding")
+UIPadding3.Name = "UIPadding"
+UIPadding3.PaddingBottom = UDim.new(0.023, 0)
+UIPadding3.PaddingLeft = UDim.new(0.01, 0)
+UIPadding3.PaddingRight = UDim.new(0.01, 0)
+UIPadding3.PaddingTop = UDim.new(0.023, 0)
+UIPadding3.Parent = Fill3
+
+local UICorner4 = Instance.new("UICorner")
+UICorner4.Name = "UICorner"
+UICorner4.CornerRadius = UDim.new(0.025, 0)
+UICorner4.Parent = Fill3
+
+local Labels = Instance.new("Frame")
+Labels.Name = "Labels"
+Labels.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Labels.BackgroundTransparency = 1
+Labels.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Labels.BorderSizePixel = 0
+Labels.Size = UDim2.new(1, 0, 1, 0)
+
+local Template1 = Instance.new("Frame")
+Template1.Name = "Template"
+Template1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Template1.BackgroundTransparency = 1
+Template1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Template1.BorderSizePixel = 0
+Template1.Size = UDim2.new(0.333, 0, 0.125, 0)
+
+local Title3 = Instance.new("TextLabel")
+Title3.Name = "Title"
+Title3.AnchorPoint = Vector2.new(0, 0.5)
+Title3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Title3.BackgroundTransparency = 1
+Title3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Title3.BorderSizePixel = 0
+Title3.FontFace = Font.new("rbxassetid://11598121416")
+Title3.Position = UDim2.new(0, 0, 0.5, 0)
+Title3.Size = UDim2.new(0.5, 0, 0.6, 0)
+Title3.Text = "List Item:"
+Title3.TextColor3 = Color3.fromRGB(112, 113, 128)
+Title3.TextScaled = true
+Title3.TextSize = 25
+Title3.TextWrapped = true
+Title3.TextXAlignment = Enum.TextXAlignment.Right
+Title3.Parent = Template1
+
+local Value = Instance.new("TextLabel")
+Value.Name = "Value"
+Value.AnchorPoint = Vector2.new(0, 0.5)
+Value.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Value.BackgroundTransparency = 1
+Value.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Value.BorderSizePixel = 0
+Value.FontFace = Font.new("rbxassetid://11598121416")
+Value.Position = UDim2.new(0.525, 0, 0.5, 0)
+Value.Size = UDim2.new(0.5, 0, 0.65, 0)
+Value.Text = "123456789"
+Value.TextColor3 = Color3.fromRGB(69, 72, 79)
+Value.TextScaled = true
+Value.TextSize = 25
+Value.TextWrapped = true
+Value.TextXAlignment = Enum.TextXAlignment.Left
+Value.Parent = Template1
+
+Template1.Parent = Labels
+
+local UIGridLayout = Instance.new("UIGridLayout")
+UIGridLayout.Name = "UIGridLayout"
+UIGridLayout.CellPadding = UDim2.new()
+UIGridLayout.CellSize = UDim2.new(0.333, 0, 0.125, 0)
+UIGridLayout.FillDirection = Enum.FillDirection.Vertical
+UIGridLayout.FillDirectionMaxCells = 8
+UIGridLayout.SortOrder = Enum.SortOrder.LayoutOrder
+UIGridLayout.Parent = Labels
+
+Labels.Parent = Fill3
+
+Fill3.Parent = Container2
+
+Container2.Parent = Information
+
+local Divider = Instance.new("Frame")
+Divider.Name = "Divider"
+Divider.AnchorPoint = Vector2.new(0.5, 0)
+Divider.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Divider.BackgroundTransparency = 1
+Divider.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Divider.BorderSizePixel = 0
+Divider.Position = UDim2.new(0.5, 0, 0.325, 0)
+Divider.Size = UDim2.new(0.95, 0, 0.05, 0)
+Divider.ZIndex = 2
+
+local Color1 = Instance.new("Frame")
+Color1.Name = "Color"
+Color1.AnchorPoint = Vector2.new(0, 0.5)
+Color1.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+Color1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Color1.BorderSizePixel = 0
+Color1.Position = UDim2.new(0, 0, 0.5, 0)
+Color1.Size = UDim2.new(1, 0, 0.075, 0)
+Color1.ZIndex = 2
+Color1.Parent = Divider
+
+Divider.Parent = Information
+
+Information.Parent = Pages
+
+local Features = Instance.new("Frame")
+Features.Name = "Features"
+Features.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Features.BackgroundTransparency = 1
+Features.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Features.BorderSizePixel = 0
+Features.Size = UDim2.new(1, 0, 1, 0)
+
+local Frame1 = Instance.new("Frame")
+Frame1.Name = "Frame"
+Frame1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Frame1.BackgroundTransparency = 1
+Frame1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame1.BorderSizePixel = 0
+Frame1.SelectionGroup = true
+Frame1.Size = UDim2.new(1, 0, 1, 0)
+Frame1.ZIndex = 2
+
+local Section = Instance.new("Frame")
+Section.Name = "Section"
+Section.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Section.BackgroundTransparency = 1
+Section.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Section.BorderSizePixel = 0
+Section.Position = UDim2.new(0, 0, 0.01, 0)
+Section.Size = UDim2.new(1, 0, 0.08, 0)
+
+local Fill4 = Instance.new("Frame")
+Fill4.Name = "Fill"
+Fill4.AnchorPoint = Vector2.new(0.5, 1)
+Fill4.BackgroundColor3 = Color3.fromRGB(250, 252, 255)
+Fill4.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Fill4.BorderSizePixel = 0
+Fill4.Position = UDim2.new(0.5, 0, 1, 0)
+Fill4.Size = UDim2.new(0.95, 0, 1, 0)
+
+local Label3 = Instance.new("TextLabel")
+Label3.Name = "Label"
+Label3.AnchorPoint = Vector2.new(0, 0.5)
+Label3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label3.BackgroundTransparency = 1
+Label3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label3.BorderSizePixel = 0
+Label3.FontFace = Font.new("rbxassetid://11598121416")
+Label3.Position = UDim2.new(0.015, 0, 0.5, 0)
+Label3.Size = UDim2.new(0.97, 0, 0.625, 0)
+Label3.Text = "This is a section."
+Label3.TextColor3 = Color3.fromRGB(69, 72, 79)
+Label3.TextScaled = true
+Label3.TextSize = 14
+Label3.TextWrapped = true
+Label3.TextXAlignment = Enum.TextXAlignment.Left
+Label3.ZIndex = 3
+Label3.Parent = Fill4
+
+local Expand = Instance.new("ImageButton")
+Expand.Name = "Expand"
+Expand.AnchorPoint = Vector2.new(1, 0.5)
+Expand.AutoButtonColor = false
+Expand.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Expand.BackgroundTransparency = 1
+Expand.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Expand.BorderSizePixel = 0
+Expand.Image = "rbxassetid://18861013719"
+Expand.ImageColor3 = Color3.fromRGB(137, 152, 170)
+Expand.Position = UDim2.new(0.99, 0, 0.5, 0)
+Expand.ScaleType = Enum.ScaleType.Fit
+Expand.Size = UDim2.new(0.75, 0, 0.75, 0)
+
+local UIAspectRatioConstraint10 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint10.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint10.Parent = Expand
+
+Expand.Parent = Fill4
+
+Fill4.Parent = Section
+
+Section.Parent = Frame1
+
+local Switch = Instance.new("Frame")
+Switch.Name = "Switch"
+Switch.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Switch.BackgroundTransparency = 1
+Switch.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Switch.BorderSizePixel = 0
+Switch.LayoutOrder = 1
+Switch.Position = UDim2.new(0, 0, 0.01, 0)
+Switch.Size = UDim2.new(1, 0, 0.07, 0)
+
+local FillTitle = Instance.new("Frame")
+FillTitle.Name = "FillTitle"
+FillTitle.AnchorPoint = Vector2.new(0, 0.5)
+FillTitle.BackgroundColor3 = Color3.fromRGB(250, 252, 255)
+FillTitle.BorderColor3 = Color3.fromRGB(0, 0, 0)
+FillTitle.BorderSizePixel = 0
+FillTitle.Position = UDim2.new(0.05, 0, 0.5, 0)
+FillTitle.Size = UDim2.new(0.6, 0, 1, 0)
+
+local Label4 = Instance.new("TextLabel")
+Label4.Name = "Label"
+Label4.AnchorPoint = Vector2.new(0.5, 0.5)
+Label4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label4.BackgroundTransparency = 1
+Label4.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label4.BorderSizePixel = 0
+Label4.FontFace = Font.new("rbxassetid://11598121416")
+Label4.Position = UDim2.new(0.5, 0, 0.5, 0)
+Label4.Size = UDim2.new(0.975, 0, 0.6, 0)
+Label4.Text = "This is a switch."
+Label4.TextColor3 = Color3.fromRGB(69, 72, 79)
+Label4.TextScaled = true
+Label4.TextSize = 14
+Label4.TextWrapped = true
+Label4.ZIndex = 3
+Label4.Parent = FillTitle
+
+FillTitle.Parent = Switch
+
+local ButtonHolder = Instance.new("Frame")
+ButtonHolder.Name = "ButtonHolder"
+ButtonHolder.AnchorPoint = Vector2.new(0, 0.5)
+ButtonHolder.BackgroundColor3 = Color3.fromRGB(230, 237, 250)
+ButtonHolder.BackgroundTransparency = 1
+ButtonHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ButtonHolder.BorderSizePixel = 0
+ButtonHolder.Position = UDim2.new(0.65, 0, 0.5, 0)
+ButtonHolder.Size = UDim2.new(0.3, 0, 1, 0)
+
+local On = Instance.new("ImageButton")
+On.Name = "On"
+On.AnchorPoint = Vector2.new(0, 0.5)
+On.AutoButtonColor = false
+On.BackgroundColor3 = Color3.fromRGB(224, 236, 248)
+On.BorderColor3 = Color3.fromRGB(0, 0, 0)
+On.BorderSizePixel = 0
+On.Position = UDim2.new(0, 0, 0.5, 0)
+On.Selectable = false
+On.Size = UDim2.new(0.5, 0, 1, 0)
+
+local Label5 = Instance.new("TextLabel")
+Label5.Name = "Label"
+Label5.AnchorPoint = Vector2.new(0.5, 0.5)
+Label5.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label5.BackgroundTransparency = 1
+Label5.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label5.BorderSizePixel = 0
+Label5.FontFace = Font.new("rbxassetid://11598121416")
+Label5.Position = UDim2.new(0.5, 0, 0.5, 0)
+Label5.Size = UDim2.new(0.95, 0, 0.6, 0)
+Label5.Text = "ON"
+Label5.TextColor3 = Color3.fromRGB(69, 72, 79)
+Label5.TextScaled = true
+Label5.TextSize = 14
+Label5.TextWrapped = true
+Label5.ZIndex = 3
+Label5.Parent = On
+
+local Underline = Instance.new("Frame")
+Underline.Name = "Underline"
+Underline.AnchorPoint = Vector2.new(0, 1)
+Underline.BackgroundColor3 = Color3.fromRGB(69, 72, 79)
+Underline.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Underline.BorderSizePixel = 0
+Underline.Position = UDim2.new(0, 0, 1, 0)
+Underline.Size = UDim2.new(1, 0, 1, 0)
+
+local UIAspectRatioConstraint11 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint11.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint11.AspectRatio = 60
+UIAspectRatioConstraint11.Parent = Underline
+
+Underline.Parent = On
+
+On.Parent = ButtonHolder
+
+local Off = Instance.new("ImageButton")
+Off.Name = "Off"
+Off.AnchorPoint = Vector2.new(0, 0.5)
+Off.AutoButtonColor = false
+Off.BackgroundColor3 = Color3.fromRGB(235, 243, 250)
+Off.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Off.BorderSizePixel = 0
+Off.Position = UDim2.new(0.5, 0, 0.5, 0)
+Off.Selectable = false
+Off.Size = UDim2.new(0.5, 0, 1, 0)
+
+local Label6 = Instance.new("TextLabel")
+Label6.Name = "Label"
+Label6.AnchorPoint = Vector2.new(0.5, 0.5)
+Label6.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label6.BackgroundTransparency = 1
+Label6.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label6.BorderSizePixel = 0
+Label6.FontFace = Font.new("rbxassetid://11598121416")
+Label6.Position = UDim2.new(0.5, 0, 0.5, 0)
+Label6.Size = UDim2.new(0.95, 0, 0.6, 0)
+Label6.Text = "OFF"
+Label6.TextColor3 = Color3.fromRGB(112, 113, 128)
+Label6.TextScaled = true
+Label6.TextSize = 14
+Label6.TextWrapped = true
+Label6.ZIndex = 3
+Label6.Parent = Off
+
+local Underline1 = Instance.new("Frame")
+Underline1.Name = "Underline"
+Underline1.AnchorPoint = Vector2.new(0, 1)
+Underline1.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+Underline1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Underline1.BorderSizePixel = 0
+Underline1.Position = UDim2.new(0, 0, 1, 0)
+Underline1.Size = UDim2.new(1, 0, 1, 0)
+
+local UIAspectRatioConstraint12 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint12.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint12.AspectRatio = 60
+UIAspectRatioConstraint12.Parent = Underline1
+
+Underline1.Parent = Off
+
+Off.Parent = ButtonHolder
+
+ButtonHolder.Parent = Switch
+
+Switch.Parent = Frame1
+
+local UIListLayout4 = Instance.new("UIListLayout")
+UIListLayout4.Name = "UIListLayout"
+UIListLayout4.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout4.Padding = UDim.new(0.025, 0)
+UIListLayout4.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout4.Parent = Frame1
+
+local Dropdown = Instance.new("Frame")
+Dropdown.Name = "Dropdown"
+Dropdown.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Dropdown.BackgroundTransparency = 1
+Dropdown.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Dropdown.BorderSizePixel = 0
+Dropdown.LayoutOrder = 1
+Dropdown.Position = UDim2.new(0, 0, 0.01, 0)
+Dropdown.Size = UDim2.new(1, 0, 0.07, 0)
+Dropdown.ZIndex = 2
+
+local FillTitle1 = Instance.new("Frame")
+FillTitle1.Name = "FillTitle"
+FillTitle1.AnchorPoint = Vector2.new(0, 0.5)
+FillTitle1.BackgroundColor3 = Color3.fromRGB(250, 252, 255)
+FillTitle1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+FillTitle1.BorderSizePixel = 0
+FillTitle1.Position = UDim2.new(0.05, 0, 0.5, 0)
+FillTitle1.Size = UDim2.new(0.6, 0, 1, 0)
+
+local Label7 = Instance.new("TextLabel")
+Label7.Name = "Label"
+Label7.AnchorPoint = Vector2.new(0.5, 0.5)
+Label7.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label7.BackgroundTransparency = 1
+Label7.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label7.BorderSizePixel = 0
+Label7.FontFace = Font.new("rbxassetid://11598121416")
+Label7.Position = UDim2.new(0.5, 0, 0.5, 0)
+Label7.Size = UDim2.new(0.975, 0, 0.6, 0)
+Label7.Text = "This is a dropdown."
+Label7.TextColor3 = Color3.fromRGB(69, 72, 79)
+Label7.TextScaled = true
+Label7.TextSize = 14
+Label7.TextWrapped = true
+Label7.ZIndex = 3
+Label7.Parent = FillTitle1
+
+FillTitle1.Parent = Dropdown
+
+local Expand1 = Instance.new("ImageButton")
+Expand1.Name = "Expand"
+Expand1.AnchorPoint = Vector2.new(0, 0.5)
+Expand1.AutoButtonColor = false
+Expand1.BackgroundColor3 = Color3.fromRGB(224, 236, 248)
+Expand1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Expand1.BorderSizePixel = 0
+Expand1.Position = UDim2.new(0.65, 0, 0.5, 0)
+Expand1.Selectable = false
+Expand1.Size = UDim2.new(0.3, 0, 1, 0)
+
+local Label8 = Instance.new("TextLabel")
+Label8.Name = "Label"
+Label8.AnchorPoint = Vector2.new(0.5, 0.5)
+Label8.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label8.BackgroundTransparency = 1
+Label8.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label8.BorderSizePixel = 0
+Label8.FontFace = Font.new("rbxassetid://11598121416")
+Label8.Position = UDim2.new(0.5, 0, 0.5, 0)
+Label8.Size = UDim2.new(0.95, 0, 0.6, 0)
+Label8.Text = "Example"
+Label8.TextColor3 = Color3.fromRGB(69, 72, 79)
+Label8.TextScaled = true
+Label8.TextSize = 14
+Label8.TextWrapped = true
+Label8.ZIndex = 3
+Label8.Parent = Expand1
+
+local Holder2 = Instance.new("Frame")
+Holder2.Name = "Holder"
+Holder2.AnchorPoint = Vector2.new(1, 0.5)
+Holder2.BackgroundColor3 = Color3.fromRGB(220, 230, 245)
+Holder2.BackgroundTransparency = 1
+Holder2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Holder2.BorderSizePixel = 0
+Holder2.Position = UDim2.new(1, 0, 0.5, 0)
+Holder2.Size = UDim2.new(0.15, 0, 1, 0)
+
+local Triangle1 = Instance.new("ImageLabel")
+Triangle1.Name = "Triangle"
+Triangle1.AnchorPoint = Vector2.new(0.5, 0.5)
+Triangle1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Triangle1.BackgroundTransparency = 1
+Triangle1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Triangle1.BorderSizePixel = 0
+Triangle1.Image = "rbxassetid://18858300681"
+Triangle1.ImageColor3 = Color3.fromRGB(137, 152, 170)
+Triangle1.Position = UDim2.new(0.5, 0, 0.5, 0)
+Triangle1.ScaleType = Enum.ScaleType.Fit
+Triangle1.Size = UDim2.new(0.75, 0, 0.75, 0)
+
+local UIAspectRatioConstraint13 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint13.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint13.Parent = Triangle1
+
+Triangle1.Parent = Holder2
+
+Holder2.Parent = Expand1
+
+Expand1.Parent = Dropdown
+
+local Expanded1 = Instance.new("Frame")
+Expanded1.Name = "Expanded"
+Expanded1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Expanded1.BackgroundTransparency = 1
+Expanded1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Expanded1.BorderSizePixel = 0
+Expanded1.Size = UDim2.new(1, 0, 1, 0)
+Expanded1.Visible = false
+Expanded1.ZIndex = 2
+
+local Below = Instance.new("Frame")
+Below.Name = "Below"
+Below.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Below.BackgroundTransparency = 1
+Below.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Below.BorderSizePixel = 0
+Below.ClipsDescendants = true
+Below.Position = UDim2.new(0, 0, 1, 0)
+Below.Size = UDim2.new(1, 0, 10, 0)
+
+local Frame2 = Instance.new("Frame")
+Frame2.Name = "Frame"
+Frame2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Frame2.BackgroundTransparency = 1
+Frame2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame2.BorderSizePixel = 0
+Frame2.Position = UDim2.new(0, 0, -0.1, 0)
+Frame2.Size = UDim2.new(1, 0, 0.1, 0)
+
+local Holder3 = Instance.new("Frame")
+Holder3.Name = "Holder"
+Holder3.AnchorPoint = Vector2.new(0.5, 0)
+Holder3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Holder3.BackgroundTransparency = 1
+Holder3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Holder3.BorderSizePixel = 0
+Holder3.Position = UDim2.new(0.8, 0, 1, 0)
+Holder3.Size = UDim2.new(0.3, 0, 1, 0)
+Holder3.ZIndex = 2
+
+local UIListLayout5 = Instance.new("UIListLayout")
+UIListLayout5.Name = "UIListLayout"
+UIListLayout5.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout5.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout5.Parent = Holder3
+
+local ListEnd1 = Instance.new("Frame")
+ListEnd1.Name = "ListEnd"
+ListEnd1.AnchorPoint = Vector2.new(0.5, 0)
+ListEnd1.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+ListEnd1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ListEnd1.BorderSizePixel = 0
+ListEnd1.LayoutOrder = 999
+ListEnd1.Position = UDim2.new(0.8, 0, 1, 0)
+ListEnd1.Size = UDim2.new(1, 0, 1, 0)
+
+local UIAspectRatioConstraint14 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint14.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint14.AspectRatio = 105
+UIAspectRatioConstraint14.Parent = ListEnd1
+
+ListEnd1.Parent = Holder3
+
+local ListHead1 = Instance.new("Frame")
+ListHead1.Name = "ListHead"
+ListHead1.AnchorPoint = Vector2.new(0.5, 0.5)
+ListHead1.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+ListHead1.BackgroundTransparency = 1
+ListHead1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ListHead1.BorderSizePixel = 0
+ListHead1.Position = UDim2.new(0.5, 0, 0, 0)
+ListHead1.Size = UDim2.new(1, 0, 2, 0)
+
+local UIAspectRatioConstraint15 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint15.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint15.AspectRatio = 105
+UIAspectRatioConstraint15.Parent = ListHead1
+
+ListHead1.Parent = Holder3
+
+local Item1 = Instance.new("ImageButton")
+Item1.Name = "Item"
+Item1.AutoButtonColor = false
+Item1.BackgroundColor3 = Color3.fromRGB(235, 243, 250)
+Item1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Item1.BorderSizePixel = 0
+Item1.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
+Item1.ImageTransparency = 1
+Item1.LayoutOrder = 2
+Item1.Size = UDim2.new(1, 0, 1, 0)
+
+local Label9 = Instance.new("TextLabel")
+Label9.Name = "Label"
+Label9.AnchorPoint = Vector2.new(0.5, 0.5)
+Label9.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label9.BackgroundTransparency = 1
+Label9.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label9.BorderSizePixel = 0
+Label9.FontFace = Font.new("rbxassetid://11598121416")
+Label9.Position = UDim2.new(0.5, 0, 0.5, 0)
+Label9.Size = UDim2.new(0.95, 0, 0.6, 0)
+Label9.Text = "Example"
+Label9.TextColor3 = Color3.fromRGB(112, 113, 128)
+Label9.TextScaled = true
+Label9.TextSize = 14
+Label9.TextWrapped = true
+Label9.ZIndex = 3
+Label9.Parent = Item1
+
+Item1.Parent = Holder3
+
+Holder3.Parent = Frame2
+
+Frame2.Parent = Below
+
+Below.Parent = Expanded1
+
+local Head = Instance.new("Frame")
+Head.Name = "Head"
+Head.AnchorPoint = Vector2.new(0.5, 0)
+Head.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Head.BackgroundTransparency = 1
+Head.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Head.BorderSizePixel = 0
+Head.Position = UDim2.new(0.8, 0, 1, 0)
+Head.Size = UDim2.new(0.3, 0, 1, 0)
+Head.ZIndex = 2
+
+local Frame3 = Instance.new("Frame")
+Frame3.Name = "Frame"
+Frame3.AnchorPoint = Vector2.new(0.5, 0)
+Frame3.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+Frame3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Frame3.BorderSizePixel = 0
+Frame3.Position = UDim2.new(0.5, 0, 0, 0)
+Frame3.Size = UDim2.new(1, 0, 2, 0)
+
+local Dot1 = Instance.new("Frame")
+Dot1.Name = "Dot"
+Dot1.AnchorPoint = Vector2.new(0.5, 0.5)
+Dot1.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+Dot1.BackgroundTransparency = 1
+Dot1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Dot1.BorderSizePixel = 0
+Dot1.Position = UDim2.new(0.5, 0, 0.5, 0)
+Dot1.Size = UDim2.new(2.5, 0, 2.5, 0)
+Dot1.ZIndex = 2
+
+local UIAspectRatioConstraint16 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint16.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint16.Parent = Dot1
+
+local TextLabel8 = Instance.new("TextLabel")
+TextLabel8.Name = "TextLabel"
+TextLabel8.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel8.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel8.BackgroundTransparency = 1
+TextLabel8.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel8.BorderSizePixel = 0
+TextLabel8.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel8.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel8.Size = UDim2.new(2, 0, 2, 0)
+TextLabel8.Text = "��"
+TextLabel8.TextColor3 = Color3.fromRGB(173, 188, 205)
+TextLabel8.TextScaled = true
+TextLabel8.TextSize = 100
+TextLabel8.TextWrapped = true
+TextLabel8.Parent = Dot1
+
+Dot1.Parent = Frame3
+
+local DotWhiteClip1 = Instance.new("Frame")
+DotWhiteClip1.Name = "DotWhiteClip"
+DotWhiteClip1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+DotWhiteClip1.BackgroundTransparency = 1
+DotWhiteClip1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DotWhiteClip1.BorderSizePixel = 0
+DotWhiteClip1.ClipsDescendants = true
+DotWhiteClip1.Size = UDim2.new(1, 0, 1, 0)
+
+local DotWhite1 = Instance.new("Frame")
+DotWhite1.Name = "DotWhite"
+DotWhite1.AnchorPoint = Vector2.new(0.5, 0.5)
+DotWhite1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+DotWhite1.BackgroundTransparency = 1
+DotWhite1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DotWhite1.BorderSizePixel = 0
+DotWhite1.Position = UDim2.new(0.5, 0, 0.5, 0)
+DotWhite1.Size = UDim2.new(5, 0, 5, 0)
+
+local UIAspectRatioConstraint17 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint17.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint17.Parent = DotWhite1
+
+local UICorner5 = Instance.new("UICorner")
+UICorner5.Name = "UICorner"
+UICorner5.CornerRadius = UDim.new(1, 0)
+UICorner5.Parent = DotWhite1
+
+local TextLabel9 = Instance.new("TextLabel")
+TextLabel9.Name = "TextLabel"
+TextLabel9.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel9.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel9.BackgroundTransparency = 1
+TextLabel9.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel9.BorderSizePixel = 0
+TextLabel9.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel9.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel9.Size = UDim2.new(2, 0, 2, 0)
+TextLabel9.Text = "��"
+TextLabel9.TextColor3 = Color3.fromRGB(220, 230, 245)
+TextLabel9.TextScaled = true
+TextLabel9.TextSize = 100
+TextLabel9.TextWrapped = true
+TextLabel9.Parent = DotWhite1
+
+DotWhite1.Parent = DotWhiteClip1
+
+DotWhiteClip1.Parent = Frame3
+
+local UIAspectRatioConstraint18 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint18.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint18.AspectRatio = 105
+UIAspectRatioConstraint18.Parent = Frame3
+
+Frame3.Parent = Head
+
+Head.Parent = Expanded1
+
+Expanded1.Parent = Dropdown
+
+Dropdown.Parent = Frame1
+
+local InputField = Instance.new("Frame")
+InputField.Name = "InputField"
+InputField.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+InputField.BackgroundTransparency = 1
+InputField.BorderColor3 = Color3.fromRGB(0, 0, 0)
+InputField.BorderSizePixel = 0
+InputField.LayoutOrder = 1
+InputField.Position = UDim2.new(0, 0, 0.01, 0)
+InputField.Size = UDim2.new(1, 0, 0.07, 0)
+
+local FillTitle2 = Instance.new("Frame")
+FillTitle2.Name = "FillTitle"
+FillTitle2.AnchorPoint = Vector2.new(0, 0.5)
+FillTitle2.BackgroundColor3 = Color3.fromRGB(250, 252, 255)
+FillTitle2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+FillTitle2.BorderSizePixel = 0
+FillTitle2.Position = UDim2.new(0.05, 0, 0.5, 0)
+FillTitle2.Size = UDim2.new(0.6, 0, 1, 0)
+
+local Label10 = Instance.new("TextLabel")
+Label10.Name = "Label"
+Label10.AnchorPoint = Vector2.new(0.5, 0.5)
+Label10.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label10.BackgroundTransparency = 1
+Label10.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label10.BorderSizePixel = 0
+Label10.FontFace = Font.new("rbxassetid://11598121416")
+Label10.Position = UDim2.new(0.5, 0, 0.5, 0)
+Label10.Size = UDim2.new(0.975, 0, 0.6, 0)
+Label10.Text = "This is a input field."
+Label10.TextColor3 = Color3.fromRGB(69, 72, 79)
+Label10.TextScaled = true
+Label10.TextSize = 14
+Label10.TextWrapped = true
+Label10.ZIndex = 3
+Label10.Parent = FillTitle2
+
+FillTitle2.Parent = InputField
+
+local FillField = Instance.new("Frame")
+FillField.Name = "FillField"
+FillField.AnchorPoint = Vector2.new(0, 0.5)
+FillField.BackgroundColor3 = Color3.fromRGB(224, 236, 248)
+FillField.BorderColor3 = Color3.fromRGB(0, 0, 0)
+FillField.BorderSizePixel = 0
+FillField.Position = UDim2.new(0.65, 0, 0.5, 0)
+FillField.Size = UDim2.new(0.3, 0, 1, 0)
+
+local Label11 = Instance.new("TextBox")
+Label11.Name = "Label"
+Label11.Active = false
+Label11.AnchorPoint = Vector2.new(0.5, 1)
+Label11.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label11.BackgroundTransparency = 1
+Label11.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label11.BorderSizePixel = 0
+Label11.FontFace = Font.new("rbxassetid://11598121416")
+Label11.PlaceholderColor3 = Color3.fromRGB(173, 188, 205)
+Label11.PlaceholderText = "Type something here."
+Label11.Position = UDim2.new(0.5, 0, 0.725, 0)
+Label11.Selectable = false
+Label11.Size = UDim2.new(0.95, 0, 0.525, 0)
+Label11.Text = ""
+Label11.TextColor3 = Color3.fromRGB(69, 72, 79)
+Label11.TextScaled = true
+Label11.TextSize = 14
+Label11.TextWrapped = true
+Label11.ZIndex = 3
+Label11.Parent = FillField
+
+local Underline2 = Instance.new("Frame")
+Underline2.Name = "Underline"
+Underline2.AnchorPoint = Vector2.new(0.5, 0)
+Underline2.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+Underline2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Underline2.BorderSizePixel = 0
+Underline2.Position = UDim2.new(0.5, 0, 0.8, 0)
+Underline2.Size = UDim2.new(0.95, 0, 0.95, 0)
+
+local UIAspectRatioConstraint19 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint19.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint19.AspectRatio = 112
+UIAspectRatioConstraint19.Parent = Underline2
+
+Underline2.Parent = FillField
+
+FillField.Parent = InputField
+
+InputField.Parent = Frame1
+
+local Button = Instance.new("Frame")
+Button.Name = "Button"
+Button.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Button.BackgroundTransparency = 1
+Button.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Button.BorderSizePixel = 0
+Button.LayoutOrder = 1
+Button.Position = UDim2.new(0, 0, 0.01, 0)
+Button.Size = UDim2.new(1, 0, 0.07, 0)
+
+local FillTitle3 = Instance.new("Frame")
+FillTitle3.Name = "FillTitle"
+FillTitle3.AnchorPoint = Vector2.new(0, 0.5)
+FillTitle3.BackgroundColor3 = Color3.fromRGB(250, 252, 255)
+FillTitle3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+FillTitle3.BorderSizePixel = 0
+FillTitle3.Position = UDim2.new(0.05, 0, 0.5, 0)
+FillTitle3.Size = UDim2.new(0.6, 0, 1, 0)
+
+local Label12 = Instance.new("TextLabel")
+Label12.Name = "Label"
+Label12.AnchorPoint = Vector2.new(0.5, 0.5)
+Label12.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label12.BackgroundTransparency = 1
+Label12.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label12.BorderSizePixel = 0
+Label12.FontFace = Font.new("rbxassetid://11598121416")
+Label12.Position = UDim2.new(0.5, 0, 0.5, 0)
+Label12.Size = UDim2.new(0.975, 0, 0.6, 0)
+Label12.Text = "This is a button."
+Label12.TextColor3 = Color3.fromRGB(69, 72, 79)
+Label12.TextScaled = true
+Label12.TextSize = 14
+Label12.TextWrapped = true
+Label12.ZIndex = 3
+Label12.Parent = FillTitle3
+
+FillTitle3.Parent = Button
+
+local Button1 = Instance.new("ImageButton")
+Button1.Name = "Button"
+Button1.AnchorPoint = Vector2.new(0, 0.5)
+Button1.AutoButtonColor = false
+Button1.BackgroundColor3 = Color3.fromRGB(224, 236, 248)
+Button1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Button1.BorderSizePixel = 0
+Button1.Position = UDim2.new(0.65, 0, 0.5, 0)
+Button1.Selectable = false
+Button1.Size = UDim2.new(0.3, 0, 1, 0)
+
+local Label13 = Instance.new("TextLabel")
+Label13.Name = "Label"
+Label13.AnchorPoint = Vector2.new(0.5, 0.5)
+Label13.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label13.BackgroundTransparency = 1
+Label13.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label13.BorderSizePixel = 0
+Label13.FontFace = Font.new("rbxassetid://11598121416")
+Label13.Position = UDim2.new(0.5, 0, 0.5, 0)
+Label13.Size = UDim2.new(0.95, 0, 0.6, 0)
+Label13.Text = "Activate"
+Label13.TextColor3 = Color3.fromRGB(69, 72, 79)
+Label13.TextScaled = true
+Label13.TextSize = 14
+Label13.TextWrapped = true
+Label13.ZIndex = 3
+Label13.Parent = Button1
+
+Button1.Parent = Button
+
+Button.Parent = Frame1
+
+local Checklist = Instance.new("Frame")
+Checklist.Name = "Checklist"
+Checklist.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Checklist.BackgroundTransparency = 1
+Checklist.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Checklist.BorderSizePixel = 0
+Checklist.LayoutOrder = 1
+Checklist.Position = UDim2.new(0, 0, 0.01, 0)
+Checklist.Size = UDim2.new(1, 0, 0.4, 0)
+
+local Top = Instance.new("Frame")
+Top.Name = "Top"
+Top.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Top.BackgroundTransparency = 1
+Top.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Top.BorderSizePixel = 0
+Top.Size = UDim2.new(1, 0, 0.175, 0)
+
+local Fill5 = Instance.new("Frame")
+Fill5.Name = "Fill"
+Fill5.AnchorPoint = Vector2.new(0, 0.5)
+Fill5.BackgroundColor3 = Color3.fromRGB(250, 252, 255)
+Fill5.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Fill5.BorderSizePixel = 0
+Fill5.Position = UDim2.new(0.05, 0, 0.5, 0)
+Fill5.Size = UDim2.new(0.9, 0, 1, 0)
+Fill5.Parent = Top
+
+local TitleHolder = Instance.new("Frame")
+TitleHolder.Name = "TitleHolder"
+TitleHolder.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TitleHolder.BackgroundTransparency = 1
+TitleHolder.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TitleHolder.BorderSizePixel = 0
+TitleHolder.Position = UDim2.new(0.05, 0, 0, 0)
+TitleHolder.Size = UDim2.new(0.6, 0, 1, 0)
+
+local Label14 = Instance.new("TextLabel")
+Label14.Name = "Label"
+Label14.AnchorPoint = Vector2.new(0.5, 0.5)
+Label14.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label14.BackgroundTransparency = 1
+Label14.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label14.BorderSizePixel = 0
+Label14.FontFace = Font.new("rbxassetid://11598121416")
+Label14.Position = UDim2.new(0.5, 0, 0.5, 0)
+Label14.Size = UDim2.new(0.975, 0, 0.6, 0)
+Label14.Text = "This is a checklist."
+Label14.TextColor3 = Color3.fromRGB(69, 72, 79)
+Label14.TextScaled = true
+Label14.TextSize = 14
+Label14.TextWrapped = true
+Label14.ZIndex = 3
+Label14.Parent = TitleHolder
+
+TitleHolder.Parent = Top
+
+local Search = Instance.new("Frame")
+Search.Name = "Search"
+Search.AnchorPoint = Vector2.new(0, 0.5)
+Search.BackgroundColor3 = Color3.fromRGB(235, 243, 250)
+Search.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Search.BorderSizePixel = 0
+Search.Position = UDim2.new(0.65, 0, 0.5, 0)
+Search.Size = UDim2.new(0.3, 0, 1, 0)
+
+local Label15 = Instance.new("TextBox")
+Label15.Name = "Label"
+Label15.Active = false
+Label15.AnchorPoint = Vector2.new(0.5, 0.5)
+Label15.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label15.BackgroundTransparency = 1
+Label15.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label15.BorderSizePixel = 0
+Label15.FontFace = Font.new("rbxassetid://11598121416")
+Label15.PlaceholderColor3 = Color3.fromRGB(173, 188, 205)
+Label15.PlaceholderText = "Search"
+Label15.Position = UDim2.new(0.5, 0, 0.5, 0)
+Label15.Selectable = false
+Label15.Size = UDim2.new(0.95, 0, 0.6, 0)
+Label15.Text = ""
+Label15.TextColor3 = Color3.fromRGB(112, 113, 128)
+Label15.TextScaled = true
+Label15.TextSize = 14
+Label15.TextWrapped = true
+Label15.ZIndex = 3
+Label15.Parent = Search
+
+Search.Parent = Top
+
+Top.Parent = Checklist
+
+local LineU = Instance.new("Frame")
+LineU.Name = "LineU"
+LineU.AnchorPoint = Vector2.new(0.5, 0.5)
+LineU.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+LineU.BorderColor3 = Color3.fromRGB(0, 0, 0)
+LineU.BorderSizePixel = 0
+LineU.Position = UDim2.new(0.5, 0, 0.175, 0)
+LineU.Size = UDim2.new(0.9, 0, 1, 0)
+LineU.ZIndex = 2
+
+local UIAspectRatioConstraint20 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint20.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint20.AspectRatio = 360
+UIAspectRatioConstraint20.Parent = LineU
+
+local Dot2 = Instance.new("Frame")
+Dot2.Name = "Dot"
+Dot2.AnchorPoint = Vector2.new(0.5, 0.5)
+Dot2.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+Dot2.BackgroundTransparency = 1
+Dot2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Dot2.BorderSizePixel = 0
+Dot2.Position = UDim2.new(0.5, 0, 0.5, 0)
+Dot2.Size = UDim2.new(3, 0, 3, 0)
+Dot2.ZIndex = 2
+
+local UIAspectRatioConstraint21 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint21.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint21.Parent = Dot2
+
+local TextLabel10 = Instance.new("TextLabel")
+TextLabel10.Name = "TextLabel"
+TextLabel10.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel10.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel10.BackgroundTransparency = 1
+TextLabel10.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel10.BorderSizePixel = 0
+TextLabel10.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel10.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel10.Size = UDim2.new(2, 0, 2, 0)
+TextLabel10.Text = "��"
+TextLabel10.TextColor3 = Color3.fromRGB(173, 188, 205)
+TextLabel10.TextScaled = true
+TextLabel10.TextSize = 100
+TextLabel10.TextWrapped = true
+TextLabel10.Parent = Dot2
+
+Dot2.Parent = LineU
+
+local DotWhiteClip2 = Instance.new("Frame")
+DotWhiteClip2.Name = "DotWhiteClip"
+DotWhiteClip2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+DotWhiteClip2.BackgroundTransparency = 1
+DotWhiteClip2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DotWhiteClip2.BorderSizePixel = 0
+DotWhiteClip2.ClipsDescendants = true
+DotWhiteClip2.Size = UDim2.new(1, 0, 1, 0)
+
+local DotWhite2 = Instance.new("Frame")
+DotWhite2.Name = "DotWhite"
+DotWhite2.AnchorPoint = Vector2.new(0.5, 0.5)
+DotWhite2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+DotWhite2.BackgroundTransparency = 1
+DotWhite2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DotWhite2.BorderSizePixel = 0
+DotWhite2.Position = UDim2.new(0.5, 0, 0.5, 0)
+DotWhite2.Size = UDim2.new(5, 0, 5, 0)
+
+local UIAspectRatioConstraint22 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint22.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint22.Parent = DotWhite2
+
+local UICorner6 = Instance.new("UICorner")
+UICorner6.Name = "UICorner"
+UICorner6.CornerRadius = UDim.new(1, 0)
+UICorner6.Parent = DotWhite2
+
+local TextLabel11 = Instance.new("TextLabel")
+TextLabel11.Name = "TextLabel"
+TextLabel11.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel11.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel11.BackgroundTransparency = 1
+TextLabel11.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel11.BorderSizePixel = 0
+TextLabel11.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel11.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel11.Size = UDim2.new(2, 0, 2, 0)
+TextLabel11.Text = "��"
+TextLabel11.TextColor3 = Color3.fromRGB(220, 230, 245)
+TextLabel11.TextScaled = true
+TextLabel11.TextSize = 100
+TextLabel11.TextWrapped = true
+TextLabel11.Parent = DotWhite2
+
+DotWhite2.Parent = DotWhiteClip2
+
+DotWhiteClip2.Parent = LineU
+
+LineU.Parent = Checklist
+
+local Content3 = Instance.new("ScrollingFrame")
+Content3.Name = "Content"
+Content3.AnchorPoint = Vector2.new(0.5, 0)
+Content3.AutomaticCanvasSize = Enum.AutomaticSize.Y
+Content3.BackgroundColor3 = Color3.fromRGB(235, 243, 250)
+Content3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Content3.BorderSizePixel = 0
+Content3.BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
+Content3.CanvasSize = UDim2.new()
+Content3.Position = UDim2.new(0.5, 0, 0.175, 0)
+Content3.ScrollBarImageColor3 = Color3.fromRGB(112, 113, 128)
+Content3.ScrollBarImageTransparency = 0.75
+Content3.ScrollBarThickness = 0
+Content3.ScrollingDirection = Enum.ScrollingDirection.Y
+Content3.Selectable = false
+Content3.Size = UDim2.new(0.9, 0, 0.825, 0)
+Content3.TopImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
+Content3.VerticalScrollBarInset = Enum.ScrollBarInset.Always
+
+local UIListLayout6 = Instance.new("UIListLayout")
+UIListLayout6.Name = "UIListLayout"
+UIListLayout6.FillDirection = Enum.FillDirection.Horizontal
+UIListLayout6.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout6.Wraps = true
+UIListLayout6.Parent = Content3
+
+local Item2 = Instance.new("Frame")
+Item2.Name = "Item"
+Item2.BackgroundColor3 = Color3.fromRGB(235, 243, 250)
+Item2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Item2.BorderSizePixel = 0
+Item2.Size = UDim2.new(0.5, 0, 0.212, 0)
+
+local Label16 = Instance.new("TextLabel")
+Label16.Name = "Label"
+Label16.AnchorPoint = Vector2.new(0.5, 0.5)
+Label16.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label16.BackgroundTransparency = 1
+Label16.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label16.BorderSizePixel = 0
+Label16.FontFace = Font.new("rbxassetid://11598121416")
+Label16.Position = UDim2.new(0.5, 0, 0.5, 0)
+Label16.Size = UDim2.new(0.975, 0, 0.6, 0)
+Label16.Text = "Example"
+Label16.TextColor3 = Color3.fromRGB(112, 113, 128)
+Label16.TextScaled = true
+Label16.TextSize = 14
+Label16.TextWrapped = true
+Label16.ZIndex = 3
+Label16.Parent = Item2
+
+local Checkbox = Instance.new("ImageButton")
+Checkbox.Name = "Checkbox"
+Checkbox.AnchorPoint = Vector2.new(1, 0.5)
+Checkbox.AutoButtonColor = false
+Checkbox.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Checkbox.BackgroundTransparency = 1
+Checkbox.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Checkbox.BorderSizePixel = 0
+Checkbox.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
+Checkbox.ImageTransparency = 1
+Checkbox.Position = UDim2.new(0.99, 0, 0.5, 0)
+Checkbox.Size = UDim2.new(0.075, 0, 0.75, 0)
+
+local UIAspectRatioConstraint23 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint23.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint23.Parent = Checkbox
+
+local Var_true = Instance.new("ImageLabel")
+Var_true.Name = "true"
+Var_true.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Var_true.BackgroundTransparency = 1
+Var_true.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Var_true.BorderSizePixel = 0
+Var_true.Image = "rbxassetid://18873947049"
+Var_true.ImageColor3 = Color3.fromRGB(137, 152, 170)
+Var_true.Size = UDim2.new(1, 0, 1, 0)
+Var_true.Parent = Checkbox
+
+local Var_false = Instance.new("ImageLabel")
+Var_false.Name = "false"
+Var_false.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Var_false.BackgroundTransparency = 1
+Var_false.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Var_false.BorderSizePixel = 0
+Var_false.Image = "rbxassetid://18873946765"
+Var_false.ImageColor3 = Color3.fromRGB(137, 152, 170)
+Var_false.Size = UDim2.new(1, 0, 1, 0)
+Var_false.Visible = false
+Var_false.Parent = Checkbox
+
+Checkbox.Parent = Item2
+
+Item2.Parent = Content3
+
+Content3.Parent = Checklist
+
+local LineD = Instance.new("Frame")
+LineD.Name = "LineD"
+LineD.AnchorPoint = Vector2.new(0.5, 0)
+LineD.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+LineD.BorderColor3 = Color3.fromRGB(0, 0, 0)
+LineD.BorderSizePixel = 0
+LineD.Position = UDim2.new(0.5, 0, 1, 0)
+LineD.Size = UDim2.new(0.9, 0, 1, 0)
+LineD.ZIndex = 2
+
+local UIAspectRatioConstraint24 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint24.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint24.AspectRatio = 360
+UIAspectRatioConstraint24.Parent = LineD
+
+LineD.Parent = Checklist
+
+Checklist.Parent = Frame1
+
+local List2 = Instance.new("Frame")
+List2.Name = "List"
+List2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+List2.BackgroundTransparency = 1
+List2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+List2.BorderSizePixel = 0
+List2.LayoutOrder = 1
+List2.Position = UDim2.new(0, 0, 0.01, 0)
+List2.Size = UDim2.new(1, 0, 0.4, 0)
+
+local Top1 = Instance.new("Frame")
+Top1.Name = "Top"
+Top1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Top1.BackgroundTransparency = 1
+Top1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Top1.BorderSizePixel = 0
+Top1.Size = UDim2.new(1, 0, 0.175, 0)
+
+local Fill6 = Instance.new("Frame")
+Fill6.Name = "Fill"
+Fill6.AnchorPoint = Vector2.new(0, 0.5)
+Fill6.BackgroundColor3 = Color3.fromRGB(250, 252, 255)
+Fill6.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Fill6.BorderSizePixel = 0
+Fill6.Position = UDim2.new(0.05, 0, 0.5, 0)
+Fill6.Size = UDim2.new(0.9, 0, 1, 0)
+Fill6.Parent = Top1
+
+local TitleHolder1 = Instance.new("Frame")
+TitleHolder1.Name = "TitleHolder"
+TitleHolder1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TitleHolder1.BackgroundTransparency = 1
+TitleHolder1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TitleHolder1.BorderSizePixel = 0
+TitleHolder1.Position = UDim2.new(0.05, 0, 0, 0)
+TitleHolder1.Size = UDim2.new(0.6, 0, 1, 0)
+
+local Label17 = Instance.new("TextLabel")
+Label17.Name = "Label"
+Label17.AnchorPoint = Vector2.new(0.5, 0.5)
+Label17.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label17.BackgroundTransparency = 1
+Label17.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label17.BorderSizePixel = 0
+Label17.FontFace = Font.new("rbxassetid://11598121416")
+Label17.Position = UDim2.new(0.5, 0, 0.5, 0)
+Label17.Size = UDim2.new(0.975, 0, 0.6, 0)
+Label17.Text = "This is a list."
+Label17.TextColor3 = Color3.fromRGB(69, 72, 79)
+Label17.TextScaled = true
+Label17.TextSize = 14
+Label17.TextWrapped = true
+Label17.ZIndex = 3
+Label17.Parent = TitleHolder1
+
+TitleHolder1.Parent = Top1
+
+local Search1 = Instance.new("Frame")
+Search1.Name = "Search"
+Search1.AnchorPoint = Vector2.new(0, 0.5)
+Search1.BackgroundColor3 = Color3.fromRGB(235, 243, 250)
+Search1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Search1.BorderSizePixel = 0
+Search1.Position = UDim2.new(0.65, 0, 0.5, 0)
+Search1.Size = UDim2.new(0.15, 0, 1, 0)
+
+local Label18 = Instance.new("TextBox")
+Label18.Name = "Label"
+Label18.Active = false
+Label18.AnchorPoint = Vector2.new(0.5, 0.5)
+Label18.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label18.BackgroundTransparency = 1
+Label18.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label18.BorderSizePixel = 0
+Label18.FontFace = Font.new("rbxassetid://11598121416")
+Label18.PlaceholderColor3 = Color3.fromRGB(173, 188, 205)
+Label18.PlaceholderText = "Search"
+Label18.Position = UDim2.new(0.5, 0, 0.5, 0)
+Label18.Selectable = false
+Label18.Size = UDim2.new(0.95, 0, 0.6, 0)
+Label18.Text = ""
+Label18.TextColor3 = Color3.fromRGB(112, 113, 128)
+Label18.TextScaled = true
+Label18.TextSize = 14
+Label18.TextWrapped = true
+Label18.ZIndex = 3
+Label18.Parent = Search1
+
+Search1.Parent = Top1
+
+local Add = Instance.new("Frame")
+Add.Name = "Add"
+Add.AnchorPoint = Vector2.new(0, 0.5)
+Add.BackgroundColor3 = Color3.fromRGB(235, 243, 250)
+Add.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Add.BorderSizePixel = 0
+Add.Position = UDim2.new(0.8, 0, 0.5, 0)
+Add.Size = UDim2.new(0.15, 0, 1, 0)
+
+local Label19 = Instance.new("TextBox")
+Label19.Name = "Label"
+Label19.Active = false
+Label19.AnchorPoint = Vector2.new(0.5, 0.5)
+Label19.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label19.BackgroundTransparency = 1
+Label19.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label19.BorderSizePixel = 0
+Label19.FontFace = Font.new("rbxassetid://11598121416")
+Label19.PlaceholderColor3 = Color3.fromRGB(173, 188, 205)
+Label19.PlaceholderText = "Add"
+Label19.Position = UDim2.new(0.5, 0, 0.5, 0)
+Label19.Selectable = false
+Label19.Size = UDim2.new(0.95, 0, 0.6, 0)
+Label19.Text = ""
+Label19.TextColor3 = Color3.fromRGB(69, 72, 79)
+Label19.TextScaled = true
+Label19.TextSize = 14
+Label19.TextWrapped = true
+Label19.ZIndex = 3
+Label19.Parent = Add
+
+Add.Parent = Top1
+
+Top1.Parent = List2
+
+local LineU1 = Instance.new("Frame")
+LineU1.Name = "LineU"
+LineU1.AnchorPoint = Vector2.new(0.5, 0.5)
+LineU1.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+LineU1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+LineU1.BorderSizePixel = 0
+LineU1.Position = UDim2.new(0.5, 0, 0.175, 0)
+LineU1.Size = UDim2.new(0.9, 0, 1, 0)
+LineU1.ZIndex = 2
+
+local UIAspectRatioConstraint25 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint25.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint25.AspectRatio = 360
+UIAspectRatioConstraint25.Parent = LineU1
+
+local Dot3 = Instance.new("Frame")
+Dot3.Name = "Dot"
+Dot3.AnchorPoint = Vector2.new(0.5, 0.5)
+Dot3.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+Dot3.BackgroundTransparency = 1
+Dot3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Dot3.BorderSizePixel = 0
+Dot3.Position = UDim2.new(0.5, 0, 0.5, 0)
+Dot3.Size = UDim2.new(3, 0, 3, 0)
+Dot3.ZIndex = 2
+
+local UIAspectRatioConstraint26 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint26.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint26.Parent = Dot3
+
+local TextLabel12 = Instance.new("TextLabel")
+TextLabel12.Name = "TextLabel"
+TextLabel12.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel12.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel12.BackgroundTransparency = 1
+TextLabel12.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel12.BorderSizePixel = 0
+TextLabel12.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel12.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel12.Size = UDim2.new(2, 0, 2, 0)
+TextLabel12.Text = "��"
+TextLabel12.TextColor3 = Color3.fromRGB(173, 188, 205)
+TextLabel12.TextScaled = true
+TextLabel12.TextSize = 100
+TextLabel12.TextWrapped = true
+TextLabel12.Parent = Dot3
+
+Dot3.Parent = LineU1
+
+local DotWhiteClip3 = Instance.new("Frame")
+DotWhiteClip3.Name = "DotWhiteClip"
+DotWhiteClip3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+DotWhiteClip3.BackgroundTransparency = 1
+DotWhiteClip3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DotWhiteClip3.BorderSizePixel = 0
+DotWhiteClip3.ClipsDescendants = true
+DotWhiteClip3.Size = UDim2.new(1, 0, 1, 0)
+
+local DotWhite3 = Instance.new("Frame")
+DotWhite3.Name = "DotWhite"
+DotWhite3.AnchorPoint = Vector2.new(0.5, 0.5)
+DotWhite3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+DotWhite3.BackgroundTransparency = 1
+DotWhite3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DotWhite3.BorderSizePixel = 0
+DotWhite3.Position = UDim2.new(0.5, 0, 0.5, 0)
+DotWhite3.Size = UDim2.new(5, 0, 5, 0)
+
+local UIAspectRatioConstraint27 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint27.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint27.Parent = DotWhite3
+
+local UICorner7 = Instance.new("UICorner")
+UICorner7.Name = "UICorner"
+UICorner7.CornerRadius = UDim.new(1, 0)
+UICorner7.Parent = DotWhite3
+
+local TextLabel13 = Instance.new("TextLabel")
+TextLabel13.Name = "TextLabel"
+TextLabel13.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel13.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel13.BackgroundTransparency = 1
+TextLabel13.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel13.BorderSizePixel = 0
+TextLabel13.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel13.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel13.Size = UDim2.new(2, 0, 2, 0)
+TextLabel13.Text = "��"
+TextLabel13.TextColor3 = Color3.fromRGB(220, 230, 245)
+TextLabel13.TextScaled = true
+TextLabel13.TextSize = 100
+TextLabel13.TextWrapped = true
+TextLabel13.Parent = DotWhite3
+
+DotWhite3.Parent = DotWhiteClip3
+
+DotWhiteClip3.Parent = LineU1
+
+LineU1.Parent = List2
+
+local Content4 = Instance.new("ScrollingFrame")
+Content4.Name = "Content"
+Content4.AnchorPoint = Vector2.new(0.5, 0)
+Content4.AutomaticCanvasSize = Enum.AutomaticSize.Y
+Content4.BackgroundColor3 = Color3.fromRGB(235, 243, 250)
+Content4.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Content4.BorderSizePixel = 0
+Content4.BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
+Content4.CanvasSize = UDim2.new()
+Content4.Position = UDim2.new(0.5, 0, 0.175, 0)
+Content4.ScrollBarImageColor3 = Color3.fromRGB(112, 113, 128)
+Content4.ScrollBarImageTransparency = 0.75
+Content4.ScrollBarThickness = 0
+Content4.ScrollingDirection = Enum.ScrollingDirection.Y
+Content4.Selectable = false
+Content4.Size = UDim2.new(0.9, 0, 0.825, 0)
+Content4.TopImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
+Content4.VerticalScrollBarInset = Enum.ScrollBarInset.Always
+
+local Item3 = Instance.new("Frame")
+Item3.Name = "Item"
+Item3.BackgroundColor3 = Color3.fromRGB(235, 243, 250)
+Item3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Item3.BorderSizePixel = 0
+Item3.Size = UDim2.new(0.5, 0, 0.212, 0)
+
+local Label20 = Instance.new("TextLabel")
+Label20.Name = "Label"
+Label20.AnchorPoint = Vector2.new(0.5, 0.5)
+Label20.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label20.BackgroundTransparency = 1
+Label20.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label20.BorderSizePixel = 0
+Label20.FontFace = Font.new("rbxassetid://11598121416")
+Label20.Position = UDim2.new(0.5, 0, 0.5, 0)
+Label20.Size = UDim2.new(0.975, 0, 0.6, 0)
+Label20.Text = "Example"
+Label20.TextColor3 = Color3.fromRGB(112, 113, 128)
+Label20.TextScaled = true
+Label20.TextSize = 14
+Label20.TextWrapped = true
+Label20.ZIndex = 3
+Label20.Parent = Item3
+
+local Delete = Instance.new("ImageButton")
+Delete.Name = "Delete"
+Delete.AnchorPoint = Vector2.new(1, 0.5)
+Delete.AutoButtonColor = false
+Delete.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Delete.BackgroundTransparency = 1
+Delete.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Delete.BorderSizePixel = 0
+Delete.Image = "rbxassetid://18874707588"
+Delete.ImageColor3 = Color3.fromRGB(137, 152, 170)
+Delete.Position = UDim2.new(0.99, 0, 0.5, 0)
+Delete.Selectable = false
+Delete.Size = UDim2.new(0.075, 0, 0.75, 0)
+
+local UIAspectRatioConstraint28 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint28.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint28.Parent = Delete
+
+Delete.Parent = Item3
+
+Item3.Parent = Content4
+
+local UIListLayout7 = Instance.new("UIListLayout")
+UIListLayout7.Name = "UIListLayout"
+UIListLayout7.FillDirection = Enum.FillDirection.Horizontal
+UIListLayout7.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout7.Wraps = true
+UIListLayout7.Parent = Content4
+
+Content4.Parent = List2
+
+local LineD1 = Instance.new("Frame")
+LineD1.Name = "LineD"
+LineD1.AnchorPoint = Vector2.new(0.5, 0)
+LineD1.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+LineD1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+LineD1.BorderSizePixel = 0
+LineD1.Position = UDim2.new(0.5, 0, 1, 0)
+LineD1.Size = UDim2.new(0.9, 0, 1, 0)
+LineD1.ZIndex = 2
+
+local UIAspectRatioConstraint29 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint29.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint29.AspectRatio = 360
+UIAspectRatioConstraint29.Parent = LineD1
+
+LineD1.Parent = List2
+
+List2.Parent = Frame1
+
+local UIPadding4 = Instance.new("UIPadding")
+UIPadding4.Name = "UIPadding"
+UIPadding4.PaddingTop = UDim.new(0.025, 0)
+UIPadding4.Parent = Frame1
+
+Frame1.Parent = Features
+
+local Scroller = Instance.new("ScrollingFrame")
+Scroller.Name = "Scroller"
+Scroller.Active = true
+Scroller.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Scroller.BackgroundTransparency = 1
+Scroller.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Scroller.BorderSizePixel = 0
+Scroller.ScrollBarImageColor3 = Color3.fromRGB(0, 0, 0)
+Scroller.ScrollBarImageTransparency = 1
+Scroller.ScrollBarThickness = 0
+Scroller.ScrollingDirection = Enum.ScrollingDirection.Y
+Scroller.Size = UDim2.new(1, 0, 1, 0)
+Scroller.Parent = Features
+
+Features.Parent = Pages
+
+local Traits = Instance.new("Frame")
+Traits.Name = "Traits"
+Traits.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Traits.BackgroundTransparency = 1
+Traits.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Traits.BorderSizePixel = 0
+Traits.ClipsDescendants = true
+Traits.LayoutOrder = 2
+Traits.Size = UDim2.new(1, 0, 1, 0)
+
+local Bottom1 = Instance.new("Frame")
+Bottom1.Name = "Bottom"
+Bottom1.AnchorPoint = Vector2.new(0, 0.5)
+Bottom1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Bottom1.BackgroundTransparency = 1
+Bottom1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Bottom1.BorderSizePixel = 0
+Bottom1.LayoutOrder = 2
+Bottom1.Position = UDim2.new(0, 0, 0.887, 0)
+Bottom1.Size = UDim2.new(1, 0, 0.07, 0)
+
+local Discard = Instance.new("ImageButton")
+Discard.Name = "discard"
+Discard.AnchorPoint = Vector2.new(0.5, 0.5)
+Discard.AutoButtonColor = false
+Discard.BackgroundColor3 = Color3.fromRGB(231, 233, 245)
+Discard.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Discard.BorderSizePixel = 0
+Discard.ImageTransparency = 1
+Discard.Position = UDim2.new(0.25, 0, 0.5, 0)
+Discard.Size = UDim2.new(0.5, 0, 1, 0)
+
+local TextLabel14 = Instance.new("TextLabel")
+TextLabel14.Name = "TextLabel"
+TextLabel14.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel14.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel14.BackgroundTransparency = 1
+TextLabel14.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel14.BorderSizePixel = 0
+TextLabel14.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel14.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel14.Size = UDim2.new(0.75, 0, 0.75, 0)
+TextLabel14.Text = "Discard"
+TextLabel14.TextColor3 = Color3.fromRGB(116, 126, 160)
+TextLabel14.TextScaled = true
+TextLabel14.TextSize = 25
+TextLabel14.TextWrapped = true
+TextLabel14.ZIndex = 3
+TextLabel14.Parent = Discard
+
+Discard.Parent = Bottom1
+
+local UIListLayout8 = Instance.new("UIListLayout")
+UIListLayout8.Name = "UIListLayout"
+UIListLayout8.FillDirection = Enum.FillDirection.Horizontal
+UIListLayout8.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout8.Padding = UDim.new(0.025, 0)
+UIListLayout8.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout8.Parent = Bottom1
+
+Bottom1.Parent = Traits
+
+local Cards = Instance.new("Frame")
+Cards.Name = "Cards"
+Cards.AnchorPoint = Vector2.new(0.5, 0.5)
+Cards.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Cards.BackgroundTransparency = 1
+Cards.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Cards.BorderSizePixel = 0
+Cards.LayoutOrder = 1
+Cards.Position = UDim2.new(0.5, 0, 0.425, 0)
+Cards.Size = UDim2.new(1, 0, 1, 0)
+
+local Template2 = Instance.new("Frame")
+Template2.Name = "Template"
+Template2.AnchorPoint = Vector2.new(0, 0.5)
+Template2.BackgroundColor3 = Color3.fromRGB(250, 252, 255)
+Template2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Template2.BorderSizePixel = 0
+Template2.LayoutOrder = 1
+Template2.Position = UDim2.new(0, 0, 0.5, 0)
+Template2.Size = UDim2.new(0.3, 0, 1, 0)
+
+local Description = Instance.new("Frame")
+Description.Name = "Description"
+Description.BackgroundColor3 = Color3.fromRGB(220, 230, 245)
+Description.BackgroundTransparency = 1
+Description.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Description.BorderSizePixel = 0
+Description.ClipsDescendants = true
+Description.Position = UDim2.new(0, 0, 0.15, 0)
+Description.SelectionGroup = true
+Description.Size = UDim2.new(1, 0, 0.5, 0)
+
+local TextLabel15 = Instance.new("TextLabel")
+TextLabel15.Name = "TextLabel"
+TextLabel15.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel15.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel15.BackgroundTransparency = 1
+TextLabel15.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel15.BorderSizePixel = 0
+TextLabel15.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel15.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel15.Size = UDim2.new(0.925, 0, 0.9, 0)
+TextLabel15.Text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nec ullamcorper ante. Nulla auctor bibendum metus, id luctus leo bibendum sed."
+TextLabel15.TextColor3 = Color3.fromRGB(69, 72, 79)
+TextLabel15.TextScaled = true
+TextLabel15.TextSize = 40
+TextLabel15.TextWrapped = true
+TextLabel15.TextYAlignment = Enum.TextYAlignment.Top
+TextLabel15.Parent = Description
+
+Description.Parent = Template2
+
+local Title4 = Instance.new("Frame")
+Title4.Name = "Title"
+Title4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Title4.BackgroundTransparency = 1
+Title4.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Title4.BorderSizePixel = 0
+Title4.Size = UDim2.new(1, 0, 0.15, 0)
+
+local Label21 = Instance.new("TextLabel")
+Label21.Name = "Label"
+Label21.AnchorPoint = Vector2.new(0.5, 0.5)
+Label21.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Label21.BackgroundTransparency = 1
+Label21.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Label21.BorderSizePixel = 0
+Label21.FontFace = Font.new("rbxassetid://11598121416")
+Label21.Position = UDim2.new(0.5, 0, 0.5, 0)
+Label21.Size = UDim2.new(0.925, 0, 0.5, 0)
+Label21.Text = "Placeholder (Rarity)"
+Label21.TextColor3 = Color3.fromRGB(112, 113, 128)
+Label21.TextScaled = true
+Label21.TextSize = 14
+Label21.TextWrapped = true
+Label21.Parent = Title4
+
+Title4.Parent = Template2
+
+local Bonuses = Instance.new("Frame")
+Bonuses.Name = "Bonuses"
+Bonuses.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Bonuses.BackgroundTransparency = 1
+Bonuses.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Bonuses.BorderSizePixel = 0
+Bonuses.Position = UDim2.new(0, 0, 0.65, 0)
+Bonuses.Size = UDim2.new(1, 0, 0.2, 0)
+
+local UIGridLayout1 = Instance.new("UIGridLayout")
+UIGridLayout1.Name = "UIGridLayout"
+UIGridLayout1.CellPadding = UDim2.new()
+UIGridLayout1.CellSize = UDim2.new(0.5, 0, 0.5, 0)
+UIGridLayout1.SortOrder = Enum.SortOrder.LayoutOrder
+UIGridLayout1.Parent = Bonuses
+
+local Stat = Instance.new("Frame")
+Stat.Name = "Stat"
+Stat.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Stat.BackgroundTransparency = 1
+Stat.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Stat.BorderSizePixel = 0
+
+local Title5 = Instance.new("TextLabel")
+Title5.Name = "Title"
+Title5.AnchorPoint = Vector2.new(0.5, 0.5)
+Title5.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Title5.BackgroundTransparency = 1
+Title5.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Title5.BorderSizePixel = 0
+Title5.FontFace = Font.new("rbxassetid://11598121416")
+Title5.Position = UDim2.new(0.5, 0, 0.5, 0)
+Title5.Size = UDim2.new(0.75, 0, 0.75, 0)
+Title5.Text = "Attack: 0"
+Title5.TextColor3 = Color3.fromRGB(112, 113, 128)
+Title5.TextScaled = true
+Title5.TextSize = 14
+Title5.TextWrapped = true
+Title5.Parent = Stat
+
+Stat.Parent = Bonuses
+
+local Stat1 = Instance.new("Frame")
+Stat1.Name = "Stat"
+Stat1.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Stat1.BackgroundTransparency = 1
+Stat1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Stat1.BorderSizePixel = 0
+
+local Title6 = Instance.new("TextLabel")
+Title6.Name = "Title"
+Title6.AnchorPoint = Vector2.new(0.5, 0.5)
+Title6.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Title6.BackgroundTransparency = 1
+Title6.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Title6.BorderSizePixel = 0
+Title6.FontFace = Font.new("rbxassetid://11598121416")
+Title6.Position = UDim2.new(0.5, 0, 0.5, 0)
+Title6.Size = UDim2.new(0.75, 0, 0.75, 0)
+Title6.Text = "Attack: 0"
+Title6.TextColor3 = Color3.fromRGB(112, 113, 128)
+Title6.TextScaled = true
+Title6.TextSize = 14
+Title6.TextWrapped = true
+Title6.Parent = Stat1
+
+Stat1.Parent = Bonuses
+
+local Stat2 = Instance.new("Frame")
+Stat2.Name = "Stat"
+Stat2.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Stat2.BackgroundTransparency = 1
+Stat2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Stat2.BorderSizePixel = 0
+
+local Title7 = Instance.new("TextLabel")
+Title7.Name = "Title"
+Title7.AnchorPoint = Vector2.new(0.5, 0.5)
+Title7.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Title7.BackgroundTransparency = 1
+Title7.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Title7.BorderSizePixel = 0
+Title7.FontFace = Font.new("rbxassetid://11598121416")
+Title7.Position = UDim2.new(0.5, 0, 0.5, 0)
+Title7.Size = UDim2.new(0.75, 0, 0.75, 0)
+Title7.Text = "Attack: 0"
+Title7.TextColor3 = Color3.fromRGB(112, 113, 128)
+Title7.TextScaled = true
+Title7.TextSize = 14
+Title7.TextWrapped = true
+Title7.Parent = Stat2
+
+Stat2.Parent = Bonuses
+
+local Stat3 = Instance.new("Frame")
+Stat3.Name = "Stat"
+Stat3.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Stat3.BackgroundTransparency = 1
+Stat3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Stat3.BorderSizePixel = 0
+
+local Title8 = Instance.new("TextLabel")
+Title8.Name = "Title"
+Title8.AnchorPoint = Vector2.new(0.5, 0.5)
+Title8.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Title8.BackgroundTransparency = 1
+Title8.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Title8.BorderSizePixel = 0
+Title8.FontFace = Font.new("rbxassetid://11598121416")
+Title8.Position = UDim2.new(0.5, 0, 0.5, 0)
+Title8.Size = UDim2.new(0.75, 0, 0.75, 0)
+Title8.Text = "Attack: 0"
+Title8.TextColor3 = Color3.fromRGB(112, 113, 128)
+Title8.TextScaled = true
+Title8.TextSize = 14
+Title8.TextWrapped = true
+Title8.Parent = Stat3
+
+Stat3.Parent = Bonuses
+
+Bonuses.Parent = Template2
+
+local Holder4 = Instance.new("Frame")
+Holder4.Name = "Holder"
+Holder4.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+Holder4.BackgroundTransparency = 1
+Holder4.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Holder4.BorderSizePixel = 0
+Holder4.Position = UDim2.new(0, 0, 0.85, 0)
+Holder4.Size = UDim2.new(1, 0, 0.15, 0)
+
+local ImageButton = Instance.new("ImageButton")
+ImageButton.Name = "ImageButton"
+ImageButton.AnchorPoint = Vector2.new(0.5, 0.475)
+ImageButton.AutoButtonColor = false
+ImageButton.BackgroundColor3 = Color3.fromRGB(224, 236, 248)
+ImageButton.BorderColor3 = Color3.fromRGB(0, 0, 0)
+ImageButton.BorderSizePixel = 0
+ImageButton.Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
+ImageButton.ImageTransparency = 1
+ImageButton.Position = UDim2.new(0.5, 0, 0.5, 0)
+ImageButton.Size = UDim2.new(0.925, 0, 0.7, 0)
+
+local TextLabel16 = Instance.new("TextLabel")
+TextLabel16.Name = "TextLabel"
+TextLabel16.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel16.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel16.BackgroundTransparency = 1
+TextLabel16.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel16.BorderSizePixel = 0
+TextLabel16.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel16.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel16.Size = UDim2.new(0.75, 0, 0.75, 0)
+TextLabel16.Text = "Pick"
+TextLabel16.TextColor3 = Color3.fromRGB(69, 72, 79)
+TextLabel16.TextScaled = true
+TextLabel16.TextSize = 14
+TextLabel16.TextWrapped = true
+TextLabel16.Parent = ImageButton
+
+ImageButton.Parent = Holder4
+
+Holder4.Parent = Template2
+
+local Darken = Instance.new("Frame")
+Darken.Name = "Darken"
+Darken.BackgroundColor3 = Color3.fromRGB(231, 233, 245)
+Darken.BackgroundTransparency = 0.75
+Darken.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Darken.BorderSizePixel = 0
+Darken.Size = UDim2.new(1, 0, 1, 0)
+Darken.Visible = false
+Darken.ZIndex = 2
+Darken.Parent = Template2
+
+local Line1 = Instance.new("Frame")
+Line1.Name = "Line1"
+Line1.AnchorPoint = Vector2.new(0.5, 0.5)
+Line1.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+Line1.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Line1.BorderSizePixel = 0
+Line1.Position = UDim2.new(0.5, 0, 0.15, 0)
+Line1.Size = UDim2.new(0.95, 0, 0.5, 0)
+
+local UIAspectRatioConstraint30 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint30.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint30.AspectRatio = 100
+UIAspectRatioConstraint30.Parent = Line1
+
+local Dot4 = Instance.new("Frame")
+Dot4.Name = "Dot"
+Dot4.AnchorPoint = Vector2.new(0.5, 0.5)
+Dot4.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+Dot4.BackgroundTransparency = 1
+Dot4.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Dot4.BorderSizePixel = 0
+Dot4.Position = UDim2.new(0.5, 0, 0.5, 0)
+Dot4.Size = UDim2.new(2.5, 0, 2.5, 0)
+Dot4.ZIndex = 2
+
+local UIAspectRatioConstraint31 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint31.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint31.Parent = Dot4
+
+local TextLabel17 = Instance.new("TextLabel")
+TextLabel17.Name = "TextLabel"
+TextLabel17.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel17.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel17.BackgroundTransparency = 1
+TextLabel17.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel17.BorderSizePixel = 0
+TextLabel17.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel17.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel17.Size = UDim2.new(2, 0, 2, 0)
+TextLabel17.Text = "��"
+TextLabel17.TextColor3 = Color3.fromRGB(173, 188, 205)
+TextLabel17.TextScaled = true
+TextLabel17.TextSize = 100
+TextLabel17.TextWrapped = true
+TextLabel17.Parent = Dot4
+
+Dot4.Parent = Line1
+
+local DotWhite4 = Instance.new("Frame")
+DotWhite4.Name = "DotWhite"
+DotWhite4.AnchorPoint = Vector2.new(0.5, 0.5)
+DotWhite4.BackgroundColor3 = Color3.fromRGB(250, 252, 255)
+DotWhite4.BackgroundTransparency = 1
+DotWhite4.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DotWhite4.BorderSizePixel = 0
+DotWhite4.Position = UDim2.new(0.5, 0, 0.5, 0)
+DotWhite4.Size = UDim2.new(5, 0, 5, 0)
+
+local UIAspectRatioConstraint32 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint32.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint32.Parent = DotWhite4
+
+local UICorner8 = Instance.new("UICorner")
+UICorner8.Name = "UICorner"
+UICorner8.CornerRadius = UDim.new(1, 0)
+UICorner8.Parent = DotWhite4
+
+local TextLabel18 = Instance.new("TextLabel")
+TextLabel18.Name = "TextLabel"
+TextLabel18.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel18.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel18.BackgroundTransparency = 1
+TextLabel18.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel18.BorderSizePixel = 0
+TextLabel18.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel18.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel18.Size = UDim2.new(2, 0, 2, 0)
+TextLabel18.Text = "��"
+TextLabel18.TextColor3 = Color3.fromRGB(250, 252, 255)
+TextLabel18.TextScaled = true
+TextLabel18.TextSize = 100
+TextLabel18.TextWrapped = true
+TextLabel18.Parent = DotWhite4
+
+DotWhite4.Parent = Line1
+
+Line1.Parent = Template2
+
+local Line2 = Instance.new("Frame")
+Line2.Name = "Line2"
+Line2.AnchorPoint = Vector2.new(0.5, 0.5)
+Line2.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+Line2.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Line2.BorderSizePixel = 0
+Line2.Position = UDim2.new(0.5, 0, 0.65, 0)
+Line2.Size = UDim2.new(0.95, 0, 0.5, 0)
+
+local UIAspectRatioConstraint33 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint33.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint33.AspectRatio = 100
+UIAspectRatioConstraint33.Parent = Line2
+
+local Dot5 = Instance.new("Frame")
+Dot5.Name = "Dot"
+Dot5.AnchorPoint = Vector2.new(0.5, 0.5)
+Dot5.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+Dot5.BackgroundTransparency = 1
+Dot5.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Dot5.BorderSizePixel = 0
+Dot5.Position = UDim2.new(0.5, 0, 0.5, 0)
+Dot5.Size = UDim2.new(2.5, 0, 2.5, 0)
+Dot5.ZIndex = 2
+
+local UIAspectRatioConstraint34 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint34.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint34.Parent = Dot5
+
+local TextLabel19 = Instance.new("TextLabel")
+TextLabel19.Name = "TextLabel"
+TextLabel19.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel19.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel19.BackgroundTransparency = 1
+TextLabel19.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel19.BorderSizePixel = 0
+TextLabel19.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel19.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel19.Size = UDim2.new(2, 0, 2, 0)
+TextLabel19.Text = "��"
+TextLabel19.TextColor3 = Color3.fromRGB(173, 188, 205)
+TextLabel19.TextScaled = true
+TextLabel19.TextSize = 100
+TextLabel19.TextWrapped = true
+TextLabel19.Parent = Dot5
+
+Dot5.Parent = Line2
+
+local DotWhite5 = Instance.new("Frame")
+DotWhite5.Name = "DotWhite"
+DotWhite5.AnchorPoint = Vector2.new(0.5, 0.5)
+DotWhite5.BackgroundColor3 = Color3.fromRGB(250, 252, 255)
+DotWhite5.BackgroundTransparency = 1
+DotWhite5.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DotWhite5.BorderSizePixel = 0
+DotWhite5.Position = UDim2.new(0.5, 0, 0.5, 0)
+DotWhite5.Size = UDim2.new(5, 0, 5, 0)
+
+local UIAspectRatioConstraint35 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint35.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint35.Parent = DotWhite5
+
+local UICorner9 = Instance.new("UICorner")
+UICorner9.Name = "UICorner"
+UICorner9.CornerRadius = UDim.new(1, 0)
+UICorner9.Parent = DotWhite5
+
+local TextLabel20 = Instance.new("TextLabel")
+TextLabel20.Name = "TextLabel"
+TextLabel20.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel20.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel20.BackgroundTransparency = 1
+TextLabel20.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel20.BorderSizePixel = 0
+TextLabel20.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel20.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel20.Size = UDim2.new(2, 0, 2, 0)
+TextLabel20.Text = "��"
+TextLabel20.TextColor3 = Color3.fromRGB(250, 252, 255)
+TextLabel20.TextScaled = true
+TextLabel20.TextSize = 100
+TextLabel20.TextWrapped = true
+TextLabel20.Parent = DotWhite5
+
+DotWhite5.Parent = Line2
+
+Line2.Parent = Template2
+
+local Line3 = Instance.new("Frame")
+Line3.Name = "Line3"
+Line3.AnchorPoint = Vector2.new(0.5, 0)
+Line3.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+Line3.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Line3.BorderSizePixel = 0
+Line3.Position = UDim2.new(0.5, 0, 0.85, 0)
+Line3.Size = UDim2.new(0.95, 0, 0.5, 0)
+
+local UIAspectRatioConstraint36 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint36.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint36.AspectRatio = 100
+UIAspectRatioConstraint36.Parent = Line3
+
+local Dot6 = Instance.new("Frame")
+Dot6.Name = "Dot"
+Dot6.AnchorPoint = Vector2.new(0.5, 0.5)
+Dot6.BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+Dot6.BackgroundTransparency = 1
+Dot6.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Dot6.BorderSizePixel = 0
+Dot6.Position = UDim2.new(0.5, 0, 0.5, 0)
+Dot6.Size = UDim2.new(2.5, 0, 2.5, 0)
+Dot6.ZIndex = 2
+
+local UIAspectRatioConstraint37 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint37.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint37.Parent = Dot6
+
+local TextLabel21 = Instance.new("TextLabel")
+TextLabel21.Name = "TextLabel"
+TextLabel21.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel21.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel21.BackgroundTransparency = 1
+TextLabel21.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel21.BorderSizePixel = 0
+TextLabel21.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel21.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel21.Size = UDim2.new(2, 0, 2, 0)
+TextLabel21.Text = "��"
+TextLabel21.TextColor3 = Color3.fromRGB(173, 188, 205)
+TextLabel21.TextScaled = true
+TextLabel21.TextSize = 100
+TextLabel21.TextWrapped = true
+TextLabel21.Parent = Dot6
+
+Dot6.Parent = Line3
+
+local DotWhite6 = Instance.new("Frame")
+DotWhite6.Name = "DotWhite"
+DotWhite6.AnchorPoint = Vector2.new(0.5, 0.5)
+DotWhite6.BackgroundColor3 = Color3.fromRGB(250, 252, 255)
+DotWhite6.BackgroundTransparency = 1
+DotWhite6.BorderColor3 = Color3.fromRGB(0, 0, 0)
+DotWhite6.BorderSizePixel = 0
+DotWhite6.Position = UDim2.new(0.5, 0, 0.5, 0)
+DotWhite6.Size = UDim2.new(5, 0, 5, 0)
+
+local UIAspectRatioConstraint38 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint38.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint38.Parent = DotWhite6
+
+local UICorner10 = Instance.new("UICorner")
+UICorner10.Name = "UICorner"
+UICorner10.CornerRadius = UDim.new(1, 0)
+UICorner10.Parent = DotWhite6
+
+local TextLabel22 = Instance.new("TextLabel")
+TextLabel22.Name = "TextLabel"
+TextLabel22.AnchorPoint = Vector2.new(0.5, 0.5)
+TextLabel22.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel22.BackgroundTransparency = 1
+TextLabel22.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TextLabel22.BorderSizePixel = 0
+TextLabel22.FontFace = Font.new("rbxassetid://11598121416")
+TextLabel22.Position = UDim2.new(0.5, 0, 0.5, 0)
+TextLabel22.Size = UDim2.new(2, 0, 2, 0)
+TextLabel22.Text = "��"
+TextLabel22.TextColor3 = Color3.fromRGB(250, 252, 255)
+TextLabel22.TextScaled = true
+TextLabel22.TextSize = 100
+TextLabel22.TextWrapped = true
+TextLabel22.Parent = DotWhite6
+
+DotWhite6.Parent = Line3
+
+Line3.Parent = Template2
+
+Template2.Parent = Cards
+
+local UIListLayout9 = Instance.new("UIListLayout")
+UIListLayout9.Name = "UIListLayout"
+UIListLayout9.FillDirection = Enum.FillDirection.Horizontal
+UIListLayout9.HorizontalAlignment = Enum.HorizontalAlignment.Center
+UIListLayout9.HorizontalFlex = Enum.UIFlexAlignment.SpaceEvenly
+UIListLayout9.SortOrder = Enum.SortOrder.LayoutOrder
+UIListLayout9.Parent = Cards
+
+local UIAspectRatioConstraint39 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint39.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint39.AspectRatio = 2.12
+UIAspectRatioConstraint39.Parent = Cards
+
+Cards.Parent = Traits
+
+Traits.Parent = Pages
+
+Pages.Parent = Main
+
+local TitleContainer = Instance.new("Frame")
+TitleContainer.Name = "TitleContainer"
+TitleContainer.AnchorPoint = Vector2.new(0, 0.5)
+TitleContainer.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TitleContainer.BackgroundTransparency = 1
+TitleContainer.BorderColor3 = Color3.fromRGB(0, 0, 0)
+TitleContainer.BorderSizePixel = 0
+TitleContainer.Position = UDim2.new(0, 0, 0.087, 0)
+TitleContainer.Size = UDim2.new(0.162, 0, 0.175, 0)
+
+local Title9 = Instance.new("TextLabel")
+Title9.Name = "Title"
+Title9.AnchorPoint = Vector2.new(0.5, 0.5)
+Title9.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Title9.BackgroundTransparency = 1
+Title9.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Title9.BorderSizePixel = 0
+Title9.FontFace = Font.new(
+  "rbxassetid://12187366846",
+  Enum.FontWeight.SemiBold,
+  Enum.FontStyle.Normal
+)
+Title9.Position = UDim2.new(0.5, 0, 0.5, 0)
+Title9.RichText = true
+Title9.Size = UDim2.new(0.9, 0, 0.5, 0)
+Title9.Text = "Autian Essentials"
+Title9.TextColor3 = Color3.fromRGB(109, 123, 150)
+Title9.TextScaled = true
+Title9.TextSize = 45
+Title9.TextWrapped = true
+Title9.ZIndex = 2
+Title9.Parent = TitleContainer
+
+TitleContainer.Parent = Main
+
+local UIAspectRatioConstraint40 = Instance.new("UIAspectRatioConstraint")
+UIAspectRatioConstraint40.Name = "UIAspectRatioConstraint"
+UIAspectRatioConstraint40.AspectRatio = 1.78
+UIAspectRatioConstraint40.Parent = Main
+
+Main.Parent = AutianEssentials
+
+local Cover = Instance.new("ImageLabel")
+Cover.Name = "Cover"
+Cover.BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+Cover.BorderColor3 = Color3.fromRGB(0, 0, 0)
+Cover.BorderSizePixel = 0
+Cover.Image = "rbxassetid://18859080955"
+Cover.ScaleType = Enum.ScaleType.Crop
+Cover.Size = UDim2.new(1, 0, 1, 0)
+Cover.SliceCenter = Rect.new(512, 512, 512, 512)
+Cover.TileSize = UDim2.new(0.1, 0, 0.25, 0)
+Cover.Parent = AutianEssentials
+
+return AutianEssentials

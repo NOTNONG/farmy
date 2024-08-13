@@ -186,9 +186,18 @@ return function(config)
 		local handlers = {
 			Button = function(component: typeof(frame.Button), data)
 				component.FillTitle.Label.Text = data.title
+				local prevFeedback
 				component.Button.Activated:Connect(function()
 					if type(features[data.name]) == "function" then
 						task.spawn(features[data.name])
+						if prevFeedback then
+							task.cancel(prevFeedback)
+						end
+						prevFeedback = task.spawn(function()
+							component.Button.Label.Text = "Activated!"
+							task.wait(0.5)
+							component.Button.Label.Text = "Activate"
+						end)
 					else
 						warn(`Button {data.name} has no callback`)
 					end

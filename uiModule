@@ -333,6 +333,7 @@ return function(config)
 			end,
 			Checklist = function(component: typeof(frame.Checklist), data)
 				features[data.name] = {}
+				local order = 0
 				local list = {}
 				local instanceList = {}
 				local searchBox = component.Top.Search.Label
@@ -373,10 +374,12 @@ return function(config)
 
 				local function add(name, default)
 					if list[name] == nil then
+						order += 1
 						local item = template:Clone()
 						item.Visible = filter(name)
 						item.Label.Text = name
 						item.Name = name
+						item.LayoutOrder = order
 						item.Parent = content
 						instanceList[name] = item
 
@@ -427,6 +430,7 @@ return function(config)
 			end,
 			List = function(component: typeof(frame.List), data)
 				features[data.name] = {}
+				local order = 0
 				local list = {}
 				local instanceList = {}
 				local searchBox = component.Top.Search.Label
@@ -459,10 +463,12 @@ return function(config)
 					if list[name] then
 						warn(`item {name} already exists in list {data.name}`)
 					else
+						order += 1
 						local item = template:Clone()
 						item.Visible = filter(name)
 						item.Label.Text = name
 						item.Name = name
+						item.LayoutOrder = order
 						item.Parent = content
 						list[name] = true
 						instanceList[name] = item

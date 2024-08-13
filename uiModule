@@ -326,6 +326,13 @@ return function(config)
 				template.Visible = false
 				component.Top.TitleHolder.Label.Text = data.title
 
+				local function fireCallback(name, value)
+					local callback = features[data.name].callback
+					if callback then
+						task.spawn(callback, name, value)
+					end
+				end
+
 				local function toggle(name, bool)
 					list[name] = bool
 
@@ -333,16 +340,20 @@ return function(config)
 					instanceList[name].Checkbox[tostring(toggled)].Visible = true
 					instanceList[name].Checkbox[tostring(not toggled)].Visible = false
 
-					local callback = features[data.name].callback
-					if callback then
-						task.spawn(callback, name, bool)
-					end
+					fireCallback(name, bool)
 				end
 
 				local function filter(name)
 					if string.find(string.lower(name), string.lower(searchBox.Text)) then
 						return true
 					end
+				end
+
+				local function remove(name)
+					list[name] = nil
+					instanceList[name]:Destroy()
+					instanceList[name] = nil
+					fireCallback(name, false)
 				end
 
 				local function add(name, default)
@@ -374,17 +385,24 @@ return function(config)
 				features[data.name].get = function(name)
 					return list[name]
 				end
+				features[data.name].getAll = function()
+					return table.clone(list)
+				end
 				features[data.name].add = add
 				features[data.name].set = function(name, value)
 					if list[name] ~= nil then
 						toggle(name, value)
 					end
 				end
+
 				features[data.name].remove = function(name)
 					if list[name] ~= nil then
-						list[name] = nil
-						instanceList[name]:Destroy()
-						instanceList[name] = nil
+						remove(name)
+					end
+				end
+				features[data.name].removeAll = function()
+					for name, _ in pairs(list) do
+						remove(name)
 					end
 				end
 
@@ -409,17 +427,17 @@ return function(config)
 					end
 				end
 
+				local function filter(name)
+					if string.find(string.lower(name), string.lower(searchBox.Text)) then
+						return true
+					end
+				end
+
 				local function remove(name)
 					list[name] = nil
 					instanceList[name]:Destroy()
 					instanceList[name] = nil
 					fireCallback(name, false)
-				end
-
-				local function filter(name)
-					if string.find(string.lower(name), string.lower(searchBox.Text)) then
-						return true
-					end
 				end
 
 				local function add(name)
@@ -459,10 +477,22 @@ return function(config)
 					addBox.Text = ""
 				end)
 
-				features[data.name].add = add
-				features[data.name].remove = remove
 				features[data.name].get = function(name)
 					return list[name]
+				end
+				features[data.name].getAll = function()
+					return table.clone(list)
+				end
+				features[data.name].add = add
+				features[data.name].remove = function(name)
+					if list[name] ~= nil then
+						remove(name)
+					end
+				end
+				features[data.name].removeAll = function()
+					for name, _ in pairs(list) do
+						remove(name)
+					end
 				end
 
 				for _, name in pairs(data.items) do

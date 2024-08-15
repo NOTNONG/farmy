@@ -540,7 +540,7 @@ return function(config, saved)
 				end
 			end
 
-			for name, v in pairs(data.list) do
+			for name, v in pairs(data.default) do
 				local savedValue = saved[data.name] and saved[data.name][name]
 				add(name, v.title, if savedValue ~= nil then savedValue else v.default)
 			end
@@ -634,7 +634,7 @@ return function(config, saved)
 				end
 			end
 
-			for _, name in pairs((if data.noSave then nil else saved[data.name]) or data.items) do
+			for name, _ in pairs((if data.noSave then nil else saved[data.name]) or data.default) do
 				add(name)
 			end
 

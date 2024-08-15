@@ -596,16 +596,16 @@ return function(config, saved)
 		}
 
 		local i = 1
-		for name, v in pairs(config.features.sections) do
+		for _, v in pairs(config.features.sections) do
 			i += 1
 			local section = templates.Section:Clone()
-			section.Fill.Label.Text = name
+			section.Fill.Label.Text = v.title
 			section.Visible = true
 			section.LayoutOrder = i
 			section.Parent = frame
 			local components = {}
 
-			for _, item in pairs(v) do
+			for _, item in pairs(v.components) do
 				if features[item.name] ~= nil then
 					warn(`{item.name} repeated`)
 					continue

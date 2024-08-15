@@ -130,6 +130,7 @@ return function(config, saved)
 				switch()
 			end)
 			control.setMode = setMode
+			print(saved.mode, config.modes[saved.mode])
 			if saved.mode and config.modes[saved.mode] then
 				setMode(saved.mode)
 			end

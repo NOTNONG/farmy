@@ -10,7 +10,7 @@ return function(config, saved)
 		saved = {}
 	end
 	--
-	local control = {} :: { modeChanged: (string) -> ()?, saveChanged: () -> ()? }
+	local control = {} :: { saveChanged: () -> ()? }
 	local save = {}
 	control.save = save
 	local janitorList = {}
@@ -99,13 +99,25 @@ return function(config, saved)
 			template.Visible = false
 			table.insert(config.modes, "None")
 
+			local modeChanged
+			local function fireModeChanged()
+				if modeChanged then
+					task.spawn(modeChanged, control.mode)
+				end
+			end
+
+			control.handleModeChange = function(func)
+				modeChanged = func
+				fireModeChanged()
+			end
+
 			local function setMode(name)
 				if control.mode ~= name then
 					control.mode = name
 					mode.TextLabel.Text = `Mode: {name}`
-					if control.modeChanged then
-						task.spawn(control.modeChanged, name)
-					end
+
+					fireModeChanged()
+
 					save.mode = name
 					saveChanged()
 				end
@@ -130,10 +142,12 @@ return function(config, saved)
 			mode.Activated:Connect(function()
 				switch()
 			end)
-			control.setMode = setMode
+
 			if saved.mode and table.find(config.modes, saved.mode) then
 				setMode(saved.mode)
 			end
+
+			control.setMode = setMode
 		end
 
 		--minimize
@@ -220,381 +234,412 @@ return function(config, saved)
 			end
 		end
 
-		local handlers = {
-			Button = function(component: typeof(frame.Button), data)
-				component.FillTitle.Label.Text = data.title
-				local prevFeedback
-				component.Button.Activated:Connect(function()
-					if type(features[data.name]) == "function" then
-						task.spawn(features[data.name])
-						if prevFeedback then
-							task.cancel(prevFeedback)
-						end
-						prevFeedback = task.spawn(function()
-							component.Button.Label.Text = "Activated!"
-							task.wait(0.5)
-							component.Button.Label.Text = "Activate"
-						end)
-					else
-						warn(`Button {data.name} has no callback`)
-					end
-				end)
+		local componentMeta = {
+			spawnCallback = function(self, ...)
+				if self.callback then
+					task.spawn(self.callback, ...)
+				end
 			end,
-			Switch = function(component: typeof(frame.Switch), data)
-				component.FillTitle.Label.Text = data.title
-				local states = component.ButtonHolder
-				local colors = {
-					[true] = {
-						states.On.BackgroundColor3,
-						states.On.Label.TextColor3,
-						states.On.Underline.BackgroundColor3,
-					},
-					[false] = {
-						states.On.BackgroundColor3,
-						states.Off.Label.TextColor3,
-						states.Off.Underline.BackgroundColor3,
-					},
-				}
-				local switched
-
-				local function switch(bool)
-					if switched ~= bool then
-						switched = bool
-						features[data.name] = switched
-						for _, state in pairs(states:GetChildren()) do
-							local i = switched
-							if state.Name == "Off" then
-								i = not i
-							end
-							state.BackgroundColor3 = colors[i][1]
-							state.Label.TextColor3 = colors[i][2]
-							state.Underline.BackgroundColor3 = colors[i][3]
-						end
-						if not data.noSave then
-							save[data.name] = switched
-							saveChanged()
-						end
+			__newindex = function(self, k, v)
+				rawset(self, k, v)
+				if k == "callback" then
+					if self.fireCallback then
+						self.fireCallback()
 					end
 				end
-
-				local savedValue = saved[data.name]
-				switch(if not data.noSave and savedValue ~= nil then savedValue else data.default)
-				states.On.Activated:Connect(function()
-					switch(true)
-				end)
-				states.Off.Activated:Connect(function()
-					switch(false)
-				end)
 			end,
-			InputField = function(component: typeof(frame.InputField), data)
-				component.FillTitle.Label.Text = data.title
+		}
+		componentMeta.__index = componentMeta
 
-				local current = (if data.noSave then nil else saved[data.name]) or data.default or ""
-				local function update()
-					features[data.name] = current
+		local handlers = {}
+		handlers.Button = function(self, component: typeof(frame.Button), data)
+			component.FillTitle.Label.Text = data.title
+
+			local prevFeedback
+			component.Button.Activated:Connect(function()
+				if type(self.callback) == "function" then
+					self:spawnCallback()
+
+					if prevFeedback then
+						task.cancel(prevFeedback)
+					end
+					prevFeedback = task.spawn(function()
+						component.Button.Label.Text = "Activated!"
+						task.wait(0.5)
+						component.Button.Label.Text = "Activate"
+					end)
+				else
+					warn(`Button {data.name} has no callback`)
+				end
+			end)
+		end
+
+		handlers.Switch = function(self, component: typeof(frame.Switch), data)
+			component.FillTitle.Label.Text = data.title
+			local states = component.ButtonHolder
+			local colors = {
+				[true] = {
+					states.On.BackgroundColor3,
+					states.On.Label.TextColor3,
+					states.On.Underline.BackgroundColor3,
+				},
+				[false] = {
+					states.On.BackgroundColor3,
+					states.Off.Label.TextColor3,
+					states.Off.Underline.BackgroundColor3,
+				},
+			}
+
+			self.fireCallback = function()
+				self:spawnCallback(self.value)
+			end
+
+			local switched
+			local function switch(bool)
+				if switched ~= bool then
+					switched = bool
+					self.value = switched
+
+					self.fireCallback()
+
+					for _, state in pairs(states:GetChildren()) do
+						local i = switched
+						if state.Name == "Off" then
+							i = not i
+						end
+						state.BackgroundColor3 = colors[i][1]
+						state.Label.TextColor3 = colors[i][2]
+						state.Underline.BackgroundColor3 = colors[i][3]
+					end
+
 					if not data.noSave then
-						save[data.name] = current
+						save[data.name] = switched
 						saveChanged()
 					end
 				end
+			end
 
-				local textBox = component.FillField.Label
-				textBox.Text = current
-				textBox.FocusLost:Connect(function(entered)
-					if entered then
-						current = textBox.Text
-						update()
-					else
-						textBox.Text = current
-					end
-				end)
-				update()
-			end,
-			Dropdown = function(component: typeof(frame.Dropdown), data)
-				features[data.name] = {}
-				local choices = {}
-				local expanded = component.Expanded
-				local itemsHolder = expanded.Below.Frame.Holder
-				local template = itemsHolder.Item
-				template.Visible = false
+			local savedValue = saved[data.name]
+			switch(if not data.noSave and savedValue ~= nil then savedValue else data.default)
+			states.On.Activated:Connect(function()
+				switch(true)
+			end)
+			states.Off.Activated:Connect(function()
+				switch(false)
+			end)
+		end
 
-				local switched = false
-				local function switch()
-					switched = not switched
-					expanded.Visible = switched
-				end
+		handlers.InputField = function(self, component: typeof(frame.InputField), data)
+			component.FillTitle.Label.Text = data.title
 
-				component.FillTitle.Label.Text = data.title
-				local function choose(choice)
-					if choices[choice] then
-						features[data.name].selected = choice
-						component.Expand.Label.Text = choice
-						local callback = features[data.name].callback
-						if callback then
-							task.spawn(callback, choice)
-						end
-						if not data.noSave then
-							save[data.name] = choice
-							saveChanged()
-						end
-					else
-						warn(`choice {choice} doesn't exist`)
-					end
-				end
+			self.fireCallback = function()
+				self:spawnCallback(self.value)
+			end
 
-				for _, choice in pairs(data.choices) do
-					if not choices[choice] then
-						choices[choice] = true
-						local item = template:Clone()
-						item.Label.Text = choice
-						item.Name = choice
-						item.Visible = true
-						item.Parent = itemsHolder
-						item.Activated:Connect(function()
-							choose(choice)
-							if switched then
-								switch()
-							end
-						end)
-
-						if not features[data.name].selected then
-							choose(choice)
-						end
-					end
-				end
-
-				component.Expand.Activated:Connect(switch)
-				features[data.name].choose = choose
+			local current = (if data.noSave then nil else saved[data.name]) or data.default or ""
+			local function update()
+				self.value = current
+				self.fireCallback()
 				if not data.noSave then
-					local savedChoice = saved[data.name]
-					if savedChoice and choices[savedChoice] then
-						choose(savedChoice)
-					end
+					save[data.name] = current
+					saveChanged()
 				end
-			end,
-			Checklist = function(component: typeof(frame.Checklist), data)
-				features[data.name] = {}
-				local list = {}
-				if not data.noSave then
-					save[data.name] = {}
+			end
+
+			local textBox = component.FillField.Label
+			textBox.Text = current
+			textBox.FocusLost:Connect(function(entered)
+				if entered then
+					current = textBox.Text
+					update()
+				else
+					textBox.Text = current
 				end
+			end)
+			update()
+		end
 
-				local searchBox = component.Top.Search.Label
-				local content = component.Content
-				local template = content.Item
-				template.Visible = false
-				component.Top.TitleHolder.Label.Text = data.title
+		handlers.Dropdown = function(self, component: typeof(frame.Dropdown), data)
+			component.FillTitle.Label.Text = data.title
 
-				local function fireCallback(name, value)
-					local callback = features[data.name].callback
-					if callback then
-						task.spawn(callback, name, value)
-					end
-				end
+			self.fireCallback = function()
+				self:spawnCallback(self.value)
+			end
 
-				local function toggle(name, bool, noCallback)
-					list[name].value = bool
+			local choices = {}
+			local expanded = component.Expanded
+			local itemsHolder = expanded.Below.Frame.Holder
+			local template = itemsHolder.Item
+			template.Visible = false
 
-					local checkbox = list[name].instance.Checkbox
-					checkbox[tostring(bool)].Visible = true
-					checkbox[tostring(not bool)].Visible = false
+			local switched = false
+			local function switch()
+				switched = not switched
+				expanded.Visible = switched
+			end
 
-					if not noCallback then
-						fireCallback(name, bool)
-					end
+			local function choose(choice)
+				if choices[choice] then
+					self.value = choice
+					component.Expand.Label.Text = choice
+
+					self.fireCallback()
 
 					if not data.noSave then
-						save[data.name][name] = bool
+						save[data.name] = choice
 						saveChanged()
 					end
+				else
+					warn(`choice {choice} doesn't exist`)
 				end
+			end
 
-				local function filter(name)
-					if string.find(string.lower(name), string.lower(searchBox.Text)) then
-						return true
-					end
-				end
-
-				local function add(name, title, default)
-					if list[name] == nil then
-						local item = template:Clone()
-						item.Visible = filter(title)
-						item.Label.Text = title
-						item.Name = name
-						item.Parent = content
-						list[name] = { title = title, instance = item }
-						toggle(name, default, true)
-						item.Checkbox.Activated:Connect(function()
-							toggle(name, not list[name].value)
-						end)
-					end
-				end
-
-				searchBox.FocusLost:Connect(function(entered)
-					if not entered then
-						searchBox.Text = ""
-					end
-
-					for _, v in pairs(list) do
-						v.instance.Visible = filter(v.title)
-					end
-				end)
-
-				features[data.name].get = function(name)
-					return list[name]
-				end
-				features[data.name].getAll = function()
-					return table.clone(list)
-				end
-				features[data.name].add = function(name, title, default)
-					if data.noSave then
-						add(name, title, default)
-					else
-						warn(`can't add {name} to saveable checklist {data.name}`)
-					end
-				end
-				features[data.name].set = function(name, value)
-					if list[name] ~= nil then
-						toggle(name, value)
-					end
-				end
-
-				local function canRemove()
-					if not data.noSave then
-						warn(`can't remove from saveable checklist {data.name}`)
-						return
-					end
-					return true
-				end
-
-				local function remove(name)
-					list[name].instance:Destroy()
-					list[name] = nil
-				end
-
-				features[data.name].remove = function(name)
-					if canRemove() then
-						if list[name] ~= nil then
-							remove(name)
+			for _, choice in pairs(data.choices) do
+				if not choices[choice] then
+					choices[choice] = true
+					local item = template:Clone()
+					item.Label.Text = choice
+					item.Name = choice
+					item.Visible = true
+					item.Parent = itemsHolder
+					item.Activated:Connect(function()
+						choose(choice)
+						if switched then
+							switch()
 						end
+					end)
+
+					if not self.value then
+						choose(choice)
 					end
 				end
-				features[data.name].removeAll = function()
-					if canRemove() then
-						for name, _ in pairs(list) do
-							remove(name)
-						end
-					end
+			end
+
+			component.Expand.Activated:Connect(switch)
+			self.choose = choose
+			if not data.noSave then
+				local savedChoice = saved[data.name]
+				if savedChoice and choices[savedChoice] then
+					choose(savedChoice)
+				end
+			end
+		end
+
+		local function filter(name, query)
+			if string.find(string.lower(name), string.lower(query)) then
+				return true
+			end
+		end
+
+		handlers.Checklist = function(self, component: typeof(frame.Checklist), data)
+			local list = {}
+			if not data.noSave then
+				save[data.name] = {}
+			end
+
+			local searchBox = component.Top.Search.Label
+			local content = component.Content
+			local template = content.Item
+			template.Visible = false
+			component.Top.TitleHolder.Label.Text = data.title
+
+			local function toggle(name, bool, noCallback)
+				list[name].value = bool
+
+				local checkbox = list[name].instance.Checkbox
+				checkbox[tostring(bool)].Visible = true
+				checkbox[tostring(not bool)].Visible = false
+
+				if not noCallback then
+					self:spawnCallback(name, bool)
 				end
 
-				for name, v in pairs(data.list) do
-					local savedValue = saved[data.name] and saved[data.name][name]
-					add(name, v.title, if savedValue ~= nil then savedValue else v.default)
-				end
-			end,
-			List = function(component: typeof(frame.List), data)
-				features[data.name] = {}
-				local list = {}
 				if not data.noSave then
-					save[data.name] = list
+					save[data.name][name] = bool
+					saveChanged()
+				end
+			end
+
+			local function add(name, title, default)
+				if list[name] == nil then
+					local item = template:Clone()
+					item.Visible = filter(title, searchBox.Text)
+					item.Label.Text = title
+					item.Name = name
+					item.Parent = content
+					list[name] = { title = title, instance = item }
+					toggle(name, default, true)
+					item.Checkbox.Activated:Connect(function()
+						toggle(name, not list[name].value)
+					end)
+				end
+			end
+
+			searchBox.FocusLost:Connect(function(entered)
+				if not entered then
+					searchBox.Text = ""
 				end
 
-				local instanceList = {}
-				local searchBox = component.Top.Search.Label
-				local content = component.Content
-				local template = content.Item
-				template.Visible = false
-				component.Top.TitleHolder.Label.Text = data.title
-
-				local function fireCallback(name, value)
-					local callback = features[data.name].callback
-					if callback then
-						task.spawn(callback, name, value)
-					end
+				for _, v in pairs(list) do
+					v.instance.Visible = filter(v.title, searchBox.Text)
 				end
+			end)
 
-				local function filter(name)
-					if string.find(string.lower(name), string.lower(searchBox.Text)) then
-						return true
-					end
+			self.get = function(name)
+				return list[name]
+			end
+			self.getAll = function()
+				local result = {}
+				for name, v in pairs(list) do
+					result[name] = v.value
 				end
-
-				local function remove(name)
-					list[name] = nil
-					instanceList[name]:Destroy()
-					instanceList[name] = nil
-					fireCallback(name, false)
-					if not data.noSave then
-						saveChanged()
-					end
+				return result
+			end
+			self.add = function(name, title, default)
+				if data.noSave then
+					add(name, title, default)
+				else
+					warn(`can't add {name} to saveable checklist {data.name}`)
 				end
-
-				local function add(name, noCallback)
-					if list[name] then
-						warn(`item {name} already exists in list {data.name}`)
-					else
-						local item = template:Clone()
-						item.Visible = filter(name)
-						item.Label.Text = name
-						item.Name = name
-						item.Parent = content
-						list[name] = true
-						instanceList[name] = item
-
-						if not noCallback then
-							fireCallback(name, true)
-							if not data.noSave then
-								saveChanged()
-							end
-						end
-
-						item.Delete.Activated:Connect(function()
-							remove(name)
-						end)
-					end
+			end
+			self.set = function(name, value)
+				if list[name] ~= nil then
+					toggle(name, value)
 				end
+			end
 
-				searchBox.FocusLost:Connect(function(entered)
-					if not entered then
-						searchBox.Text = ""
-					end
-
-					for name, item in pairs(instanceList) do
-						item.Visible = filter(name)
-					end
-				end)
-
-				local addBox = component.Top.Add.Label
-				addBox.FocusLost:Connect(function(entered)
-					if entered then
-						add(addBox.Text)
-					end
-					addBox.Text = ""
-				end)
-
-				features[data.name].get = function(name)
-					return list[name]
+			local function canRemove()
+				if not data.noSave then
+					warn(`can't remove from saveable checklist {data.name}`)
+					return
 				end
-				features[data.name].getAll = function()
-					return table.clone(list)
-				end
-				features[data.name].add = add
-				features[data.name].remove = function(name)
+				return true
+			end
+
+			local function remove(name)
+				list[name].instance:Destroy()
+				list[name] = nil
+			end
+
+			self.remove = function(name)
+				if canRemove() then
 					if list[name] ~= nil then
 						remove(name)
 					end
 				end
-				features[data.name].removeAll = function()
+			end
+			self.removeAll = function()
+				if canRemove() then
 					for name, _ in pairs(list) do
 						remove(name)
 					end
 				end
+			end
 
-				for _, name in pairs((if data.noSave then nil else saved[data.name]) or data.items) do
-					add(name, true)
+			for name, v in pairs(data.list) do
+				local savedValue = saved[data.name] and saved[data.name][name]
+				add(name, v.title, if savedValue ~= nil then savedValue else v.default)
+			end
+
+			self.fireCallback = function()
+				for name, v in pairs(list) do
+					self:spawnCallback(name, v.value)
 				end
-			end,
-		}
+			end
+		end
+
+		handlers.List = function(self, component: typeof(frame.List), data)
+			local list = {}
+			if not data.noSave then
+				save[data.name] = list
+			end
+
+			local instanceList = {}
+			local searchBox = component.Top.Search.Label
+			local content = component.Content
+			local template = content.Item
+			template.Visible = false
+			component.Top.TitleHolder.Label.Text = data.title
+
+			local function remove(name)
+				list[name] = nil
+				instanceList[name]:Destroy()
+				instanceList[name] = nil
+				self:spawnCallback(name, false)
+				if not data.noSave then
+					saveChanged()
+				end
+			end
+
+			local function add(name)
+				if list[name] then
+					warn(`item {name} already exists in list {data.name}`)
+				else
+					local item = template:Clone()
+					item.Visible = filter(name, searchBox.Text)
+					item.Label.Text = name
+					item.Name = name
+					item.Parent = content
+					list[name] = true
+					instanceList[name] = item
+
+					self:spawnCallback(name, true)
+					if not data.noSave then
+						saveChanged()
+					end
+
+					item.Delete.Activated:Connect(function()
+						remove(name)
+					end)
+				end
+			end
+
+			searchBox.FocusLost:Connect(function(entered)
+				if not entered then
+					searchBox.Text = ""
+				end
+
+				for name, item in pairs(instanceList) do
+					item.Visible = filter(name, searchBox.Text)
+				end
+			end)
+
+			local addBox = component.Top.Add.Label
+			addBox.FocusLost:Connect(function(entered)
+				if entered then
+					add(addBox.Text)
+				end
+				addBox.Text = ""
+			end)
+
+			self.get = function(name)
+				return list[name]
+			end
+			self.getAll = function()
+				return table.clone(list)
+			end
+			self.add = add
+			self.remove = function(name)
+				if list[name] ~= nil then
+					remove(name)
+				end
+			end
+			self.removeAll = function()
+				for name, _ in pairs(list) do
+					remove(name)
+				end
+			end
+
+			for _, name in pairs((if data.noSave then nil else saved[data.name]) or data.items) do
+				add(name)
+			end
+
+			self.fireCallback = function()
+				for name, _ in pairs(list) do
+					self:spawnCallback(name, true)
+				end
+			end
+		end
 
 		local i = 1
 		for _, v in pairs(config.features.sections) do
@@ -616,10 +661,13 @@ return function(config, saved)
 				if template then
 					local component = template:Clone()
 					component.Visible = true
-					handlers[item.component](component, item)
-					table.insert(components, component)
 					component.LayoutOrder = i
 					component.Parent = frame
+					table.insert(components, component)
+
+					local this = setmetatable({}, componentMeta)
+					features[item.name] = this
+					handlers[item.component](this, component, item)
 				else
 					warn(`{item.component} doesn't exist`)
 				end

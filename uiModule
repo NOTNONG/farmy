@@ -10,7 +10,7 @@ return function(config, saved)
 		saved = {}
 	end
 	--
-	local control = {} :: { modeChanged: (string) -> ()? }
+	local control = {} :: { modeChanged: (string) -> ()?, saveChanged: () -> ()? }
 	local save = {}
 	control.save = save
 	local janitorList = {}
@@ -19,6 +19,12 @@ return function(config, saved)
 	local function janitor<T>(object: T & (RBXScriptConnection | Instance)): T
 		table.insert(janitorList, object)
 		return object
+	end
+
+	local function saveChanged()
+		if control.saveChanged then
+			control.saveChanged()
+		end
 	end
 
 	--instances
@@ -264,6 +270,7 @@ return function(config, saved)
 						end
 						if not data.noSave then
 							save[data.name] = switched
+							saveChanged()
 						end
 					end
 				end
@@ -285,6 +292,7 @@ return function(config, saved)
 					features[data.name] = current
 					if not data.noSave then
 						save[data.name] = current
+						saveChanged()
 					end
 				end
 
@@ -325,6 +333,7 @@ return function(config, saved)
 						end
 						if not data.noSave then
 							save[data.name] = choice
+							saveChanged()
 						end
 					else
 						warn(`choice {choice} doesn't exist`)
@@ -392,6 +401,7 @@ return function(config, saved)
 
 					if not data.noSave then
 						save[data.name][name] = bool
+						saveChanged()
 					end
 				end
 
@@ -511,9 +521,12 @@ return function(config, saved)
 					instanceList[name]:Destroy()
 					instanceList[name] = nil
 					fireCallback(name, false)
+					if not data.noSave then
+						saveChanged()
+					end
 				end
 
-				local function add(name)
+				local function add(name, init)
 					if list[name] then
 						warn(`item {name} already exists in list {data.name}`)
 					else
@@ -524,7 +537,13 @@ return function(config, saved)
 						item.Parent = content
 						list[name] = true
 						instanceList[name] = item
-						fireCallback(name, true)
+
+						if not init then
+							fireCallback(name, true)
+							if not data.noSave then
+								saveChanged()
+							end
+						end
 
 						item.Delete.Activated:Connect(function()
 							remove(name)
@@ -569,7 +588,7 @@ return function(config, saved)
 				end
 
 				for _, name in pairs((if data.noSave then nil else saved[data.name]) or data.items) do
-					add(name)
+					add(name, true)
 				end
 			end,
 		}

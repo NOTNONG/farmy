@@ -7,7 +7,7 @@ end
 
 return function(config)
 	--
-	local control = {}
+	local control = {} :: { modeChanged: (string) -> ()? }
 	local janitorList = {}
 
 	--fundamental functions
@@ -88,8 +88,13 @@ return function(config)
 			table.insert(config.modes, "None")
 
 			local function setMode(name)
-				control.mode = name
-				mode.TextLabel.Text = `Mode: {name}`
+				if control.mode ~= name then
+					control.mode = name
+					mode.TextLabel.Text = `Mode: {name}`
+					if control.modeChanged then
+						task.spawn(control.modeChanged, name)
+					end
+				end
 			end
 
 			local function switch()

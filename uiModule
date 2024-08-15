@@ -23,7 +23,7 @@ return function(config, saved)
 
 	local function saveChanged()
 		if control.saveChanged then
-			control.saveChanged()
+			task.spawn(control.saveChanged)
 		end
 	end
 
@@ -101,11 +101,12 @@ return function(config, saved)
 			local function setMode(name)
 				if control.mode ~= name then
 					control.mode = name
-					save.mode = name
 					mode.TextLabel.Text = `Mode: {name}`
 					if control.modeChanged then
 						task.spawn(control.modeChanged, name)
 					end
+					save.mode = name
+					saveChanged()
 				end
 			end
 

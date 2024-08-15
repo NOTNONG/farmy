@@ -30,6 +30,7 @@ return function(config, saved)
 	--instances
 	local uiInstance = createUI()
 	janitor(uiInstance)
+	control.instance = uiInstance
 
 	local main = uiInstance.Main
 	local pages = main.Pages

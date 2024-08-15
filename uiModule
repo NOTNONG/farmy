@@ -5,9 +5,14 @@ local function createUI()
 	return ui
 end
 
-return function(config)
+return function(config, saved)
+	if not saved then
+		saved = {}
+	end
 	--
 	local control = {} :: { modeChanged: (string) -> ()? }
+	local save = {}
+	control.save = save
 	local janitorList = {}
 
 	--fundamental functions
@@ -90,6 +95,7 @@ return function(config)
 			local function setMode(name)
 				if control.mode ~= name then
 					control.mode = name
+					save.mode = name
 					mode.TextLabel.Text = `Mode: {name}`
 					if control.modeChanged then
 						task.spawn(control.modeChanged, name)
@@ -117,6 +123,9 @@ return function(config)
 				switch()
 			end)
 			control.setMode = setMode
+			if saved.mode and config.modes[saved.mode] then
+				setMode(saved.mode)
+			end
 		end
 
 		--minimize
@@ -253,10 +262,14 @@ return function(config)
 							state.Label.TextColor3 = colors[i][2]
 							state.Underline.BackgroundColor3 = colors[i][3]
 						end
+						if not data.noSave then
+							save[data.name] = switched
+						end
 					end
 				end
 
-				switch(data.default)
+				local savedValue = saved[data.name]
+				switch(if not data.noSave and savedValue ~= nil then savedValue else data.default)
 				states.On.Activated:Connect(function()
 					switch(true)
 				end)
@@ -267,9 +280,12 @@ return function(config)
 			InputField = function(component: typeof(frame.InputField), data)
 				component.FillTitle.Label.Text = data.title
 
-				local current = data.default or ""
+				local current = (if data.noSave then nil else saved[data.name]) or data.default or ""
 				local function update()
 					features[data.name] = current
+					if not data.noSave then
+						save[data.name] = current
+					end
 				end
 
 				local textBox = component.FillField.Label
@@ -307,6 +323,9 @@ return function(config)
 						if callback then
 							task.spawn(callback, choice)
 						end
+						if not data.noSave then
+							save[data.name] = choice
+						end
 					else
 						warn(`choice {choice} doesn't exist`)
 					end
@@ -335,10 +354,20 @@ return function(config)
 
 				component.Expand.Activated:Connect(switch)
 				features[data.name].choose = choose
+				if not data.noSave then
+					local savedChoice = saved[data.name]
+					if savedChoice and choices[savedChoice] then
+						choose(savedChoice)
+					end
+				end
 			end,
 			Checklist = function(component: typeof(frame.Checklist), data)
 				features[data.name] = {}
 				local list = {}
+				if not data.noSave then
+					save[data.name] = {}
+				end
+
 				local searchBox = component.Top.Search.Label
 				local content = component.Content
 				local template = content.Item
@@ -360,18 +389,16 @@ return function(config)
 					checkbox[tostring(not bool)].Visible = false
 
 					fireCallback(name, bool)
+
+					if not data.noSave then
+						save[data.name][name] = bool
+					end
 				end
 
 				local function filter(name)
 					if string.find(string.lower(name), string.lower(searchBox.Text)) then
 						return true
 					end
-				end
-
-				local function remove(name)
-					list[name].instance:Destroy()
-					list[name] = nil
-					fireCallback(name, false)
 				end
 
 				local function add(name, title, default)
@@ -405,31 +432,60 @@ return function(config)
 				features[data.name].getAll = function()
 					return table.clone(list)
 				end
-				features[data.name].add = add
+				features[data.name].add = function(name, title, default)
+					if data.noSave then
+						add(name, title, default)
+					else
+						warn(`can't add {name} to saveable checklist {data.name}`)
+					end
+				end
 				features[data.name].set = function(name, value)
 					if list[name] ~= nil then
 						toggle(name, value)
 					end
 				end
 
+				local function canRemove()
+					if not data.noSave then
+						warn(`can't remove from saveable checklist {data.name}`)
+						return
+					end
+					return true
+				end
+
+				local function remove(name)
+					list[name].instance:Destroy()
+					list[name] = nil
+					fireCallback(name, false)
+				end
+
 				features[data.name].remove = function(name)
-					if list[name] ~= nil then
-						remove(name)
+					if canRemove() then
+						if list[name] ~= nil then
+							remove(name)
+						end
 					end
 				end
 				features[data.name].removeAll = function()
-					for name, _ in pairs(list) do
-						remove(name)
+					if canRemove() then
+						for name, _ in pairs(list) do
+							remove(name)
+						end
 					end
 				end
 
 				for name, v in pairs(data.list) do
-					add(name, v.title, v.default)
+					local savedValue = saved[data.name] and saved[data.name][name]
+					add(name, v.title, if savedValue ~= nil then savedValue else v.default)
 				end
 			end,
 			List = function(component: typeof(frame.List), data)
 				features[data.name] = {}
 				local list = {}
+				if not data.noSave then
+					save[data.name] = list
+				end
+
 				local instanceList = {}
 				local searchBox = component.Top.Search.Label
 				local content = component.Content
@@ -512,7 +568,7 @@ return function(config)
 					end
 				end
 
-				for _, name in pairs(data.items) do
+				for _, name in pairs((if data.noSave then nil else saved[data.name]) or data.items) do
 					add(name)
 				end
 			end,
@@ -526,6 +582,11 @@ return function(config)
 			local components = {}
 
 			for _, item in pairs(v) do
+				if features[item.name] ~= nil then
+					warn(`{item.name} repeated`)
+					continue
+				end
+
 				local template = templates[item.component]
 				if template then
 					local component = template:Clone()

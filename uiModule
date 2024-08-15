@@ -414,7 +414,7 @@ return function(config, saved)
 					end
 				end
 
-				local function add(name, title, default, noCallback)
+				local function add(name, title, default)
 					if list[name] == nil then
 						local item = template:Clone()
 						item.Visible = filter(title)
@@ -422,7 +422,7 @@ return function(config, saved)
 						item.Name = name
 						item.Parent = content
 						list[name] = { title = title, instance = item }
-						toggle(name, default, noCallback)
+						toggle(name, default, true)
 						item.Checkbox.Activated:Connect(function()
 							toggle(name, not list[name].value)
 						end)
@@ -469,7 +469,6 @@ return function(config, saved)
 				local function remove(name)
 					list[name].instance:Destroy()
 					list[name] = nil
-					fireCallback(name, false)
 				end
 
 				features[data.name].remove = function(name)

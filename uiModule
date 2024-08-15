@@ -320,7 +320,11 @@ return function(config, saved)
 			end
 
 			local savedValue = saved[data.name]
-			switch(if not data.noSave and savedValue ~= nil then savedValue else data.default)
+			switch(
+				if not data.noSave and savedValue ~= nil
+					then savedValue
+					else (if data.default then data.default else true)
+			)
 			states.On.Activated:Connect(function()
 				switch(true)
 			end)

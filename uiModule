@@ -391,14 +391,16 @@ return function(config, saved)
 					end
 				end
 
-				local function toggle(name, bool)
+				local function toggle(name, bool, noCallback)
 					list[name].value = bool
 
 					local checkbox = list[name].instance.Checkbox
 					checkbox[tostring(bool)].Visible = true
 					checkbox[tostring(not bool)].Visible = false
 
-					fireCallback(name, bool)
+					if not noCallback then
+						fireCallback(name, bool)
+					end
 
 					if not data.noSave then
 						save[data.name][name] = bool
@@ -412,7 +414,7 @@ return function(config, saved)
 					end
 				end
 
-				local function add(name, title, default)
+				local function add(name, title, default, noCallback)
 					if list[name] == nil then
 						local item = template:Clone()
 						item.Visible = filter(title)
@@ -420,7 +422,7 @@ return function(config, saved)
 						item.Name = name
 						item.Parent = content
 						list[name] = { title = title, instance = item }
-						toggle(name, default)
+						toggle(name, default, noCallback)
 						item.Checkbox.Activated:Connect(function()
 							toggle(name, not list[name].value)
 						end)
@@ -527,7 +529,7 @@ return function(config, saved)
 					end
 				end
 
-				local function add(name, init)
+				local function add(name, noCallback)
 					if list[name] then
 						warn(`item {name} already exists in list {data.name}`)
 					else
@@ -539,7 +541,7 @@ return function(config, saved)
 						list[name] = true
 						instanceList[name] = item
 
-						if not init then
+						if not noCallback then
 							fireCallback(name, true)
 							if not data.noSave then
 								saveChanged()

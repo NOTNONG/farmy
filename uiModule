@@ -595,10 +595,13 @@ return function(config, saved)
 			end,
 		}
 
+		local i = 1
 		for name, v in pairs(config.features.sections) do
+			i += 1
 			local section = templates.Section:Clone()
 			section.Fill.Label.Text = name
 			section.Visible = true
+			section.LayoutOrder = i
 			section.Parent = frame
 			local components = {}
 
@@ -614,6 +617,7 @@ return function(config, saved)
 					component.Visible = true
 					handlers[item.component](component, item)
 					table.insert(components, component)
+					component.LayoutOrder = i
 					component.Parent = frame
 				else
 					warn(`{item.component} doesn't exist`)

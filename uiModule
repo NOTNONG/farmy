@@ -36,6 +36,8 @@ return function(config, saved)
 	local pages = main.Pages
 	local infoPage = pages.Information
 	local featuresPage = pages.Features
+	local pageLayout = main.Pages.UIPageLayout
+	local notifications = uiInstance.Notifications
 
 	local currentPage = 1
 	local pagesIndex = {}
@@ -52,9 +54,27 @@ return function(config, saved)
 		end)
 	end
 
+	--notifications
+	do
+		local template = notifications.Template
+
+		control.notify = function(message: string, duration: number)
+			local this = template:Clone()
+			this.Content.Text = message
+			this.Visible = true
+			this.Parent = notifications
+
+			if duration then
+				task.delay(duration, this.Destroy, this)
+			end
+			this.Close.Activated:Connect(function()
+				this:Destroy()
+			end)
+		end
+	end
+
 	--sidebar
 	do
-		local pageLayout = main.Pages.UIPageLayout
 		local sidebar = main.Sidebar
 		local template = sidebar.List.Template
 		local highlight = sidebar.SelectedHighlight
@@ -685,6 +705,287 @@ return function(config, saved)
 					component.Visible = expanded
 				end
 			end)
+		end
+	end
+
+	--traits page
+	do
+		local traitsPage = pages.Traits
+		control.traits = {}
+
+		local interactables: { GuiButton } = {}
+		local currentTrait
+		local currentHand
+		local handCards = {}
+		local remainingHands = {}
+
+		local discardingRest = false
+		local prompting = false
+		local viewing = "traitHand"
+
+		local prompt = traitsPage.Prompt
+		local area = traitsPage.Area
+		local actions = traitsPage.Actions
+		local cards = area.Cards
+		local empty = area.Empty
+		local template = cards.Template
+		template.Visible = false
+
+		local function interactable(v)
+			table.insert(interactables, v)
+		end
+
+		local function cloneTemplate()
+			local this = template:Clone()
+			this.Visible = true
+			this.Bonuses.Stat:Destroy()
+			this.Parent = cards
+			return this
+		end
+
+		local function updateCard(card, info, noHint)
+			local title = `{info.title} ({info.rarity})`
+			if not noHint and info.valuable then
+				title = `!!! {title} !!!`
+			end
+			card.Title.Label.Text = title
+			card.Description.TextLabel.Text = info.description
+			card.Darken.Visible = not info.valuable
+			for _, child in pairs(card.Bonuses:GetChildren()) do
+				if child.Name == "Stat" then
+					child:Destroy()
+				end
+			end
+
+			for category, value in pairs(info.bonuses) do
+				local stat = template.Bonuses.Stat:Clone()
+				stat.Visible = true
+				stat.TextLabel.Text = `{category}: {value}`
+				stat.Parent = card.Bonuses
+			end
+		end
+
+		local currentCard = cloneTemplate()
+		currentCard.Visible = false
+		currentCard.Holder:Destroy()
+
+		local function updateViewSwitcherText()
+			actions.switchView.TextLabel.Text = if viewing == "currentTrait"
+				then `View Trait Hand`
+				else `View Current ({currentTrait.title})`
+		end
+		actions.switchView.Activated:Connect(function()
+			if currentTrait then
+				if viewing == "currentTrait" then
+					viewing = "traitHand"
+					empty.Visible = currentHand == nil
+					cards.Visible = currentHand ~= nil
+					if not discardingRest then
+						actions.discard.Visible = currentHand ~= nil
+						actions.discardRest.Visible = currentHand ~= nil
+					end
+				elseif viewing == "traitHand" then
+					viewing = "currentTrait"
+					if not currentHand then
+						empty.Visible = false
+						cards.Visible = true
+					else
+						if not discardingRest then
+							actions.discard.Visible = false
+							actions.discardRest.Visible = false
+						end
+					end
+				end
+
+				for _, card in pairs(handCards) do
+					card.Visible = viewing ~= "currentTrait"
+				end
+				currentCard.Visible = viewing == "currentTrait"
+				updateViewSwitcherText()
+			end
+		end)
+		interactable(actions.switchView)
+
+		control.traits.updateCurrent = function(info)
+			print(info.title)
+			currentTrait = info
+			updateCard(currentCard, info, true)
+			updateViewSwitcherText()
+		end
+
+		local complete
+		local function fire(name, ...)
+			local func = control.traits[`fire{string.gsub(name, "^%l", string.upper)}`]
+			if func then
+				local success = pcall(func, ...)
+				return success
+			end
+		end
+
+		local function discard()
+			if fire("discard") then
+				complete()
+			end
+		end
+
+		local function togglePrompt(bool)
+			prompting = bool
+			prompt.Visible = bool
+			for _, interactable in pairs(interactables) do
+				interactable.Interactable = not bool
+			end
+		end
+
+		local function showPrompt(text)
+			if not prompting then
+				local current = coroutine.running()
+				togglePrompt(true)
+				prompt.Frame.Content.Text = text
+
+				local signalMaid: { RBXScriptSignal } = {}
+				local function addTask(v)
+					table.insert(signalMaid, v)
+				end
+				local function close(result)
+					for _, v in pairs(signalMaid) do
+						v:Disconnect()
+					end
+					togglePrompt(false)
+					task.spawn(current, result)
+				end
+
+				local choices = prompt.Frame.Choices
+				addTask(choices.Yes.Activated:Connect(function()
+					close(true)
+				end))
+				addTask(choices.No.Activated:Connect(function()
+					close(false)
+				end))
+				addTask(pageLayout.PageLeave:Connect(function(page)
+					if page == traitsPage then
+						close(false)
+					end
+				end))
+
+				return coroutine.yield()
+			end
+		end
+
+		local waitingNext
+		local function triggerDiscard()
+			local vaulables = 0
+			for _, info in pairs(currentHand) do
+				if info.valuable then
+					vaulables += 1
+				end
+			end
+
+			if vaulables >= 1 then
+				if waitingNext then
+					task.cancel(waitingNext)
+				end
+
+				local agreed = showPrompt(
+					`Do you want to discard these traits which contain {vaulables} valuable trait{if vaulables > 1
+						then "s"
+						else ""}{if discardingRest then " and continue to automatically discard" else ""}?`
+				)
+				waitingNext = task.delay(1, function()
+					discardingRest = false
+					traitsPage.DiscardingRest.Visible = false
+				end)
+
+				if not agreed then
+					if discardingRest then
+						actions.discard.Visible = true
+						actions.discardRest.Visible = true
+						traitsPage.DiscardingRest.Visible = false
+					end
+					return
+				end
+			end
+
+			discard()
+		end
+
+		complete = function()
+			waitingNext = task.delay(1, function()
+				control.notify("Discard completed.", 3)
+				discardingRest = false
+				traitsPage.DiscardingRest.Visible = false
+			end)
+			currentHand = nil
+			if #remainingHands > 0 then
+				control.traits.handle(remainingHands[1])
+				table.remove(remainingHands, 1)
+				if discardingRest then
+					triggerDiscard()
+				end
+			else
+				empty.Visible = true
+				cards.Visible = false
+				if not discardingRest then
+					actions.discard.Visible = false
+					actions.discardRest.Visible = false
+				end
+			end
+		end
+
+		for i = 1, 3 do
+			local this = cloneTemplate()
+			this.Holder.ImageButton.Activated:Connect(function()
+				if currentHand and currentHand[i] then
+					if showPrompt(`Do you want to pick "{currentHand[i].title}" ({currentHand[i].rarity})?`) then
+						if fire("pick", i) then
+							complete()
+						end
+					end
+				end
+			end)
+			interactable(this.Holder.ImageButton)
+			handCards[i] = this
+		end
+
+		actions.discard.Activated:Connect(triggerDiscard)
+		interactable(actions.discard)
+
+		actions.discardRest.Activated:Connect(function()
+			if showPrompt("Do you want to start automatically discarding the rest of your trait hands?") then
+				discardingRest = true
+				actions.discard.Visible = false
+				actions.discardRest.Visible = false
+				traitsPage.DiscardingRest.Visible = true
+				triggerDiscard()
+			end
+		end)
+		interactable(actions.discardRest)
+
+		control.traits.handle = function(traitsInfo)
+			if waitingNext then
+				task.cancel(waitingNext)
+			end
+
+			if not currentHand then
+				local pity, pityAt = control.traits.getPity()
+				traitsPage.Pity.TextLabel.Text = `Pity: {pity}/{pityAt}`
+
+				currentHand = traitsInfo
+				for i, card in pairs(handCards) do
+					updateCard(card, currentHand[i])
+				end
+
+				if viewing == "traitHand" then
+					empty.Visible = false
+					cards.Visible = true
+
+					if not discardingRest then
+						actions.discard.Visible = true
+						actions.discardRest.Visible = true
+					end
+				end
+			else
+				table.insert(remainingHands, traitsInfo)
+			end
 		end
 	end
 

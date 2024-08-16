@@ -743,9 +743,9 @@ return function(config, saved)
 			return this
 		end
 
-		local function updateCard(card, info, noHint)
+		local function updateCard(card, info)
 			local title = `{info.title} ({info.rarity})`
-			if not noHint and info.valuable then
+			if info.valuable then
 				title = `!!! {title} !!!`
 			end
 			card.Title.Label.Text = title
@@ -807,9 +807,18 @@ return function(config, saved)
 		interactable(actions.switchView)
 
 		control.traits.updateCurrent = function(info)
+			if not currentTrait or info.uuid ~= currentTrait.uuid then
+				discardingRest = false
+				empty.Visible = true
+				cards.Visible = false
+				actions.discard.Visible = false
+				actions.discardRest.Visible = false
+				traitsPage.DiscardingRest.Visible = false
+			end
+
 			print(info.title)
 			currentTrait = info
-			updateCard(currentCard, info, true)
+			updateCard(currentCard, info)
 			updateViewSwitcherText()
 		end
 
@@ -831,8 +840,8 @@ return function(config, saved)
 		local function togglePrompt(bool)
 			prompting = bool
 			prompt.Visible = bool
-			for _, interactable in pairs(interactables) do
-				interactable.Interactable = not bool
+			for _, v in pairs(interactables) do
+				v.Interactable = not bool
 			end
 		end
 

@@ -1009,6 +1009,7 @@ return function(config, saved)
 		control.traits.handle = function(traitsInfo)
 			stopWaitingNext()
 
+			print(currentHand)
 			if not currentHand then
 				local pity, pityAt = control.traits.getPity()
 				traitsPage.Pity.TextLabel.Text = `Pity: {pity}/{pityAt}`

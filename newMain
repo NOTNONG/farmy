@@ -49,9 +49,88 @@ do
 	end
 end
 
+--
+local localPlayer
+while not localPlayer do
+	localPlayer = Players.LocalPlayer
+	RunService.Heartbeat:Wait()
+end
+
+--AUT stuff
+local modules = ReplicatedStorage:WaitForChild("ReplicatedModules")
+local itemData = require(modules.ItemData)
+local traits = require(modules.PVEPackage.TraitHandler).Traits
+local stands = require(modules.Stands)
+local skins = require(modules.Skins).Skins
+local stats = require(modules.StatsHandler).Stats
+local data = localPlayer:WaitForChild("Data")
+local autUI = localPlayer.PlayerGui:WaitForChild("UI")
+local traitHandPrompt = autUI.Gameplay.TraitHandPrompt
+
+local knitServices = modules:WaitForChild("KnitPackage"):WaitForChild("Knit"):WaitForChild("Services")
+local traitService = knitServices:WaitForChild("TraitService")
+local levelService = knitServices:WaitForChild("LevelService")
+local statService = knitServices:WaitForChild("StatService")
+
+local getMovesInfo = knitServices:WaitForChild("MoveService"):WaitForChild("RF"):WaitForChild("GetMovesInfo")
+local getKeymap = knitServices:WaitForChild("MoveService"):WaitForChild("RF"):WaitForChild("GetKeybindsMap")
+local equipMove = knitServices:WaitForChild("MoveService"):WaitForChild("RF"):WaitForChild("EquipMove")
+local fireInput = knitServices:WaitForChild("MoveInputService"):WaitForChild("RF"):WaitForChild("FireInput")
+local chestRolled = knitServices:WaitForChild("ChestService"):WaitForChild("RE"):WaitForChild("ChestRolled")
+local getItems = knitServices:WaitForChild("InventoryService"):WaitForChild("RF"):WaitForChild("GetItems")
+local traitHandEvent = traitService:WaitForChild("RE"):WaitForChild("TraitHand")
+local checkDialogue = knitServices:WaitForChild("DialogueService"):WaitForChild("RF"):WaitForChild("CheckDialogue")
+
+local npcGroups = {
+	Curses = {
+		position = Vector3.new(1986, 928, -1562),
+		spawners = workspace.ItemSpawns.PveEvents.Zone5,
+		list = {
+			["Mantis Curse"] = true,
+			["Jujutsu Sorcerer"] = true,
+			["Flyhead"] = true,
+			["Roppongi Curse"] = true,
+		},
+	},
+}
+
+local bmLocations = {
+	Vector3.new(2454, 982, 119), --station
+	Vector3.new(2051, 922, 1062), --port
+	Vector3.new(2035, 1063, -781), --desert
+	Vector3.new(950, 1009, -459), --village
+}
+
+local meteors = {
+	Vector3.new(1987.052490234375, 971.3591918945312, 397.0255126953125),
+	Vector3.new(1971.270263671875, 996.0906982421875, 511.0933837890625),
+	Vector3.new(2418.409423828125, 971.3395385742188, 207.31932067871094),
+	Vector3.new(1913.7769775390625, 917.4690551757812, -1714.150634765625),
+	Vector3.new(2078.90625, 915.7373657226562, -1096.42333984375),
+	Vector3.new(1861.3138427734375, 914.9898681640625, -1068.3548583984375),
+	Vector3.new(1696.970947265625, 936.5970458984375, -2095.71240234375),
+	Vector3.new(2165.525390625, 936.9059448242188, 849.872802734375),
+	Vector3.new(1930.3643798828125, 918.7839965820312, 1086.077392578125),
+	Vector3.new(1756.9989013671875, 918.84375, 1181.3677978515625),
+	Vector3.new(1747.33935546875, 918.2639770507812, 1039.6375732421875),
+	Vector3.new(1927.6475830078125, 972.7254028320312, -316.91998291015625),
+	Vector3.new(1981.0384521484375, 974.5810546875, -472.798095703125),
+	Vector3.new(2095.86376953125, 916.1185913085938, -975.6954345703125),
+	Vector3.new(364.78033447265625, 908.3250122070312, -2135.43701171875),
+	Vector3.new(364.78033447265625, 908.3250122070312, -2067.528076171875),
+	Vector3.new(364.78033447265625, 908.3250122070312, -2003.9190673828125),
+	Vector3.new(352.1943664550781, 908.3250122070312, -1926.0960693359375),
+	Vector3.new(341.737060546875, 908.3250122070312, -1891.4969482421875),
+}
+
+local locations = {
+	Field = CFrame.new(1981.73046875, 973.112060546875, -389.328125),
+	Park = CFrame.new(2097.8271484375, 973.474853515625, 298.7255859375),
+	["Kuma NPC"] = CFrame.new(1989, 973, -237),
+}
+
 --UI
-local repo = "https://raw.githubusercontent.com/NOTNONG/farmy/main"
-local ui = loadstring(game:HttpGet(`{repo}/uiModule`))()({
+local uiData = {
 	modes = { "Farm NPCs", "Zoro Quest" },
 	labels = {
 		{ name = "state", title = "Current State" },
@@ -139,16 +218,25 @@ local ui = loadstring(game:HttpGet(`{repo}/uiModule`))()({
 			},
 		},
 	},
-}, config.uiSave)
+}
+
+local teleports = {
+	title = "Teleports",
+	components = {},
+}
+table.insert(uiData.features.sections, teleports)
+for name, _ in pairs(locations) do
+	table.insert(teleports.components, {
+		name = `teleport{name}`,
+		title = name,
+		component = "Button",
+	})
+end
+
+local repo = "https://raw.githubusercontent.com/NOTNONG/farmy/main"
+local ui = loadstring(game:HttpGet(`{repo}/uiModule`))()(uiData, config.uiSave)
 config.uiSave = ui.save
 recyclable(ui.clear)
-
---
-local localPlayer
-while not localPlayer do
-	localPlayer = Players.LocalPlayer
-	RunService.Heartbeat:Wait()
-end
 
 --character
 local character
@@ -179,73 +267,6 @@ local function teleport(pos)
 	root.AssemblyLinearVelocity = Vector3.zero
 	root.AssemblyAngularVelocity = Vector3.zero
 end
-
---AUT stuff
-local modules = ReplicatedStorage:WaitForChild("ReplicatedModules")
-local itemData = require(modules.ItemData)
-local traits = require(modules.PVEPackage.TraitHandler).Traits
-local stands = require(modules.Stands)
-local skins = require(modules.Skins).Skins
-local stats = require(modules.StatsHandler).Stats
-local data = localPlayer:WaitForChild("Data")
-local autUI = localPlayer.PlayerGui:WaitForChild("UI")
-local traitHandPrompt = autUI.Gameplay.TraitHandPrompt
-
-local knitServices = modules:WaitForChild("KnitPackage"):WaitForChild("Knit"):WaitForChild("Services")
-local traitService = knitServices:WaitForChild("TraitService")
-local levelService = knitServices:WaitForChild("LevelService")
-local statService = knitServices:WaitForChild("StatService")
-
-local getMovesInfo = knitServices:WaitForChild("MoveService"):WaitForChild("RF"):WaitForChild("GetMovesInfo")
-local getKeymap = knitServices:WaitForChild("MoveService"):WaitForChild("RF"):WaitForChild("GetKeybindsMap")
-local equipMove = knitServices:WaitForChild("MoveService"):WaitForChild("RF"):WaitForChild("EquipMove")
-local fireInput = knitServices:WaitForChild("MoveInputService"):WaitForChild("RF"):WaitForChild("FireInput")
-local chestRolled = knitServices:WaitForChild("ChestService"):WaitForChild("RE"):WaitForChild("ChestRolled")
-local getItems = knitServices:WaitForChild("InventoryService"):WaitForChild("RF"):WaitForChild("GetItems")
-local traitHandEvent = traitService:WaitForChild("RE"):WaitForChild("TraitHand")
-local checkDialogue = knitServices:WaitForChild("DialogueService"):WaitForChild("RF"):WaitForChild("CheckDialogue")
-
-local npcGroups = {
-	Curses = {
-		position = Vector3.new(1986, 928, -1562),
-		spawners = workspace.ItemSpawns.PveEvents.Zone5,
-		list = {
-			["Mantis Curse"] = true,
-			["Jujutsu Sorcerer"] = true,
-			["Flyhead"] = true,
-			["Roppongi Curse"] = true,
-		},
-	},
-}
-
-local bmLocations = {
-	Vector3.new(2454, 982, 119), --station
-	Vector3.new(2051, 922, 1062), --port
-	Vector3.new(2035, 1063, -781), --desert
-	Vector3.new(950, 1009, -459), --village
-}
-
-local meteors = {
-	Vector3.new(1987.052490234375, 971.3591918945312, 397.0255126953125),
-	Vector3.new(1971.270263671875, 996.0906982421875, 511.0933837890625),
-	Vector3.new(2418.409423828125, 971.3395385742188, 207.31932067871094),
-	Vector3.new(1913.7769775390625, 917.4690551757812, -1714.150634765625),
-	Vector3.new(2078.90625, 915.7373657226562, -1096.42333984375),
-	Vector3.new(1861.3138427734375, 914.9898681640625, -1068.3548583984375),
-	Vector3.new(1696.970947265625, 936.5970458984375, -2095.71240234375),
-	Vector3.new(2165.525390625, 936.9059448242188, 849.872802734375),
-	Vector3.new(1930.3643798828125, 918.7839965820312, 1086.077392578125),
-	Vector3.new(1756.9989013671875, 918.84375, 1181.3677978515625),
-	Vector3.new(1747.33935546875, 918.2639770507812, 1039.6375732421875),
-	Vector3.new(1927.6475830078125, 972.7254028320312, -316.91998291015625),
-	Vector3.new(1981.0384521484375, 974.5810546875, -472.798095703125),
-	Vector3.new(2095.86376953125, 916.1185913085938, -975.6954345703125),
-	Vector3.new(364.78033447265625, 908.3250122070312, -2135.43701171875),
-	Vector3.new(364.78033447265625, 908.3250122070312, -2067.528076171875),
-	Vector3.new(364.78033447265625, 908.3250122070312, -2003.9190673828125),
-	Vector3.new(352.1943664550781, 908.3250122070312, -1926.0960693359375),
-	Vector3.new(341.737060546875, 908.3250122070312, -1891.4969482421875),
-}
 
 --functions
 local function getStand()
@@ -774,6 +795,20 @@ do
 		end
 	end)
 
+	--teleports
+	do
+		for name, location in pairs(locations) do
+			ui.features[`teleport{name}`].callback = function()
+				if ui.mode == "None" then
+					localPlayer:RequestStreamAroundAsync(location.Position)
+					teleport(location)
+				else
+					ui.notify("Can't teleport while the character is being used.", 1)
+				end
+			end
+		end
+	end
+
 	--KEYS
 	do
 		local function getKeyIndexes()
@@ -1007,6 +1042,7 @@ do
 			description = if info.Hexed then trait.HexDescription else trait.Description,
 			rarity = trait.Rarity,
 			bonuses = info.StatBonuses,
+			uuid = data.Ability:GetAttribute("UUID"),
 		}
 		if info.Hexed or trait.Rarity == "Mythic" or trait.Rarity == "Legendary" then
 			converted.valuable = true

@@ -850,7 +850,7 @@ return function(config, saved)
 		end
 
 		control.traits.updateCurrent = function(info)
-			if (not info or not currentTrait) or ((info and currentTrait) and info.uuid ~= currentTrait.uuid) then
+			if info and currentTrait and info.uuid ~= currentTrait.uuid then
 				remainingHands = {}
 				emptied()
 				stopDiscardingRest()
@@ -1009,7 +1009,6 @@ return function(config, saved)
 		control.traits.handle = function(traitsInfo)
 			stopWaitingNext()
 
-			print(currentHand)
 			if not currentHand then
 				local pity, pityAt = control.traits.getPity()
 				traitsPage.Pity.TextLabel.Text = `Pity: {pity}/{pityAt}`
@@ -1019,7 +1018,6 @@ return function(config, saved)
 					updateCard(card, currentHand[i])
 				end
 
-				print(viewing)
 				if viewing == "traitHand" then
 					empty.Visible = false
 					cards.Visible = true

@@ -146,6 +146,7 @@ local uiData = {
 		{ name = "us", title = "UShards" },
 		{ name = "uc", title = "UCoins" },
 		{ name = "dps", title = "DPS" },
+		{ name = "bm", title = "Black market" },
 	},
 	features = {
 		sections = {
@@ -444,6 +445,7 @@ end
 local keys = {}
 local disabledByDefault = { Block = true, Pose = true, Quickstep = true, Grab = true }
 local hideTraitUIs = false
+local cam = workspace.CurrentCamera
 local modes = {}
 
 --farm npcs
@@ -482,20 +484,26 @@ do
 		return furthest
 	end
 
-	local chestQueue = {}
 	local sellDebounce = 0
 	local isSelling = false
-	modes["Farm NPCs"] = function(dt)
+	local function sell(dt)
 		if ui.features.autoSell.value then
 			local dealer = workspace.NPCS:FindFirstChild("Black Market")
+			ui.info.bm = if dealer then "Spawned" else "Unspawned"
+
 			if localPlayer:FindFirstChild("Backpack") then
+				local whitelist = {}
+				for i, v in pairs(ui.features.sellWhitelist.getAll()) do
+					whitelist[string.lower(i)] = v
+				end
+
 				local items = {}
 				for _, v in pairs(localPlayer.Backpack:GetChildren()) do
 					if
 						v:IsA("Tool")
 						and v:GetAttribute("ItemId")
 						and v.Name ~= "Sanji's Cookbook"
-						and not ui.features.sellWhitelist.get(v.Name)
+						and not whitelist[string.lower(v.Name)]
 					then
 						items[#items + 1] = v
 					end
@@ -510,6 +518,9 @@ do
 						teleport(
 							dealer.HumanoidRootPart.CFrame * CFrame.new(0, 0, -5) * CFrame.Angles(0, math.rad(180), 0)
 						)
+						cam.CFrame = dealer.HumanoidRootPart.CFrame
+							* CFrame.new(0, 50, 0)
+							* CFrame.Angles(math.rad(-90), 0, 0)
 
 						sellDebounce -= dt
 						if sellDebounce <= 0 then
@@ -527,8 +538,9 @@ do
 						end
 
 						ui.info.state = "Selling items"
-						return
+						return true
 					else
+						ui.info.bm = "Unloaded"
 						if timer("loadBm", 5) then
 							for _, pos in pairs(bmLocations) do
 								task.spawn(localPlayer.RequestStreamAroundAsync, localPlayer, pos)
@@ -537,6 +549,14 @@ do
 					end
 				end
 			end
+		end
+	end
+
+	local chestQueue = {}
+	modes["Farm NPCs"] = function(dt)
+		cam.CameraType = Enum.CameraType.Scriptable
+		if sell(dt) then
+			return
 		end
 
 		local currentGroup = getNPCsGroup()
@@ -628,7 +648,7 @@ do
 			end
 
 			local doUseMove = true
-			local origin
+			local origin = CFrame.new(currentGroup.position)
 
 			if #stuckMobs > 0 then
 				origin = getFurthest(stuckMobs).CFrame
@@ -638,17 +658,16 @@ do
 					origin = getFurthest(unaggroedMobs).CFrame
 					ui.info.state = "Attracting NPCs"
 				else
-					origin = CFrame.new(currentGroup.position)
 					doUseMove = hasMobsNear
-					ui.info.state = "Killing attracted NPCs"
+					ui.info.state = if hasMobsNear then "Killing attracted NPCs" else "Waiting for NPCs to arrive"
 				end
 			end
 
-			if origin then
-				teleport(CFrame.new(origin.Position) * tpOffset)
-				if doUseMove then
-					useMove()
-				end
+			cam.CameraType = Enum.CameraType.Scriptable
+			cam.CFrame = CFrame.new(origin.Position) * CFrame.new(0, 100, 0) * CFrame.Angles(math.rad(-90), 0, 0)
+			teleport(CFrame.new(origin.Position) * tpOffset)
+			if doUseMove then
+				useMove()
 			end
 		end
 	end
@@ -801,6 +820,10 @@ do
 			else
 				v:Enable()
 			end
+		end
+
+		if mode ~= "Farm NPCs" then
+			cam.CameraType = Enum.CameraType.Custom
 		end
 	end)
 

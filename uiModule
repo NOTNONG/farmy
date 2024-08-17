@@ -757,11 +757,13 @@ return function(config, saved)
 				end
 			end
 
-			for category, value in pairs(info.bonuses) do
-				local stat = template.Bonuses.Stat:Clone()
-				stat.Visible = true
-				stat.TextLabel.Text = `{category}: {value}`
-				stat.Parent = card.Bonuses
+			if info.bonuses then
+				for category, value in pairs(info.bonuses) do
+					local stat = template.Bonuses.Stat:Clone()
+					stat.Visible = true
+					stat.TextLabel.Text = `{category}: {value}`
+					stat.Parent = card.Bonuses
+				end
 			end
 		end
 

@@ -1,0 +1,1113 @@
+--#selene:allow(incorrect_standard_library_use)
+--
+local Players = game:GetService("Players")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RunService = game:GetService("RunService")
+local VirtualUser = game:GetService("VirtualUser")
+local HttpService = game:GetService("HttpService")
+
+--selene:allow(undefined_variable)
+local writefile, readfile, isfile, fireproximityprompt, getconnections =
+	writefile, readfile, isfile, fireproximityprompt, getconnections
+
+--GC
+do
+	if _G.recycleList then
+		for _, v in pairs(_G.recycleList) do
+			if typeof(v) == "RBXScriptConnection" then
+				v:Disconnect()
+			elseif typeof(v) == "Instance" then
+				v:Destroy()
+			elseif typeof(v) == "function" then
+				task.spawn(v)
+			end
+		end
+	end
+
+	_G.recycleList = {}
+end
+local function recyclable(v)
+	table.insert(_G.recycleList, v)
+end
+
+--saving
+local configFileName = "autFarmConfig"
+local config
+local function saveConfig()
+	writefile(configFileName, HttpService:JSONEncode(config))
+end
+
+do
+	if isfile(configFileName) then
+		config = HttpService:JSONDecode(readfile(configFileName))
+	else
+		config = {}
+	end
+
+	if not config.moves then
+		config.moves = {}
+	end
+end
+
+--UI
+local repo = "https://raw.githubusercontent.com/NOTNONG/farmy/main"
+local ui = loadstring(game:HttpGet(`{repo}/uiModule`))()({
+	modes = { "Farm NPCs", "Zoro Quest" },
+	labels = {
+		{ name = "state", title = "Current State" },
+		{ name = "us", title = "UShards" },
+		{ name = "uc", title = "UCoins" },
+		{ name = "dps", title = "DPS" },
+	},
+	features = {
+		sections = {
+			{
+				title = "NPCs Farm",
+				components = {
+					{
+						name = "npcGroup",
+						title = "Group of NPCs",
+						component = "Dropdown",
+						choices = { "Curses", "Pirate" },
+					},
+					{
+						name = "moves",
+						title = "Moves to use",
+						component = "Checklist",
+						default = {},
+						noSave = true,
+					},
+					{
+						name = "bindKeys",
+						title = "Automatically bind keys",
+						component = "Button",
+					},
+					{
+						name = "resetKeys",
+						title = "Reset keybinds",
+						component = "Button",
+					},
+				},
+			},
+			{
+				title = "Automation",
+				components = {
+					{
+						name = "autoAscend",
+						title = "Ascend",
+						component = "Switch",
+					},
+					{
+						name = "autoStat",
+						title = "Attack stat points",
+						component = "Switch",
+					},
+					{
+						name = "autoSell",
+						title = "Sell items",
+						component = "Switch",
+					},
+					{
+						name = "sellWhitelist",
+						title = "Selling whitelist",
+						component = "List",
+						default = {},
+					},
+				},
+			},
+			{
+				title = "Optimization",
+				components = {
+					{
+						name = "noEffects",
+						title = "Disable all effects",
+						component = "Switch",
+						default = false,
+					},
+				},
+			},
+			{
+				title = "Other",
+				components = {
+					{
+						name = "uiTitle",
+						title = "UI Title",
+						component = "InputField",
+						default = "Autian Essentials",
+					},
+				},
+			},
+		},
+	},
+}, config.uiSave)
+config.uiSave = ui.save
+recyclable(ui.clear)
+
+--
+local localPlayer
+while not localPlayer do
+	localPlayer = Players.LocalPlayer
+	RunService.Heartbeat:Wait()
+end
+
+--character
+local character
+local root
+do
+	local function characterAdded(new)
+		character = new
+		task.spawn(function()
+			root = character:WaitForChild("HumanoidRootPart", 10)
+		end)
+	end
+
+	if localPlayer.Character then
+		characterAdded(localPlayer.Character)
+	end
+	recyclable(localPlayer.CharacterAdded:Connect(characterAdded))
+	recyclable(localPlayer.CharacterRemoving:Connect(function()
+		character = nil
+		root = nil
+	end))
+end
+
+local function teleport(pos)
+	if not root then
+		return
+	end
+	root.CFrame = if typeof(pos) == "Vector3" then CFrame.new(pos) else pos
+	root.AssemblyLinearVelocity = Vector3.zero
+	root.AssemblyAngularVelocity = Vector3.zero
+end
+
+--AUT stuff
+local modules = ReplicatedStorage:WaitForChild("ReplicatedModules")
+local itemData = require(modules.ItemData)
+local traits = require(modules.PVEPackage.TraitHandler).Traits
+local stands = require(modules.Stands)
+local skins = require(modules.Skins).Skins
+local stats = require(modules.StatsHandler).Stats
+local data = localPlayer:WaitForChild("Data")
+local autUI = localPlayer.PlayerGui:WaitForChild("UI")
+local traitHandPrompt = autUI.Gameplay.TraitHandPrompt
+
+local knitServices = modules:WaitForChild("KnitPackage"):WaitForChild("Knit"):WaitForChild("Services")
+local traitService = knitServices:WaitForChild("TraitService")
+local levelService = knitServices:WaitForChild("LevelService")
+local statService = knitServices:WaitForChild("StatService")
+
+local getMovesInfo = knitServices:WaitForChild("MoveService"):WaitForChild("RF"):WaitForChild("GetMovesInfo")
+local getKeymap = knitServices:WaitForChild("MoveService"):WaitForChild("RF"):WaitForChild("GetKeybindsMap")
+local equipMove = knitServices:WaitForChild("MoveService"):WaitForChild("RF"):WaitForChild("EquipMove")
+local fireInput = knitServices:WaitForChild("MoveInputService"):WaitForChild("RF"):WaitForChild("FireInput")
+local chestRolled = knitServices:WaitForChild("ChestService"):WaitForChild("RE"):WaitForChild("ChestRolled")
+local getItems = knitServices:WaitForChild("InventoryService"):WaitForChild("RF"):WaitForChild("GetItems")
+local traitHandEvent = traitService:WaitForChild("RE"):WaitForChild("TraitHand")
+local checkDialogue = knitServices:WaitForChild("DialogueService"):WaitForChild("RF"):WaitForChild("CheckDialogue")
+
+local npcGroups = {
+	Curses = {
+		position = Vector3.new(1986, 928, -1562),
+		spawners = workspace.ItemSpawns.PveEvents.Zone5,
+		list = {
+			["Mantis Curse"] = true,
+			["Jujutsu Sorcerer"] = true,
+			["Flyhead"] = true,
+			["Roppongi Curse"] = true,
+		},
+	},
+}
+
+local bmLocations = {
+	Vector3.new(2454, 982, 119), --station
+	Vector3.new(2051, 922, 1062), --port
+	Vector3.new(2035, 1063, -781), --desert
+	Vector3.new(950, 1009, -459), --village
+}
+
+local meteors = {
+	Vector3.new(1987.052490234375, 971.3591918945312, 397.0255126953125),
+	Vector3.new(1971.270263671875, 996.0906982421875, 511.0933837890625),
+	Vector3.new(2418.409423828125, 971.3395385742188, 207.31932067871094),
+	Vector3.new(1913.7769775390625, 917.4690551757812, -1714.150634765625),
+	Vector3.new(2078.90625, 915.7373657226562, -1096.42333984375),
+	Vector3.new(1861.3138427734375, 914.9898681640625, -1068.3548583984375),
+	Vector3.new(1696.970947265625, 936.5970458984375, -2095.71240234375),
+	Vector3.new(2165.525390625, 936.9059448242188, 849.872802734375),
+	Vector3.new(1930.3643798828125, 918.7839965820312, 1086.077392578125),
+	Vector3.new(1756.9989013671875, 918.84375, 1181.3677978515625),
+	Vector3.new(1747.33935546875, 918.2639770507812, 1039.6375732421875),
+	Vector3.new(1927.6475830078125, 972.7254028320312, -316.91998291015625),
+	Vector3.new(1981.0384521484375, 974.5810546875, -472.798095703125),
+	Vector3.new(2095.86376953125, 916.1185913085938, -975.6954345703125),
+	Vector3.new(364.78033447265625, 908.3250122070312, -2135.43701171875),
+	Vector3.new(364.78033447265625, 908.3250122070312, -2067.528076171875),
+	Vector3.new(364.78033447265625, 908.3250122070312, -2003.9190673828125),
+	Vector3.new(352.1943664550781, 908.3250122070312, -1926.0960693359375),
+	Vector3.new(341.737060546875, 908.3250122070312, -1891.4969482421875),
+}
+
+--functions
+local function getStand()
+	return stands[data.Ability.Value]
+end
+
+local function getSkin()
+	local abilitySkins = skins[tostring(data.Ability.Value)]
+	return abilitySkins and abilitySkins[data.Skin.Value]
+end
+
+local function getPveInfo()
+	return levelService:WaitForChild("RF"):WaitForChild("GetAbilityPVEInfo"):InvokeServer(data.Ability.Value)
+end
+
+local function getNPCsGroup()
+	return npcGroups[ui.features.npcGroup.value]
+end
+
+local function getMoveset()
+	local stand = getStand()
+	local skin = getSkin()
+	local moves = (stats[stand][skin] or stats[stand][stand]).Moveset.MovesInfo
+	return moves
+end
+
+local invokeQueue = {}
+local function safeInvoke(remote, ...)
+	if invokeQueue[remote] then
+		return invokeQueue[remote]
+	end
+
+	local member = {
+		args = { ... },
+		timer = 0,
+		finished = false,
+		result = nil,
+	}
+
+	task.spawn(function()
+		local success, result
+		while not success do
+			success, result = pcall(function()
+				return { remote:InvokeServer(table.unpack(member.args)) }
+			end)
+		end
+
+		member.result = result
+		member.finished = true
+	end)
+
+	invokeQueue[remote] = member
+
+	return member
+end
+
+local timers = {}
+local function timer(name, time)
+	if not timers[name] or os.clock() - timers[name] >= time then
+		timers[name] = os.clock()
+		return true
+	end
+end
+
+local function formatInt(number)
+	local _, _, minus, int, fraction = string.find(tostring(number), "([-]?)(%d+)([.]?%d*)")
+	int = int:reverse():gsub("(%d%d%d)", "%1,")
+	return minus .. int:reverse():gsub("^,", "") .. fraction
+end
+
+local function mean(t)
+	local sum = 0
+	local count = 0
+
+	for _, v in pairs(t) do
+		if type(v) == "number" then
+			sum = sum + v
+			count = count + 1
+		end
+	end
+
+	return (sum / count)
+end
+
+local function tabletostr(tb, level, cycles)
+	local str = ""
+	if not cycles then
+		cycles = {}
+	end
+	if level == nil then
+		level = 1
+		str = str .. "{"
+	end
+	for i, n in pairs(tb) do
+		if typeof(n) == "table" then
+			if cycles[n] then
+				str = str .. "\n" .. string.rep("  ", level) .. tostring(i) .. " = CYCLE TABLE REFERENCE (" .. i .. ")"
+			else
+				cycles[n] = i
+				str = str .. "\n" .. string.rep("  ", level) .. tostring(i) .. " = {"
+				str = str .. tabletostr(n, level + 1, cycles)
+				str = str .. "\n" .. string.rep("  ", level) .. "};"
+			end
+		else
+			if typeof(n) == "Instance" then
+				if n:IsA("Animation") then
+					str = str
+						.. "\n"
+						.. string.rep("  ", level)
+						.. tostring(i)
+						.. " = "
+						.. tostring(n)
+						.. " ("
+						.. n.ClassName
+						.. ")"
+						.. " ("
+						.. n.AnimationId
+						.. ");"
+				elseif n:IsA("AnimationTrack") then
+					str = str
+						.. "\n"
+						.. string.rep("  ", level)
+						.. tostring(i)
+						.. " = "
+						.. tostring(n)
+						.. " ("
+						.. n.ClassName
+						.. ")"
+						.. " ("
+						.. n.Animation.AnimationId
+						.. ");"
+				else
+					str = str
+						.. "\n"
+						.. string.rep("  ", level)
+						.. tostring(i)
+						.. " = "
+						.. tostring(n)
+						.. " ("
+						.. n.ClassName
+						.. ");"
+				end
+			else
+				if typeof(n) == "string" then
+					n = '"' .. n .. '"'
+				end
+				str = str
+					.. "\n"
+					.. string.rep("  ", level)
+					.. tostring(i)
+					.. " = "
+					.. tostring(n)
+					.. " ("
+					.. typeof(n)
+					.. ");"
+			end
+		end
+	end
+	if level == 1 then
+		str = str .. "\n};"
+	end
+	return str
+end
+
+--VARIABLES
+local keys = {}
+local disabledByDefault = { Block = true, Pose = true, Quickstep = true, Grab = true }
+local hideTraitUIs = false
+local modes = {}
+
+--farm npcs
+do
+	local tpOffset = CFrame.new(0, -15, 0)
+
+	local function useMove()
+		if not character:GetAttribute("MoveActive") then
+			if timer("inputDebounce", 1) then
+				local moves = getMoveset()
+				for name, key in pairs(keys) do
+					local checklistItem = ui.features.moves.get(name)
+					if checklistItem and checklistItem.value then
+						if character.StatesFolder[moves[name].State].Value == true then
+							task.spawn(fireInput.InvokeServer, fireInput, key)
+						end
+					end
+				end
+			end
+		end
+	end
+
+	local function getFurthest(mobs)
+		local furthestDist = 0
+		local furthest
+
+		for _, foe in pairs(mobs) do
+			local foeRoot = foe:FindFirstChild("HumanoidRootPart")
+			local dist = (foeRoot.Position - getNPCsGroup().position).Magnitude
+			if dist > furthestDist then
+				furthestDist = dist
+				furthest = foeRoot
+			end
+		end
+
+		return furthest
+	end
+
+	local chestQueue = {}
+	local sellDebounce = 0
+	local isSelling = false
+	modes["Farm NPCs"] = function(dt)
+		if ui.features.autoSell.value then
+			local dealer = workspace.NPCS:FindFirstChild("Black Market")
+			if localPlayer:FindFirstChild("Backpack") then
+				local items = {}
+				for _, v in pairs(localPlayer.Backpack:GetChildren()) do
+					if
+						v:IsA("Tool")
+						and v:GetAttribute("ItemId")
+						and v.Name ~= "Sanji's Cookbook"
+						and not ui.features.sellWhitelist.get(v.Name)
+					then
+						items[#items + 1] = v
+					end
+				end
+
+				if (#items == 0 and isSelling) or not dealer then
+					isSelling = false
+					sellDebounce = 0
+				elseif #items > 0 or isSelling then
+					if dealer:FindFirstChild("HumanoidRootPart") then
+						isSelling = true
+						teleport(
+							dealer.HumanoidRootPart.CFrame * CFrame.new(0, 0, -5) * CFrame.Angles(0, math.rad(180), 0)
+						)
+
+						sellDebounce -= dt
+						if sellDebounce <= 0 then
+							sellDebounce = 2
+							local itemsToSell = {}
+							for _, v in pairs(items) do
+								table.insert(itemsToSell, {
+									[1] = v:GetAttribute("ItemId"),
+									[2] = v:getAttribute("UUID"),
+									[3] = 1,
+								})
+							end
+
+							knitServices.ShopService.RE.Signal:FireServer("BlackMarketBulkSellItems", itemsToSell)
+						end
+
+						ui.info.state = "Selling items"
+						return
+					else
+						if timer("loadBm", 5) then
+							for _, pos in pairs(bmLocations) do
+								task.spawn(localPlayer.RequestStreamAroundAsync, localPlayer, pos)
+							end
+						end
+					end
+				end
+			end
+		end
+
+		local currentGroup = getNPCsGroup()
+		if currentGroup then
+			--open droppec chests
+			if #chestQueue == 0 then
+				for _, chest in pairs(workspace:GetChildren()) do
+					if
+						chest:FindFirstChild("RootPart")
+						and chest.RootPart:FindFirstChild("ProximityAttachment")
+						and not chest:HasTag("WasOpened")
+					then
+						if (chest.RootPart.Position - currentGroup.position).Magnitude <= 1000 then
+							table.insert(chestQueue, { timer = 0, root = chest.RootPart })
+						end
+					end
+				end
+			else
+				local chest = chestQueue[1]
+				chest.timer += dt
+
+				if
+					chest.timer >= 2
+					or not chest.root:FindFirstChild("ProximityAttachment")
+					or not chest.root.ProximityAttachment:FindFirstChild("Interaction")
+				then
+					table.remove(chestQueue, 1)
+					chest.root.Parent:AddTag("WasOpened")
+				else
+					teleport(chest.root.CFrame)
+					fireproximityprompt(chest.root.ProximityAttachment.Interaction)
+					ui.info.state = "Opening Dropped Chest"
+					return
+				end
+			end
+
+			--
+			local hasMobsNear = false
+			local aggroedMobs = {}
+			local unaggroedMobs = {}
+			local stuckMobs = {}
+
+			for _, thisFoe in pairs(workspace.Living:GetChildren()) do
+				local foeHumanoid = thisFoe:FindFirstChildWhichIsA("Humanoid")
+				local foeRoot = thisFoe:FindFirstChild("HumanoidRootPart")
+
+				if currentGroup.list[thisFoe.Name] and foeHumanoid and foeRoot and thisFoe:GetAttribute("NPC") then
+					local aggroed = false
+					if foeHumanoid.WalkToPoint ~= Vector3.zero then
+						local goingBack = false
+						for _, spawn in pairs(currentGroup.spawners:GetChildren()) do
+							if foeHumanoid.WalkToPoint == spawn.Position then
+								goingBack = true
+							end
+						end
+
+						aggroed = not goingBack
+					end
+
+					if aggroed then
+						table.insert(aggroedMobs, thisFoe)
+						if not hasMobsNear and (foeRoot.Position - currentGroup.position).Magnitude <= 10 then
+							hasMobsNear = true
+						end
+
+						if not thisFoe:HasTag("_stuck") then
+							if not thisFoe:GetAttribute("_stopped") then
+								thisFoe:SetAttribute("_stopped", 0)
+							end
+
+							if foeRoot.AssemblyLinearVelocity.Magnitude <= 5 then
+								thisFoe:SetAttribute("_stopped", thisFoe:GetAttribute("_stopped") + dt)
+								if thisFoe:GetAttribute("_stopped") >= 5 then
+									thisFoe:SetAttribute("_stopped", nil)
+									thisFoe:AddTag("_stuck")
+								end
+							else
+								thisFoe:SetAttribute("_stopped", 0)
+							end
+						end
+					else
+						table.insert(unaggroedMobs, thisFoe)
+					end
+
+					if thisFoe:HasTag("_stuck") then
+						table.insert(stuckMobs, thisFoe)
+					end
+				end
+			end
+
+			local doUseMove = true
+			local origin
+
+			if #stuckMobs > 0 then
+				origin = getFurthest(stuckMobs).CFrame
+				ui.info.state = "Killing stuck NPCs"
+			else
+				if #unaggroedMobs > #aggroedMobs then
+					origin = getFurthest(unaggroedMobs).CFrame
+					ui.info.state = "Attracting NPCs"
+				else
+					origin = CFrame.new(currentGroup.position)
+					doUseMove = hasMobsNear
+					ui.info.state = "Killing attracted NPCs"
+				end
+			end
+
+			if origin then
+				teleport(CFrame.new(origin.Position) * tpOffset)
+				if doUseMove then
+					useMove()
+				end
+			end
+		end
+	end
+end
+
+--zoro quest
+do
+	modes["Zoro Quest"] = function()
+		ui.info.state = "Doing zoro quest"
+		local swordLocations
+		if not swordLocations then
+			local invokeResult = safeInvoke(checkDialogue, "Zoros_Swords_Adventure")
+			if invokeResult.finished and invokeResult.result[2] then
+				swordLocations = {}
+				for i, v in pairs(invokeResult.result[2].SwordLocations) do
+					swordLocations[i] = { pos = v.Location, finished = false }
+				end
+			else
+				return
+			end
+		end
+
+		local allFinished = false
+		for i, location in pairs(swordLocations) do
+			if not location.finished then
+				teleport(location.pos)
+				if safeInvoke(knitServices.AdventureService.RF.PickedUpSword).finished then
+					location.finished = true
+				end
+
+				break
+			else
+				if i == #swordLocations then
+					allFinished = true
+				end
+			end
+		end
+
+		if allFinished then
+			if safeInvoke(checkDialogue, "Zoros_Swords_Adventure").finished then
+				swordLocations = nil
+			end
+		end
+	end
+end
+
+--STEP
+local statistics
+local function resetStatistics()
+	statistics = {
+		damage = {},
+	}
+end
+resetStatistics()
+
+recyclable(RunService.Heartbeat:Connect(function(dt)
+	if hideTraitUIs then
+		traitHandPrompt.Visible = false
+	end
+	ui.info.state = "Idle"
+	if modes[ui.mode] then
+		modes[ui.mode](dt)
+	end
+
+	for remote, member in pairs(invokeQueue) do
+		if member.finished then
+			invokeQueue[remote] = nil
+		end
+	end
+
+	if timer("checks", 1) then
+		task.spawn(function()
+			local pveInfo = getPveInfo()
+			ui.info.progress = `{math.round((pveInfo.CurrentXP / pveInfo.RequiredXP) * 100)}%`
+
+			if ui.features.autoAscend.value then
+				if pveInfo.CurrentLevel >= 200 and data.UCoins.Value >= 1000000 then
+					levelService.RF.AscendAbility:InvokeServer(data.Ability.Value)
+				end
+			end
+
+			if ui.features.autoStat.value then
+				local abilityStats = statService.RF.GetAbilityStats:InvokeServer(data.Ability.Value)
+				if abilityStats.StatPoints >= 1 then
+					statService.RF.ApplyStats:InvokeServer(data.Ability.Value, {
+						Defense = 0,
+						Special = 0,
+						Health = 0,
+						Attack = abilityStats.StatPoints,
+					})
+				end
+			end
+		end)
+		ui.info.dps = if #statistics.damage > 0 then tostring(math.round(mean(statistics.damage))) else 0
+
+		resetStatistics()
+	end
+
+	ui.info.ascensions = `{data.Ability:GetAttribute("AscensionRank")}`
+	ui.info.levels = `{data.Ability:GetAttribute("AbilityLevel")}`
+	ui.info.us = formatInt(data.Currency.Value)
+	ui.info.uc = formatInt(data.UCoins.Value)
+end))
+
+--remotes
+local function outputEvent(...)
+	local args = { ... }
+	if args[1] == "FX" then
+		if args[2] == "Q_DAMAGE_INDICATOR" then
+			if getNPCsGroup().list[args[3].Name] and args[5] == "Damage" then
+				table.insert(statistics.damage, args[4])
+			end
+		end
+	end
+end
+recyclable(ReplicatedStorage.Remotes.Output.OnClientEvent:Connect(outputEvent))
+
+--UI Interactions
+do
+	ui.saveChanged = function()
+		saveConfig()
+	end
+
+	ui.features.uiTitle.callback = function(text)
+		ui.instance.Main.TitleContainer.Title.Text = text
+	end
+
+	local vfxEvents = {
+		ReplicatedStorage.Remotes.Output,
+		knitServices.EffectService.RE.EffectSignal,
+	}
+	ui.features.noEffects.callback = function(value)
+		for _, event in pairs(vfxEvents) do
+			for _, v in pairs(getconnections(event.OnClientEvent)) do
+				if v.Function ~= outputEvent then
+					if value then
+						v:Disable()
+					else
+						v:Enable()
+					end
+				end
+			end
+		end
+	end
+
+	ui.handleModeChange(function(mode)
+		for _, v in pairs(getconnections(chestRolled.OnClientEvent)) do
+			if mode == "Farm NPCs" then
+				v:Disable()
+			else
+				v:Enable()
+			end
+		end
+	end)
+
+	--KEYS
+	do
+		local function getKeyIndexes()
+			local keyMap = getKeymap:InvokeServer()
+			local keyIndexes = {}
+			for name, id in pairs(keyMap) do
+				keyIndexes[id] = name
+			end
+			return keyIndexes
+		end
+
+		local function getAvailableMoves()
+			local level = data.Ability:GetAttribute("AbilityLevel")
+			local ascension = data.Ability:GetAttribute("AscensionRank")
+			local moves = getMoveset()
+
+			local availableMoves = {}
+			for name, move in pairs(moves) do
+				local levelReq = move.LevelRequirement
+				if
+					move.Unlocked --[[unlocked by default]]
+					or (if levelReq then level >= levelReq or ascension > 0 else true)
+				then
+					table.insert(availableMoves, { Name = name, Info = move })
+				end
+			end
+			return availableMoves
+		end
+
+		local function updateKeys()
+			task.spawn(function()
+				local movesInfo = getMovesInfo:InvokeServer()
+				local equippedMoves = movesInfo.EquippedMoves
+				local keyIndexes = getKeyIndexes()
+				keys = {}
+				for move, keyCode in pairs(equippedMoves) do
+					keys[move] = keyIndexes[keyCode]
+				end
+			end)
+		end
+
+		local function bindMove(name, key, fallback)
+			task.spawn(function()
+				local success, result = pcall(equipMove.InvokeServer, equipMove, name, key)
+				if success and result == true then
+					keys[name] = key
+				else
+					keys[name] = fallback
+				end
+			end)
+		end
+
+		ui.features.bindKeys.callback = function()
+			local movesInfo = getMovesInfo:InvokeServer()
+			local equippedMoves = movesInfo.EquippedMoves
+			local keyIndexes = getKeyIndexes()
+
+			local availableMoves = getAvailableMoves()
+			keys = {}
+			for i, move in pairs(availableMoves) do
+				local key = "WORLD" .. i
+				bindMove(move.Name, key, keyIndexes[equippedMoves[move.Name]])
+			end
+		end
+
+		ui.features.resetKeys.callback = function()
+			local movesInfo = getMovesInfo:InvokeServer()
+			local equippedMoves = movesInfo.EquippedMoves
+			local keyIndexes = getKeyIndexes()
+
+			local availableMoves = getAvailableMoves()
+			keys = {}
+			for _, move in pairs(availableMoves) do
+				bindMove(move.Name, move.Info.DefaultKeybind, keyIndexes[equippedMoves[move.Name]])
+			end
+		end
+
+		ui.features.moves.callback = function(name, value)
+			if value == not disabledByDefault[name] then
+				value = nil
+			end
+
+			local ability = tostring(data.Ability.Value)
+			if value ~= nil and not config.moves[ability] then
+				config.moves[ability] = {}
+			end
+
+			if config.moves[ability] then
+				config.moves[ability][name] = value
+				if next(config.moves[ability]) == nil then
+					config.moves[ability] = nil
+				end
+				saveConfig()
+			end
+		end
+
+		local function refreshMoves()
+			task.spawn(function()
+				ui.features.moves.removeAll()
+				local stand = getStand()
+				local skin = getSkin()
+				repeat
+					RunService.Heartbeat:Wait()
+				until stats[stand] ~= nil
+				local moves = (stats[stand][skin] or stats[stand][stand]).Moveset.MovesInfo
+				local states = {}
+
+				for name, move in pairs(moves) do
+					if not states[move.State] then
+						states[move.State] = {}
+					end
+					states[move.State][name] = move
+				end
+
+				local savedMoves = config.moves[tostring(data.Ability.Value)]
+				for stateName, state in pairs(states) do
+					for name, _ in pairs(state) do
+						local savedValue = savedMoves and savedMoves[name]
+						ui.features.moves.add(
+							name,
+							`{name} ({stateName})`,
+							if savedValue ~= nil then savedValue else not disabledByDefault[name]
+						)
+					end
+				end
+				updateKeys()
+			end)
+		end
+
+		refreshMoves()
+		recyclable(data.Ability:GetPropertyChangedSignal("Value"):Connect(refreshMoves))
+		recyclable(data.Skin:GetPropertyChangedSignal("Value"):Connect(refreshMoves))
+	end
+end
+
+--TRAIT UI
+do
+	--disable auts trait ui
+	for _, connection in pairs(getconnections(traitHandEvent.OnClientEvent)) do
+		local name = getfenv(connection.Function).script.Name
+		if name == "UI_TraitHands" then
+			connection:Disable()
+			--selene:allow(incorrect_standard_library_use)
+			do
+				local func = connection.Function
+				if debug.getupvalue(func, 1) == true then
+					local emptyLabel = ui.instance.Main.Pages.Traits.Area.Empty.TextLabel
+					local originalText = emptyLabel.Text
+					emptyLabel.Text = "Please deal with the current trait hand in game."
+					traitHandPrompt.Visible = true
+					local conn
+					conn = recyclable(RunService.Heartbeat:Connect(function()
+						if debug.getupvalue(func, 1) == false then
+							emptyLabel.Text = originalText
+							hideTraitUIs = true
+							conn:Disconnect()
+						end
+					end))
+				else
+					hideTraitUIs = true
+				end
+
+				local i, upvalue
+				for index, v in pairs(debug.getupvalues(func)) do
+					if type(v) == "table" and rawget(v, "ResolveLock") then
+						i = index
+						upvalue = v
+						break
+					end
+				end
+
+				if upvalue then
+					debug.setupvalue(
+						func,
+						i,
+						setmetatable({
+							__original = rawget(upvalue, "__original") or upvalue,
+							ResolveLock = function() end,
+							ToggleMenu = function() end,
+							MakeLockInstance = function() end,
+							SetMenu = function() end,
+							DestroyPrompt = function() end,
+						}, {
+							__index = upvalue,
+							__newindex = upvalue,
+						})
+					)
+				end
+			end
+		else
+			print("oops this might be a mem leak " .. name)
+		end
+	end
+
+	ui.traits.getPity = function()
+		local info = knitServices.ShopService.RF.GetPityInfo:InvokeServer()
+		local ascensions = getPveInfo().AscensionRank
+		local pityAt
+		if ascensions <= 5 then
+			pityAt = 60
+		elseif ascensions <= 10 then
+			pityAt = 80
+		else
+			pityAt = 100
+		end
+		return info.TraitRerollPity, pityAt
+	end
+
+	local function removeTraitHand()
+		if _G.traitHands[data.Ability:GetAttribute("UUID")] then
+			table.remove(_G.traitHands[data.Ability:GetAttribute("UUID")], 1)
+		end
+	end
+
+	ui.traits.fireDiscard = function()
+		print("Discard")
+		removeTraitHand()
+		return traitService.RF.DiscardTraits:InvokeServer()
+	end
+
+	ui.traits.firePick = function(i)
+		print(`Pick {i}`)
+		removeTraitHand()
+		return traitService.RF.PickTrait:InvokeServer(i)
+	end
+
+	local function convertSole(info)
+		local trait = traits[info.Trait]
+		local converted = {
+			title = if info.Hexed then `{trait.HexPrefix} {info.Trait} (Hexed)` else info.Trait,
+			description = if info.Hexed then trait.HexDescription else trait.Description,
+			rarity = trait.Rarity,
+			bonuses = info.StatBonuses,
+		}
+		if info.Hexed or trait.Rarity == "Mythic" or trait.Rarity == "Legendary" then
+			converted.valuable = true
+		end
+		return converted
+	end
+
+	local function convert(traitsInfo)
+		local converted = {}
+		for i, info in pairs(traitsInfo) do
+			converted[i] = convertSole(info)
+		end
+		return converted
+	end
+
+	if not _G.traitHands then
+		_G.traitHands = {}
+	end
+
+	local function checkPreviousTraits()
+		if _G.traitHands[data.Ability:GetAttribute("UUID")] then
+			for _, v in pairs(_G.traitHands[data.Ability:GetAttribute("UUID")]) do
+				ui.traits.handle(convert(v))
+			end
+		end
+	end
+	checkPreviousTraits()
+
+	local function updateCurrent()
+		for uuid, v in pairs(getItems:InvokeServer("AbilityInventory")) do
+			if uuid == data.Ability:GetAttribute("UUID") then
+				local arg
+				if v._TraitInfo then
+					local converted = convertSole(v._TraitInfo)
+					converted.uuid = uuid
+					arg = converted
+				end
+				ui.traits.updateCurrent(arg)
+				break
+			end
+		end
+	end
+	recyclable(data.Ability:GetAttributeChangedSignal("UUID"):Connect(function()
+		checkPreviousTraits()
+		updateCurrent()
+	end))
+	task.spawn(updateCurrent)
+
+	recyclable(traitHandEvent.onClientEvent:Connect(function(traitsInfo)
+		if not _G.traitHands[data.Ability:GetAttribute("UUID")] then
+			_G.traitHands[data.Ability:GetAttribute("UUID")] = {}
+		end
+		table.insert(_G.traitHands[data.Ability:GetAttribute("UUID")], traitsInfo)
+
+		ui.traits.handle(convert(traitsInfo))
+	end))
+end
+
+--Hitbox stuff
+do
+	if not _G.metaHook then
+		local fallbackOld
+		--selene:allow(undefined_variable)
+		fallbackOld = hookmetamethod(game, "__index", function(...)
+			if _G.hitboxHook then
+				return _G.hitboxHook(getfenv(2), ...)
+			else
+				return fallbackOld(...)
+			end
+		end)
+		_G.metaHook = fallbackOld
+	end
+
+	local oldIndex = _G.metaHook
+	_G.hitboxHook = function(fenv, instance, index)
+		if tostring(fenv.script) == "UI_Engine" and ui.mode == "Farm NPCs" then
+			local parent = oldIndex(instance, "Parent")
+			if parent == oldIndex(localPlayer, "Character") then
+				if oldIndex(instance, "Name") == "HumanoidRootPart" then
+					local cfr = oldIndex(instance, "CFrame")
+					cfr *= CFrame.new(0, 8.5, 0) * CFrame.Angles(math.rad(90), math.rad(0), math.rad(0))
+
+					if index == "CFrame" then
+						return cfr
+					elseif index == "Position" then
+						return cfr.Position
+					elseif index == "Orientation" then
+						local rx, ry, rz = cfr:ToOrientation()
+						return Vector3.new(math.deg(rx), math.deg(ry), math.deg(rz))
+					elseif index == "Velocity" then
+						return Vector3.new(1, 1, 1) * math.huge
+					end
+				end
+			end
+		end
+		return oldIndex(instance, index)
+	end
+end
+
+--anti AFK
+recyclable(localPlayer.Idled:connect(function()
+	VirtualUser:CaptureController()
+	VirtualUser:ClickButton2(Vector2.new())
+end))

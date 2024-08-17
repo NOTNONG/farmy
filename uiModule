@@ -799,17 +799,17 @@ return function(config, saved)
 		local function updateViewSwitcherText()
 			actions.switchView.TextLabel.Text = if viewing == "currentTrait"
 				then `View Trait Hand`
-				else `View Current ({currentTrait.title})`
+				else `View Current ({if currentTrait then currentTrait.title else "None"})`
 		end
-		actions.switchView.Activated:Connect(function()
-			if currentTrait then
-				if viewing == "currentTrait" then
-					viewing = "traitHand"
+
+		local function updateView(new)
+			if new ~= viewing then
+				viewing = new
+				if viewing == "traitHand" then
 					empty.Visible = currentHand == nil
 					cards.Visible = currentHand ~= nil
 					toggleHandActions(currentHand ~= nil)
-				elseif viewing == "traitHand" then
-					viewing = "currentTrait"
+				elseif viewing == "currentTrait" then
 					if not currentHand then
 						empty.Visible = false
 						cards.Visible = true
@@ -822,29 +822,46 @@ return function(config, saved)
 					card.Visible = viewing ~= "currentTrait"
 				end
 				currentCard.Visible = viewing == "currentTrait"
+
 				updateViewSwitcherText()
+			end
+		end
+
+		actions.switchView.Activated:Connect(function()
+			if currentTrait then
+				if viewing == "currentTrait" then
+					updateView("traitHand")
+				elseif viewing == "traitHand" then
+					updateView("currentTrait")
+				end
 			end
 		end)
 		interactable(actions.switchView)
 
 		local function emptied()
 			currentHand = nil
-			empty.Visible = true
-			cards.Visible = false
-			toggleHandActions(false)
+			if viewing == "traitHand" then
+				empty.Visible = true
+				cards.Visible = false
+				toggleHandActions(false)
+			end
 		end
 
 		control.traits.updateCurrent = function(info)
-			if not currentTrait or info.uuid ~= currentTrait.uuid then
+			if (not info or not currentTrait) or ((info and currentTrait) and info.uuid ~= currentTrait.uuid) then
 				remainingHands = {}
-				stopDiscardingRest()
 				emptied()
+				stopDiscardingRest()
 			end
 
-			print(info.title)
 			currentTrait = info
-			updateCard(currentCard, info)
 			updateViewSwitcherText()
+			actions.switchView.Visible = currentTrait ~= nil
+			if currentTrait then
+				updateCard(currentCard, info)
+			else
+				updateView("traitHand")
+			end
 		end
 
 		local complete
@@ -942,7 +959,7 @@ return function(config, saved)
 			if discardingRest then
 				waitingNext = task.delay(0.5, function()
 					waitingNext = nil
-					control.notify("Discard completed.", 3)
+					control.notify("Discard completed.", 1)
 					stopDiscardingRest()
 				end)
 			end

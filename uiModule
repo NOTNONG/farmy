@@ -1018,6 +1018,7 @@ return function(config, saved)
 					updateCard(card, currentHand[i])
 				end
 
+				print(viewing)
 				if viewing == "traitHand" then
 					empty.Visible = false
 					cards.Visible = true

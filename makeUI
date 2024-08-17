@@ -3010,6 +3010,7 @@ tb["uilistlayout9"].Parent = tb["actions"]
 
 tb["switchview"] = Instance.new("ImageButton")
 tb["switchview"].Name = "switchView"
+tb["switchview"].Visible = false
 tb["switchview"].ImageTransparency = 1
 tb["switchview"].AutoButtonColor = false
 tb["switchview"].AnchorPoint = Vector2.new(0.5, 0.5)

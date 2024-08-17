@@ -92,6 +92,13 @@ local npcGroups = {
 			["Roppongi Curse"] = true,
 		},
 	},
+	Pirate = {
+		position = Vector3.new(-3375, 919, 15244),
+		spawners = workspace.ItemSpawns.PveEvents.Zone10,
+		list = {
+			Pirate = true,
+		},
+	},
 }
 
 local bmLocations = {
@@ -127,6 +134,8 @@ local locations = {
 	Field = CFrame.new(1981.73046875, 973.112060546875, -389.328125),
 	Park = CFrame.new(2097.8271484375, 973.474853515625, 298.7255859375),
 	["Kuma NPC"] = CFrame.new(1989, 973, -237),
+	["Port NPC"] = CFrame.new(2007, 922, 1268),
+	["Busoshoku NPC"] = CFrame.new(1690, 922, 920),
 }
 
 --UI
@@ -443,7 +452,7 @@ do
 
 	local function useMove()
 		if not character:GetAttribute("MoveActive") then
-			if timer("inputDebounce", 1) then
+			if timer("inputDebounce", 0.5) then
 				local moves = getMoveset()
 				for name, key in pairs(keys) do
 					local checklistItem = ui.features.moves.get(name)
@@ -800,7 +809,6 @@ do
 		for name, location in pairs(locations) do
 			ui.features[`teleport{name}`].callback = function()
 				if ui.mode == "None" then
-					localPlayer:RequestStreamAroundAsync(location.Position)
 					teleport(location)
 				else
 					ui.notify("Can't teleport while the character is being used.", 1)

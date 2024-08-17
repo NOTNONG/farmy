@@ -1,10 +1,3 @@
-local function createUI()
-	--selene:allow(incorrect_standard_library_use)
-	local ui = loadstring(game:HttpGet("https://raw.githubusercontent.com/NOTNONG/farmy/main/makeUI"))()
-	ui.Parent = game.CoreGui
-	return ui
-end
-
 return function(config, saved)
 	if not saved then
 		saved = {}
@@ -53,17 +46,17 @@ return function(config, saved)
 			return a.LayoutOrder < b.LayoutOrder
 		end)
 	end
-
+	
 	--notifications
 	do
 		local template = notifications.Template
-
+		
 		control.notify = function(message: string, duration: number)
 			local this = template:Clone()
 			this.Content.Text = message
 			this.Visible = true
 			this.Parent = notifications
-
+			
 			if duration then
 				task.delay(duration, this.Destroy, this)
 			end
@@ -118,14 +111,14 @@ return function(config, saved)
 			local template = mode.Expanded.Item
 			template.Visible = false
 			table.insert(config.modes, "None")
-
+			
 			local modeChanged
 			local function fireModeChanged()
 				if modeChanged then
 					task.spawn(modeChanged, control.mode)
 				end
 			end
-
+			
 			control.handleModeChange = function(func)
 				modeChanged = func
 				fireModeChanged()
@@ -135,9 +128,9 @@ return function(config, saved)
 				if control.mode ~= name then
 					control.mode = name
 					mode.TextLabel.Text = `Mode: {name}`
-
+					
 					fireModeChanged()
-
+					
 					save.mode = name
 					saveChanged()
 				end
@@ -162,11 +155,11 @@ return function(config, saved)
 			mode.Activated:Connect(function()
 				switch()
 			end)
-
+			
 			if saved.mode and table.find(config.modes, saved.mode) then
 				setMode(saved.mode)
 			end
-
+			
 			control.setMode = setMode
 		end
 
@@ -253,13 +246,13 @@ return function(config, saved)
 				templates[template.Name] = template
 			end
 		end
-
+		
 		local componentMeta = {
 			spawnCallback = function(self, ...)
 				if self.callback then
 					task.spawn(self.callback, ...)
 				end
-			end,
+			end,			
 			__newindex = function(self, k, v)
 				rawset(self, k, v)
 				if k == "callback" then
@@ -274,7 +267,7 @@ return function(config, saved)
 		local handlers = {}
 		handlers.Button = function(self, component: typeof(frame.Button), data)
 			component.FillTitle.Label.Text = data.title
-
+			
 			local prevFeedback
 			component.Button.Activated:Connect(function()
 				if type(self.callback) == "function" then
@@ -293,7 +286,7 @@ return function(config, saved)
 				end
 			end)
 		end
-
+		
 		handlers.Switch = function(self, component: typeof(frame.Switch), data)
 			component.FillTitle.Label.Text = data.title
 			local states = component.ButtonHolder
@@ -309,19 +302,19 @@ return function(config, saved)
 					states.Off.Underline.BackgroundColor3,
 				},
 			}
-
+			
 			self.fireCallback = function()
 				self:spawnCallback(self.value)
 			end
-
+			
 			local switched
 			local function switch(bool)
 				if switched ~= bool then
 					switched = bool
 					self.value = switched
-
+					
 					self.fireCallback()
-
+					
 					for _, state in pairs(states:GetChildren()) do
 						local i = switched
 						if state.Name == "Off" then
@@ -331,7 +324,7 @@ return function(config, saved)
 						state.Label.TextColor3 = colors[i][2]
 						state.Underline.BackgroundColor3 = colors[i][3]
 					end
-
+					
 					if not data.noSave then
 						save[data.name] = switched
 						saveChanged()
@@ -352,10 +345,10 @@ return function(config, saved)
 				switch(false)
 			end)
 		end
-
+		
 		handlers.InputField = function(self, component: typeof(frame.InputField), data)
 			component.FillTitle.Label.Text = data.title
-
+			
 			self.fireCallback = function()
 				self:spawnCallback(self.value)
 			end
@@ -382,14 +375,14 @@ return function(config, saved)
 			end)
 			update()
 		end
-
+		
 		handlers.Dropdown = function(self, component: typeof(frame.Dropdown), data)
 			component.FillTitle.Label.Text = data.title
-
+			
 			self.fireCallback = function()
 				self:spawnCallback(self.value)
 			end
-
+			
 			local choices = {}
 			local expanded = component.Expanded
 			local itemsHolder = expanded.Below.Frame.Holder
@@ -401,14 +394,14 @@ return function(config, saved)
 				switched = not switched
 				expanded.Visible = switched
 			end
-
+			
 			local function choose(choice)
 				if choices[choice] then
 					self.value = choice
 					component.Expand.Label.Text = choice
-
+					
 					self.fireCallback()
-
+					
 					if not data.noSave then
 						save[data.name] = choice
 						saveChanged()
@@ -448,13 +441,13 @@ return function(config, saved)
 				end
 			end
 		end
-
+		
 		local function filter(name, query)
 			if string.find(string.lower(name), string.lower(query)) then
 				return true
 			end
 		end
-
+		
 		handlers.Checklist = function(self, component: typeof(frame.Checklist), data)
 			local list = {}
 			if not data.noSave then
@@ -564,14 +557,14 @@ return function(config, saved)
 				local savedValue = saved[data.name] and saved[data.name][name]
 				add(name, v.title, if savedValue ~= nil then savedValue else v.default)
 			end
-
+			
 			self.fireCallback = function()
 				for name, v in pairs(list) do
 					self:spawnCallback(name, v.value)
 				end
 			end
 		end
-
+		
 		handlers.List = function(self, component: typeof(frame.List), data)
 			local list = {}
 			if not data.noSave then
@@ -657,14 +650,14 @@ return function(config, saved)
 			for name, _ in pairs((if data.noSave then nil else saved[data.name]) or data.default) do
 				add(name)
 			end
-
+			
 			self.fireCallback = function()
 				for name, _ in pairs(list) do
 					self:spawnCallback(name, true)
 				end
 			end
 		end
-
+		
 		local i = 1
 		for _, v in pairs(config.features.sections) do
 			i += 1
@@ -688,7 +681,7 @@ return function(config, saved)
 					component.LayoutOrder = i
 					component.Parent = frame
 					table.insert(components, component)
-
+					
 					local this = setmetatable({}, componentMeta)
 					features[item.name] = this
 					handlers[item.component](this, component, item)
@@ -707,22 +700,22 @@ return function(config, saved)
 			end)
 		end
 	end
-
+	
 	--traits page
 	do
 		local traitsPage = pages.Traits
 		control.traits = {}
-
-		local interactables: { GuiButton } = {}
+		
+		local interactables : {GuiButton} = {}
 		local currentTrait
 		local currentHand
 		local handCards = {}
 		local remainingHands = {}
-
+		
 		local discardingRest = false
 		local prompting = false
 		local viewing = "traitHand"
-
+		
 		local prompt = traitsPage.Prompt
 		local area = traitsPage.Area
 		local actions = traitsPage.Actions
@@ -730,11 +723,11 @@ return function(config, saved)
 		local empty = area.Empty
 		local template = cards.Template
 		template.Visible = false
-
+		
 		local function interactable(v)
 			table.insert(interactables, v)
 		end
-
+		
 		local function cloneTemplate()
 			local this = template:Clone()
 			this.Visible = true
@@ -742,7 +735,7 @@ return function(config, saved)
 			this.Parent = cards
 			return this
 		end
-
+		
 		local function updateCard(card, info)
 			local title = `{info.title} ({info.rarity})`
 			if info.valuable then
@@ -764,15 +757,40 @@ return function(config, saved)
 				stat.Parent = card.Bonuses
 			end
 		end
-
+		
+		local function toggleHandActions(bool)
+			if not discardingRest then
+				for _, card in pairs(handCards) do
+					card.Holder.Visible = bool
+				end
+				actions.discard.Visible = bool
+				actions.discardRest.Visible = bool
+			end
+		end
+		
+		local waitingNext
+		local function stopWaitingNext()
+			if waitingNext then
+				task.cancel(waitingNext)
+				waitingNext = nil
+			end
+		end
+		
+		local function stopDiscardingRest()
+			stopWaitingNext()
+			discardingRest = false
+			traitsPage.DiscardingRest.Visible = false
+			if currentHand then
+				toggleHandActions(true)
+			end
+		end
+		
 		local currentCard = cloneTemplate()
 		currentCard.Visible = false
 		currentCard.Holder:Destroy()
-
+		
 		local function updateViewSwitcherText()
-			actions.switchView.TextLabel.Text = if viewing == "currentTrait"
-				then `View Trait Hand`
-				else `View Current ({currentTrait.title})`
+			actions.switchView.TextLabel.Text = if viewing == "currentTrait" then `View Trait Hand` else `View Current ({currentTrait.title})`
 		end
 		actions.switchView.Activated:Connect(function()
 			if currentTrait then
@@ -780,23 +798,17 @@ return function(config, saved)
 					viewing = "traitHand"
 					empty.Visible = currentHand == nil
 					cards.Visible = currentHand ~= nil
-					if not discardingRest then
-						actions.discard.Visible = currentHand ~= nil
-						actions.discardRest.Visible = currentHand ~= nil
-					end
+					toggleHandActions(currentHand ~= nil)
 				elseif viewing == "traitHand" then
 					viewing = "currentTrait"
 					if not currentHand then
 						empty.Visible = false
 						cards.Visible = true
 					else
-						if not discardingRest then
-							actions.discard.Visible = false
-							actions.discardRest.Visible = false
-						end
+						toggleHandActions(false)
 					end
 				end
-
+				
 				for _, card in pairs(handCards) do
 					card.Visible = viewing ~= "currentTrait"
 				end
@@ -805,35 +817,45 @@ return function(config, saved)
 			end
 		end)
 		interactable(actions.switchView)
+		
+		local function emptied()
+			currentHand = nil
+			empty.Visible = true
+			cards.Visible = false
+			toggleHandActions(false)
+		end
 
 		control.traits.updateCurrent = function(info)
 			if not currentTrait or info.uuid ~= currentTrait.uuid then
-				discardingRest = false
-				empty.Visible = true
-				cards.Visible = false
-				actions.discard.Visible = false
-				actions.discardRest.Visible = false
-				traitsPage.DiscardingRest.Visible = false
+				remainingHands = {}
+				stopDiscardingRest()
+				emptied()
 			end
-
+			
 			print(info.title)
 			currentTrait = info
 			updateCard(currentCard, info)
 			updateViewSwitcherText()
 		end
-
+		
 		local complete
 		local function fire(name, ...)
 			local func = control.traits[`fire{string.gsub(name, "^%l", string.upper)}`]
 			if func then
-				local success = pcall(func, ...)
+				local success, result = pcall(func, ...)
+				if not success then
+					control.notify(`Can't {name} because of this error: {result}`)
+				end
 				return success
 			end
 		end
 
 		local function discard()
+			toggleHandActions(false)
 			if fire("discard") then
 				complete()
+			else
+				toggleHandActions(true)
 			end
 		end
 
@@ -851,7 +873,7 @@ return function(config, saved)
 				togglePrompt(true)
 				prompt.Frame.Content.Text = text
 
-				local signalMaid: { RBXScriptSignal } = {}
+				local signalMaid : {RBXScriptSignal} = {}
 				local function addTask(v)
 					table.insert(signalMaid, v)
 				end
@@ -879,74 +901,61 @@ return function(config, saved)
 				return coroutine.yield()
 			end
 		end
-
-		local waitingNext
+		
 		local function triggerDiscard()
-			local vaulables = 0
+			local vaulables = {}
 			for _, info in pairs(currentHand) do
 				if info.valuable then
-					vaulables += 1
+					table.insert(vaulables, `"{info.title}" ({info.rarity})`)
 				end
 			end
 
-			if vaulables >= 1 then
-				if waitingNext then
-					task.cancel(waitingNext)
+			if #vaulables >= 1 then
+				local str = `{#vaulables} valuable trait{if #vaulables > 1 then 's' else ''}: {table.concat(vaulables, ", ")}`
+				if discardingRest then
+					control.notify(`Stopped discarding due to {str}.`, 3)
+					stopDiscardingRest()
+					return
 				end
-
-				local agreed = showPrompt(
-					`Do you want to discard these traits which contain {vaulables} valuable trait{if vaulables > 1
-						then "s"
-						else ""}{if discardingRest then " and continue to automatically discard" else ""}?`
-				)
-				waitingNext = task.delay(1, function()
-					discardingRest = false
-					traitsPage.DiscardingRest.Visible = false
-				end)
-
-				if not agreed then
-					if discardingRest then
-						actions.discard.Visible = true
-						actions.discardRest.Visible = true
-						traitsPage.DiscardingRest.Visible = false
-					end
+				
+				if not showPrompt(`Do you want to discard these traits which contain {str}?`) then
 					return
 				end
 			end
 
 			discard()
 		end
-
+		
 		complete = function()
-			waitingNext = task.delay(1, function()
-				control.notify("Discard completed.", 3)
-				discardingRest = false
-				traitsPage.DiscardingRest.Visible = false
-			end)
-			currentHand = nil
+			emptied()
+			
+			if discardingRest then
+				waitingNext = task.delay(.5, function()
+					waitingNext = nil
+					control.notify("Discard completed.", 3)
+					stopDiscardingRest()
+				end)
+			end
+			
 			if #remainingHands > 0 then
 				control.traits.handle(remainingHands[1])
 				table.remove(remainingHands, 1)
 				if discardingRest then
 					triggerDiscard()
 				end
-			else
-				empty.Visible = true
-				cards.Visible = false
-				if not discardingRest then
-					actions.discard.Visible = false
-					actions.discardRest.Visible = false
-				end
 			end
 		end
-
+		
 		for i = 1, 3 do
 			local this = cloneTemplate()
 			this.Holder.ImageButton.Activated:Connect(function()
 				if currentHand and currentHand[i] then
 					if showPrompt(`Do you want to pick "{currentHand[i].title}" ({currentHand[i].rarity})?`) then
+						toggleHandActions(false)
 						if fire("pick", i) then
 							complete()
+						else
+							toggleHandActions(true)
 						end
 					end
 				end
@@ -954,26 +963,23 @@ return function(config, saved)
 			interactable(this.Holder.ImageButton)
 			handCards[i] = this
 		end
-
+		
 		actions.discard.Activated:Connect(triggerDiscard)
 		interactable(actions.discard)
-
+		
 		actions.discardRest.Activated:Connect(function()
 			if showPrompt("Do you want to start automatically discarding the rest of your trait hands?") then
+				toggleHandActions(false)
 				discardingRest = true
-				actions.discard.Visible = false
-				actions.discardRest.Visible = false
 				traitsPage.DiscardingRest.Visible = true
 				triggerDiscard()
 			end
 		end)
 		interactable(actions.discardRest)
-
+		
 		control.traits.handle = function(traitsInfo)
-			if waitingNext then
-				task.cancel(waitingNext)
-			end
-
+			stopWaitingNext()
+			
 			if not currentHand then
 				local pity, pityAt = control.traits.getPity()
 				traitsPage.Pity.TextLabel.Text = `Pity: {pity}/{pityAt}`
@@ -986,18 +992,14 @@ return function(config, saved)
 				if viewing == "traitHand" then
 					empty.Visible = false
 					cards.Visible = true
-
-					if not discardingRest then
-						actions.discard.Visible = true
-						actions.discardRest.Visible = true
-					end
+					toggleHandActions(true)
 				end
 			else
 				table.insert(remainingHands, traitsInfo)
 			end
 		end
 	end
-
+	
 	control.clear = function()
 		for _, object in pairs(janitorList) do
 			if typeof(object) == "RBXScriptConnection" then

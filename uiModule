@@ -982,6 +982,7 @@ return function(config, saved)
 					if showPrompt(`Do you want to pick "{currentHand[i].title}" ({currentHand[i].rarity})?`) then
 						toggleHandActions(false)
 						if fire("pick", i) then
+							control.traits.updateCurrent(currentHand[i])
 							complete()
 						else
 							toggleHandActions(true)

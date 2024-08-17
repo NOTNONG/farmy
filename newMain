@@ -832,6 +832,7 @@ do
 		for name, location in pairs(locations) do
 			ui.features[`teleport{name}`].callback = function()
 				if ui.mode == "None" then
+					localPlayer:RequestStreamAroundAsync(location.Position, 3)
 					teleport(location)
 				else
 					ui.notify("Can't teleport while the character is being used.", 1)

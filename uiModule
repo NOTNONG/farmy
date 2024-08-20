@@ -504,7 +504,6 @@ return function(config, saved)
 			self.get = function(row, column)
 				return list[row].cells[column]
 			end
-
 			self.set = function(row, column, value)
 				list[row].cells[column] = value
 				if not data.noSave then
@@ -518,7 +517,7 @@ return function(config, saved)
 				this.Visible = true
 				this.Label.Text = info.title
 				this.Parent = rows
-				local row = { cells = {}, instance = this, title = info.title }
+				local row = { cells = {}, defaults = {}, instance = this, title = info.title }
 				list[info.name] = row
 				if not data.noSave then
 					save[data.name][info.name] = {}
@@ -529,6 +528,11 @@ return function(config, saved)
 					local cell = cellTemplates[kind]:Clone()
 					cell.LayoutOrder = #data.columns + 1 - i
 
+					local default = column.default
+					if info.cells and info.cells[column.name] ~= nil then
+						default = info.cells[column.name]
+					end
+
 					local function getValue()
 						return self.get(info.name, column.name)
 					end
@@ -537,16 +541,11 @@ return function(config, saved)
 						self.set(info.name, column.name, value)
 					end
 
-					local default
+					local initValue = default
 					if savedRows and savedRows[info.name] and savedRows[info.name][column.name] ~= nil then
-						default = savedRows[info.name][column.name]
-					else
-						if info.cells then
-							default = info.cells[column.name]
-						else
-							default = column.default
-						end
+						initValue = savedRows[info.name][column.name]
 					end
+
 					if kind == "Checkbox" then
 						if default == nil then
 							default = false
@@ -554,12 +553,15 @@ return function(config, saved)
 
 						local checkbox = cell.Checkbox
 						local function toggle(bool)
+							if bool == nil then
+								bool = default
+							end
 							setValue(bool)
 							checkbox[tostring(bool)].Visible = true
 							checkbox[tostring(not bool)].Visible = false
 						end
 
-						toggle(default)
+						toggle(initValue)
 						checkbox.Activated:Connect(function()
 							local newValue = not getValue()
 							toggle(newValue)
@@ -570,26 +572,26 @@ return function(config, saved)
 						end
 
 						local textBox = cell.Box :: TextBox
-						local function format(text)
+						local function setText(text)
 							if column.format then
 								text = column.format(text)
 							end
 							textBox.Text = text
-							return text
+							setValue(text)
 						end
 
 						textBox.FocusLost:Connect(function(entered)
 							if entered then
-								setValue(format(textBox.Text))
+								setText(textBox.Text)
 							else
 								textBox.Text = getValue()
 							end
 						end)
 
-						if default then
-							setValue(format(default))
-						end
+						setText(if initValue ~= nil then initValue else default)
 					end
+
+					row.defaults[column.name] = default
 					cell.Parent = this.Cells
 				end
 			end
@@ -624,6 +626,9 @@ return function(config, saved)
 				end
 			end
 
+			self.getDefault = function(row, column)
+				return list[row].defaults[column]
+			end
 			self.add = addRow
 			self.remove = removeRow
 			self.getAll = function()

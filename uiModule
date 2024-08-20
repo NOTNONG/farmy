@@ -467,9 +467,10 @@ return function(config, saved)
 
 		handlers.Sheet = function(self, component: typeof(frame.Sheet), data)
 			local list = {}
+			local valueList = {}
 			local savedRows
 			if not data.noSave then
-				save[data.name] = {}
+				save[data.name] = valueList
 				savedRows = saved[data.name]
 			end
 
@@ -502,13 +503,10 @@ return function(config, saved)
 			end
 
 			self.get = function(row, column)
-				return list[row].cells[column]
+				return valueList[row][column]
 			end
 			self.set = function(row, column, value)
-				list[row].cells[column] = value
-				if not data.noSave then
-					save[data.name][row][column] = value
-				end
+				valueList[row][column] = value
 				self:spawnCallback(row, column, value)
 			end
 
@@ -519,9 +517,7 @@ return function(config, saved)
 				this.Parent = rows
 				local row = { cells = {}, defaults = {}, instance = this, title = info.title }
 				list[info.name] = row
-				if not data.noSave then
-					save[data.name][info.name] = {}
-				end
+				valueList[info.name] = {}
 
 				for i, column in pairs(data.columns) do
 					local kind = column.kind
@@ -632,16 +628,20 @@ return function(config, saved)
 			self.add = addRow
 			self.remove = removeRow
 			self.getAll = function()
-				local clone = {}
-				for i, v in pairs(list) do
-					clone[i] = table.clone(v.cells)
-				end
-				return clone
+				return table.clone(valueList)
 			end
 			self.removeAll = function()
 				for name, _ in pairs(list) do
 					removeRow(name)
 				end
+			end
+			local columnsIndex = {}
+			for i, column in pairs(data.columns) do
+				columnsIndex[i] = column.name
+			end
+			table.freeze(columnsIndex)
+			self.getColumns = function()
+				return columnsIndex
 			end
 		end
 

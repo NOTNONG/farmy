@@ -467,8 +467,10 @@ return function(config, saved)
 
 		handlers.Sheet = function(self, component: typeof(frame.Sheet), data)
 			local list = {}
+			local savedRows
 			if not data.noSave then
 				save[data.name] = {}
+				savedRows = saved[data.name]
 			end
 
 			local searchBox = component.Top.Search.Label
@@ -535,7 +537,16 @@ return function(config, saved)
 						self.set(info.name, column.name, value)
 					end
 
-					local default = if info.cells then info.cells[column.name] else column.default
+					local default
+					if savedRows and savedRows[info.name] and savedRows[info.name][column.name] ~= nil then
+						default = savedRows[info.name][column.name]
+					else
+						if info.cells then
+							default = info.cells[column.name]
+						else
+							default = column.default
+						end
+					end
 					if kind == "Checkbox" then
 						if default == nil then
 							default = false

@@ -1471,15 +1471,15 @@ tb["expanded1"].Parent = tb["dropdown"]
 
 tb["dropdown"].Parent = tb["frame1"]
 
-tb["inputfield"] = Instance.new("Frame")
-tb["inputfield"].Name = "InputField"
-tb["inputfield"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-tb["inputfield"].BackgroundTransparency = 1
-tb["inputfield"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["inputfield"].BorderSizePixel = 0
-tb["inputfield"].LayoutOrder = 1
-tb["inputfield"].Position = UDim2.fromScale(0, 0.01)
-tb["inputfield"].Size = UDim2.fromScale(1, 0.07)
+tb["textfield"] = Instance.new("Frame")
+tb["textfield"].Name = "TextField"
+tb["textfield"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["textfield"].BackgroundTransparency = 1
+tb["textfield"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["textfield"].BorderSizePixel = 0
+tb["textfield"].LayoutOrder = 1
+tb["textfield"].Position = UDim2.fromScale(0, 0.01)
+tb["textfield"].Size = UDim2.fromScale(1, 0.07)
 
 tb["filltitle2"] = Instance.new("Frame")
 tb["filltitle2"].Name = "FillTitle"
@@ -1493,7 +1493,7 @@ tb["filltitle2"].Size = UDim2.fromScale(0.6, 1)
 tb["label10"] = Instance.new("TextLabel")
 tb["label10"].Name = "Label"
 tb["label10"].FontFace = Font.new("rbxassetid://11598121416")
-tb["label10"].Text = "This is a input field."
+tb["label10"].Text = "This is a text field."
 tb["label10"].TextColor3 = Color3.fromRGB(69, 72, 79)
 tb["label10"].TextScaled = true
 tb["label10"].TextSize = 14
@@ -1508,37 +1508,36 @@ tb["label10"].Size = UDim2.fromScale(0.975, 0.6)
 tb["label10"].ZIndex = 3
 tb["label10"].Parent = tb["filltitle2"]
 
-tb["filltitle2"].Parent = tb["inputfield"]
+tb["filltitle2"].Parent = tb["textfield"]
 
-tb["fillfield"] = Instance.new("Frame")
-tb["fillfield"].Name = "FillField"
-tb["fillfield"].AnchorPoint = Vector2.new(0, 0.5)
-tb["fillfield"].BackgroundColor3 = Color3.fromRGB(224, 236, 248)
-tb["fillfield"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["fillfield"].BorderSizePixel = 0
-tb["fillfield"].Position = UDim2.fromScale(0.65, 0.5)
-tb["fillfield"].Size = UDim2.fromScale(0.3, 1)
+tb["field"] = Instance.new("Frame")
+tb["field"].Name = "Field"
+tb["field"].AnchorPoint = Vector2.new(0, 0.5)
+tb["field"].BackgroundColor3 = Color3.fromRGB(224, 236, 248)
+tb["field"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["field"].BorderSizePixel = 0
+tb["field"].Position = UDim2.fromScale(0.65, 0.5)
+tb["field"].Size = UDim2.fromScale(0.3, 1)
 
-tb["label11"] = Instance.new("TextBox")
-tb["label11"].Name = "Label"
-tb["label11"].FontFace = Font.new("rbxassetid://11598121416")
-tb["label11"].PlaceholderColor3 = Color3.fromRGB(173, 188, 205)
-tb["label11"].PlaceholderText = "Type something here."
-tb["label11"].Text = ""
-tb["label11"].TextColor3 = Color3.fromRGB(69, 72, 79)
-tb["label11"].TextScaled = true
-tb["label11"].TextSize = 14
-tb["label11"].TextWrapped = true
-tb["label11"].AnchorPoint = Vector2.new(0.5, 1)
-tb["label11"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-tb["label11"].BackgroundTransparency = 1
-tb["label11"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["label11"].BorderSizePixel = 0
-tb["label11"].Position = UDim2.fromScale(0.5, 0.725)
-tb["label11"].Selectable = false
-tb["label11"].Size = UDim2.fromScale(0.95, 0.525)
-tb["label11"].ZIndex = 3
-tb["label11"].Parent = tb["fillfield"]
+tb["box2"] = Instance.new("TextBox")
+tb["box2"].Name = "Box"
+tb["box2"].FontFace = Font.new("rbxassetid://11598121416")
+tb["box2"].PlaceholderColor3 = Color3.fromRGB(255, 255, 255)
+tb["box2"].Text = "Text field"
+tb["box2"].TextColor3 = Color3.fromRGB(69, 72, 79)
+tb["box2"].TextScaled = true
+tb["box2"].TextSize = 14
+tb["box2"].TextWrapped = true
+tb["box2"].AnchorPoint = Vector2.new(0.5, 1)
+tb["box2"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["box2"].BackgroundTransparency = 1
+tb["box2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["box2"].BorderSizePixel = 0
+tb["box2"].Position = UDim2.fromScale(0.5, 0.725)
+tb["box2"].Selectable = false
+tb["box2"].Size = UDim2.fromScale(0.95, 0.525)
+tb["box2"].ZIndex = 3
+tb["box2"].Parent = tb["field"]
 
 tb["underline2"] = Instance.new("Frame")
 tb["underline2"].Name = "Underline"
@@ -1554,11 +1553,11 @@ tb["uiaspectratioconstraint19"].Name = "UIAspectRatioConstraint"
 tb["uiaspectratioconstraint19"].AspectRatio = 112
 tb["uiaspectratioconstraint19"].Parent = tb["underline2"]
 
-tb["underline2"].Parent = tb["fillfield"]
+tb["underline2"].Parent = tb["field"]
 
-tb["fillfield"].Parent = tb["inputfield"]
+tb["field"].Parent = tb["textfield"]
 
-tb["inputfield"].Parent = tb["frame1"]
+tb["textfield"].Parent = tb["frame1"]
 
 tb["button"] = Instance.new("Frame")
 tb["button"].Name = "Button"
@@ -1579,23 +1578,23 @@ tb["filltitle3"].BorderSizePixel = 0
 tb["filltitle3"].Position = UDim2.fromScale(0.05, 0.5)
 tb["filltitle3"].Size = UDim2.fromScale(0.6, 1)
 
-tb["label12"] = Instance.new("TextLabel")
-tb["label12"].Name = "Label"
-tb["label12"].FontFace = Font.new("rbxassetid://11598121416")
-tb["label12"].Text = "This is a button."
-tb["label12"].TextColor3 = Color3.fromRGB(69, 72, 79)
-tb["label12"].TextScaled = true
-tb["label12"].TextSize = 14
-tb["label12"].TextWrapped = true
-tb["label12"].AnchorPoint = Vector2.new(0.5, 0.5)
-tb["label12"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-tb["label12"].BackgroundTransparency = 1
-tb["label12"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["label12"].BorderSizePixel = 0
-tb["label12"].Position = UDim2.fromScale(0.5, 0.5)
-tb["label12"].Size = UDim2.fromScale(0.975, 0.6)
-tb["label12"].ZIndex = 3
-tb["label12"].Parent = tb["filltitle3"]
+tb["label11"] = Instance.new("TextLabel")
+tb["label11"].Name = "Label"
+tb["label11"].FontFace = Font.new("rbxassetid://11598121416")
+tb["label11"].Text = "This is a button."
+tb["label11"].TextColor3 = Color3.fromRGB(69, 72, 79)
+tb["label11"].TextScaled = true
+tb["label11"].TextSize = 14
+tb["label11"].TextWrapped = true
+tb["label11"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["label11"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["label11"].BackgroundTransparency = 1
+tb["label11"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["label11"].BorderSizePixel = 0
+tb["label11"].Position = UDim2.fromScale(0.5, 0.5)
+tb["label11"].Size = UDim2.fromScale(0.975, 0.6)
+tb["label11"].ZIndex = 3
+tb["label11"].Parent = tb["filltitle3"]
 
 tb["filltitle3"].Parent = tb["button"]
 
@@ -1610,23 +1609,23 @@ tb["button1"].Position = UDim2.fromScale(0.65, 0.5)
 tb["button1"].Selectable = false
 tb["button1"].Size = UDim2.fromScale(0.3, 1)
 
-tb["label13"] = Instance.new("TextLabel")
-tb["label13"].Name = "Label"
-tb["label13"].FontFace = Font.new("rbxassetid://11598121416")
-tb["label13"].Text = "Activate"
-tb["label13"].TextColor3 = Color3.fromRGB(69, 72, 79)
-tb["label13"].TextScaled = true
-tb["label13"].TextSize = 14
-tb["label13"].TextWrapped = true
-tb["label13"].AnchorPoint = Vector2.new(0.5, 0.5)
-tb["label13"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-tb["label13"].BackgroundTransparency = 1
-tb["label13"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["label13"].BorderSizePixel = 0
-tb["label13"].Position = UDim2.fromScale(0.5, 0.5)
-tb["label13"].Size = UDim2.fromScale(0.95, 0.6)
-tb["label13"].ZIndex = 3
-tb["label13"].Parent = tb["button1"]
+tb["label12"] = Instance.new("TextLabel")
+tb["label12"].Name = "Label"
+tb["label12"].FontFace = Font.new("rbxassetid://11598121416")
+tb["label12"].Text = "Activate"
+tb["label12"].TextColor3 = Color3.fromRGB(69, 72, 79)
+tb["label12"].TextScaled = true
+tb["label12"].TextSize = 14
+tb["label12"].TextWrapped = true
+tb["label12"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["label12"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["label12"].BackgroundTransparency = 1
+tb["label12"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["label12"].BorderSizePixel = 0
+tb["label12"].Position = UDim2.fromScale(0.5, 0.5)
+tb["label12"].Size = UDim2.fromScale(0.95, 0.6)
+tb["label12"].ZIndex = 3
+tb["label12"].Parent = tb["button1"]
 
 tb["button1"].Parent = tb["button"]
 
@@ -1641,6 +1640,7 @@ tb["checklist"].BorderSizePixel = 0
 tb["checklist"].LayoutOrder = 1
 tb["checklist"].Position = UDim2.fromScale(0, 0.01)
 tb["checklist"].Size = UDim2.fromScale(1, 0.4)
+tb["checklist"].Visible = false
 
 tb["top"] = Instance.new("Frame")
 tb["top"].Name = "Top"
@@ -1669,23 +1669,23 @@ tb["titleholder"].BorderSizePixel = 0
 tb["titleholder"].Position = UDim2.fromScale(0.05, 0)
 tb["titleholder"].Size = UDim2.fromScale(0.6, 1)
 
-tb["label14"] = Instance.new("TextLabel")
-tb["label14"].Name = "Label"
-tb["label14"].FontFace = Font.new("rbxassetid://11598121416")
-tb["label14"].Text = "This is a checklist."
-tb["label14"].TextColor3 = Color3.fromRGB(69, 72, 79)
-tb["label14"].TextScaled = true
-tb["label14"].TextSize = 14
-tb["label14"].TextWrapped = true
-tb["label14"].AnchorPoint = Vector2.new(0.5, 0.5)
-tb["label14"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-tb["label14"].BackgroundTransparency = 1
-tb["label14"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["label14"].BorderSizePixel = 0
-tb["label14"].Position = UDim2.fromScale(0.5, 0.5)
-tb["label14"].Size = UDim2.fromScale(0.975, 0.6)
-tb["label14"].ZIndex = 3
-tb["label14"].Parent = tb["titleholder"]
+tb["label13"] = Instance.new("TextLabel")
+tb["label13"].Name = "Label"
+tb["label13"].FontFace = Font.new("rbxassetid://11598121416")
+tb["label13"].Text = "This is a checklist."
+tb["label13"].TextColor3 = Color3.fromRGB(69, 72, 79)
+tb["label13"].TextScaled = true
+tb["label13"].TextSize = 14
+tb["label13"].TextWrapped = true
+tb["label13"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["label13"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["label13"].BackgroundTransparency = 1
+tb["label13"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["label13"].BorderSizePixel = 0
+tb["label13"].Position = UDim2.fromScale(0.5, 0.5)
+tb["label13"].Size = UDim2.fromScale(0.975, 0.6)
+tb["label13"].ZIndex = 3
+tb["label13"].Parent = tb["titleholder"]
 
 tb["titleholder"].Parent = tb["top"]
 
@@ -1698,26 +1698,26 @@ tb["search"].BorderSizePixel = 0
 tb["search"].Position = UDim2.fromScale(0.65, 0.5)
 tb["search"].Size = UDim2.fromScale(0.3, 1)
 
-tb["label15"] = Instance.new("TextBox")
-tb["label15"].Name = "Label"
-tb["label15"].FontFace = Font.new("rbxassetid://11598121416")
-tb["label15"].PlaceholderColor3 = Color3.fromRGB(173, 188, 205)
-tb["label15"].PlaceholderText = "Search"
-tb["label15"].Text = ""
-tb["label15"].TextColor3 = Color3.fromRGB(112, 113, 128)
-tb["label15"].TextScaled = true
-tb["label15"].TextSize = 14
-tb["label15"].TextWrapped = true
-tb["label15"].AnchorPoint = Vector2.new(0.5, 0.5)
-tb["label15"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-tb["label15"].BackgroundTransparency = 1
-tb["label15"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["label15"].BorderSizePixel = 0
-tb["label15"].Position = UDim2.fromScale(0.5, 0.5)
-tb["label15"].Selectable = false
-tb["label15"].Size = UDim2.fromScale(0.95, 0.6)
-tb["label15"].ZIndex = 3
-tb["label15"].Parent = tb["search"]
+tb["label14"] = Instance.new("TextBox")
+tb["label14"].Name = "Label"
+tb["label14"].FontFace = Font.new("rbxassetid://11598121416")
+tb["label14"].PlaceholderColor3 = Color3.fromRGB(173, 188, 205)
+tb["label14"].PlaceholderText = "Search"
+tb["label14"].Text = ""
+tb["label14"].TextColor3 = Color3.fromRGB(112, 113, 128)
+tb["label14"].TextScaled = true
+tb["label14"].TextSize = 14
+tb["label14"].TextWrapped = true
+tb["label14"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["label14"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["label14"].BackgroundTransparency = 1
+tb["label14"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["label14"].BorderSizePixel = 0
+tb["label14"].Position = UDim2.fromScale(0.5, 0.5)
+tb["label14"].Selectable = false
+tb["label14"].Size = UDim2.fromScale(0.95, 0.6)
+tb["label14"].ZIndex = 3
+tb["label14"].Parent = tb["search"]
 
 tb["search"].Parent = tb["top"]
 
@@ -1856,23 +1856,23 @@ tb["item2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
 tb["item2"].BorderSizePixel = 0
 tb["item2"].Size = UDim2.fromScale(0.5, 0.212)
 
-tb["label16"] = Instance.new("TextLabel")
-tb["label16"].Name = "Label"
-tb["label16"].FontFace = Font.new("rbxassetid://11598121416")
-tb["label16"].Text = "Example"
-tb["label16"].TextColor3 = Color3.fromRGB(112, 113, 128)
-tb["label16"].TextScaled = true
-tb["label16"].TextSize = 14
-tb["label16"].TextWrapped = true
-tb["label16"].AnchorPoint = Vector2.new(0.5, 0.5)
-tb["label16"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-tb["label16"].BackgroundTransparency = 1
-tb["label16"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["label16"].BorderSizePixel = 0
-tb["label16"].Position = UDim2.fromScale(0.5, 0.5)
-tb["label16"].Size = UDim2.fromScale(0.975, 0.6)
-tb["label16"].ZIndex = 3
-tb["label16"].Parent = tb["item2"]
+tb["label15"] = Instance.new("TextLabel")
+tb["label15"].Name = "Label"
+tb["label15"].FontFace = Font.new("rbxassetid://11598121416")
+tb["label15"].Text = "Example"
+tb["label15"].TextColor3 = Color3.fromRGB(112, 113, 128)
+tb["label15"].TextScaled = true
+tb["label15"].TextSize = 14
+tb["label15"].TextWrapped = true
+tb["label15"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["label15"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["label15"].BackgroundTransparency = 1
+tb["label15"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["label15"].BorderSizePixel = 0
+tb["label15"].Position = UDim2.fromScale(0.5, 0.5)
+tb["label15"].Size = UDim2.fromScale(0.975, 0.6)
+tb["label15"].ZIndex = 3
+tb["label15"].Parent = tb["item2"]
 
 tb["checkbox"] = Instance.new("ImageButton")
 tb["checkbox"].Name = "Checkbox"
@@ -1948,6 +1948,7 @@ tb["list2"].BorderSizePixel = 0
 tb["list2"].LayoutOrder = 1
 tb["list2"].Position = UDim2.fromScale(0, 0.01)
 tb["list2"].Size = UDim2.fromScale(1, 0.4)
+tb["list2"].Visible = false
 
 tb["top1"] = Instance.new("Frame")
 tb["top1"].Name = "Top"
@@ -1976,23 +1977,23 @@ tb["titleholder1"].BorderSizePixel = 0
 tb["titleholder1"].Position = UDim2.fromScale(0.05, 0)
 tb["titleholder1"].Size = UDim2.fromScale(0.6, 1)
 
-tb["label17"] = Instance.new("TextLabel")
-tb["label17"].Name = "Label"
-tb["label17"].FontFace = Font.new("rbxassetid://11598121416")
-tb["label17"].Text = "This is a list."
-tb["label17"].TextColor3 = Color3.fromRGB(69, 72, 79)
-tb["label17"].TextScaled = true
-tb["label17"].TextSize = 14
-tb["label17"].TextWrapped = true
-tb["label17"].AnchorPoint = Vector2.new(0.5, 0.5)
-tb["label17"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-tb["label17"].BackgroundTransparency = 1
-tb["label17"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["label17"].BorderSizePixel = 0
-tb["label17"].Position = UDim2.fromScale(0.5, 0.5)
-tb["label17"].Size = UDim2.fromScale(0.975, 0.6)
-tb["label17"].ZIndex = 3
-tb["label17"].Parent = tb["titleholder1"]
+tb["label16"] = Instance.new("TextLabel")
+tb["label16"].Name = "Label"
+tb["label16"].FontFace = Font.new("rbxassetid://11598121416")
+tb["label16"].Text = "This is a list."
+tb["label16"].TextColor3 = Color3.fromRGB(69, 72, 79)
+tb["label16"].TextScaled = true
+tb["label16"].TextSize = 14
+tb["label16"].TextWrapped = true
+tb["label16"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["label16"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["label16"].BackgroundTransparency = 1
+tb["label16"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["label16"].BorderSizePixel = 0
+tb["label16"].Position = UDim2.fromScale(0.5, 0.5)
+tb["label16"].Size = UDim2.fromScale(0.975, 0.6)
+tb["label16"].ZIndex = 3
+tb["label16"].Parent = tb["titleholder1"]
 
 tb["titleholder1"].Parent = tb["top1"]
 
@@ -2005,26 +2006,26 @@ tb["search1"].BorderSizePixel = 0
 tb["search1"].Position = UDim2.fromScale(0.65, 0.5)
 tb["search1"].Size = UDim2.fromScale(0.15, 1)
 
-tb["label18"] = Instance.new("TextBox")
-tb["label18"].Name = "Label"
-tb["label18"].FontFace = Font.new("rbxassetid://11598121416")
-tb["label18"].PlaceholderColor3 = Color3.fromRGB(173, 188, 205)
-tb["label18"].PlaceholderText = "Search"
-tb["label18"].Text = ""
-tb["label18"].TextColor3 = Color3.fromRGB(112, 113, 128)
-tb["label18"].TextScaled = true
-tb["label18"].TextSize = 14
-tb["label18"].TextWrapped = true
-tb["label18"].AnchorPoint = Vector2.new(0.5, 0.5)
-tb["label18"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-tb["label18"].BackgroundTransparency = 1
-tb["label18"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["label18"].BorderSizePixel = 0
-tb["label18"].Position = UDim2.fromScale(0.5, 0.5)
-tb["label18"].Selectable = false
-tb["label18"].Size = UDim2.fromScale(0.95, 0.6)
-tb["label18"].ZIndex = 3
-tb["label18"].Parent = tb["search1"]
+tb["label17"] = Instance.new("TextBox")
+tb["label17"].Name = "Label"
+tb["label17"].FontFace = Font.new("rbxassetid://11598121416")
+tb["label17"].PlaceholderColor3 = Color3.fromRGB(173, 188, 205)
+tb["label17"].PlaceholderText = "Search"
+tb["label17"].Text = ""
+tb["label17"].TextColor3 = Color3.fromRGB(112, 113, 128)
+tb["label17"].TextScaled = true
+tb["label17"].TextSize = 14
+tb["label17"].TextWrapped = true
+tb["label17"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["label17"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["label17"].BackgroundTransparency = 1
+tb["label17"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["label17"].BorderSizePixel = 0
+tb["label17"].Position = UDim2.fromScale(0.5, 0.5)
+tb["label17"].Selectable = false
+tb["label17"].Size = UDim2.fromScale(0.95, 0.6)
+tb["label17"].ZIndex = 3
+tb["label17"].Parent = tb["search1"]
 
 tb["search1"].Parent = tb["top1"]
 
@@ -2037,26 +2038,26 @@ tb["add"].BorderSizePixel = 0
 tb["add"].Position = UDim2.fromScale(0.8, 0.5)
 tb["add"].Size = UDim2.fromScale(0.15, 1)
 
-tb["label19"] = Instance.new("TextBox")
-tb["label19"].Name = "Label"
-tb["label19"].FontFace = Font.new("rbxassetid://11598121416")
-tb["label19"].PlaceholderColor3 = Color3.fromRGB(173, 188, 205)
-tb["label19"].PlaceholderText = "Add"
-tb["label19"].Text = ""
-tb["label19"].TextColor3 = Color3.fromRGB(69, 72, 79)
-tb["label19"].TextScaled = true
-tb["label19"].TextSize = 14
-tb["label19"].TextWrapped = true
-tb["label19"].AnchorPoint = Vector2.new(0.5, 0.5)
-tb["label19"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-tb["label19"].BackgroundTransparency = 1
-tb["label19"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["label19"].BorderSizePixel = 0
-tb["label19"].Position = UDim2.fromScale(0.5, 0.5)
-tb["label19"].Selectable = false
-tb["label19"].Size = UDim2.fromScale(0.95, 0.6)
-tb["label19"].ZIndex = 3
-tb["label19"].Parent = tb["add"]
+tb["label18"] = Instance.new("TextBox")
+tb["label18"].Name = "Label"
+tb["label18"].FontFace = Font.new("rbxassetid://11598121416")
+tb["label18"].PlaceholderColor3 = Color3.fromRGB(173, 188, 205)
+tb["label18"].PlaceholderText = "Add"
+tb["label18"].Text = ""
+tb["label18"].TextColor3 = Color3.fromRGB(69, 72, 79)
+tb["label18"].TextScaled = true
+tb["label18"].TextSize = 14
+tb["label18"].TextWrapped = true
+tb["label18"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["label18"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["label18"].BackgroundTransparency = 1
+tb["label18"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["label18"].BorderSizePixel = 0
+tb["label18"].Position = UDim2.fromScale(0.5, 0.5)
+tb["label18"].Selectable = false
+tb["label18"].Size = UDim2.fromScale(0.95, 0.6)
+tb["label18"].ZIndex = 3
+tb["label18"].Parent = tb["add"]
 
 tb["add"].Parent = tb["top1"]
 
@@ -2188,23 +2189,23 @@ tb["item3"].BorderColor3 = Color3.fromRGB(0, 0, 0)
 tb["item3"].BorderSizePixel = 0
 tb["item3"].Size = UDim2.fromScale(0.5, 0.212)
 
-tb["label20"] = Instance.new("TextLabel")
-tb["label20"].Name = "Label"
-tb["label20"].FontFace = Font.new("rbxassetid://11598121416")
-tb["label20"].Text = "Example"
-tb["label20"].TextColor3 = Color3.fromRGB(112, 113, 128)
-tb["label20"].TextScaled = true
-tb["label20"].TextSize = 14
-tb["label20"].TextWrapped = true
-tb["label20"].AnchorPoint = Vector2.new(0.5, 0.5)
-tb["label20"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-tb["label20"].BackgroundTransparency = 1
-tb["label20"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["label20"].BorderSizePixel = 0
-tb["label20"].Position = UDim2.fromScale(0.5, 0.5)
-tb["label20"].Size = UDim2.fromScale(0.975, 0.6)
-tb["label20"].ZIndex = 3
-tb["label20"].Parent = tb["item3"]
+tb["label19"] = Instance.new("TextLabel")
+tb["label19"].Name = "Label"
+tb["label19"].FontFace = Font.new("rbxassetid://11598121416")
+tb["label19"].Text = "Example"
+tb["label19"].TextColor3 = Color3.fromRGB(112, 113, 128)
+tb["label19"].TextScaled = true
+tb["label19"].TextSize = 14
+tb["label19"].TextWrapped = true
+tb["label19"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["label19"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["label19"].BackgroundTransparency = 1
+tb["label19"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["label19"].BorderSizePixel = 0
+tb["label19"].Position = UDim2.fromScale(0.5, 0.5)
+tb["label19"].Size = UDim2.fromScale(0.975, 0.6)
+tb["label19"].ZIndex = 3
+tb["label19"].Parent = tb["item3"]
 
 tb["delete"] = Instance.new("ImageButton")
 tb["delete"].Name = "Delete"
@@ -2260,6 +2261,464 @@ tb["uipadding4"] = Instance.new("UIPadding")
 tb["uipadding4"].Name = "UIPadding"
 tb["uipadding4"].PaddingTop = UDim.new(0.025, 0)
 tb["uipadding4"].Parent = tb["frame1"]
+
+tb["sheet"] = Instance.new("Frame")
+tb["sheet"].Name = "Sheet"
+tb["sheet"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["sheet"].BackgroundTransparency = 1
+tb["sheet"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["sheet"].BorderSizePixel = 0
+tb["sheet"].LayoutOrder = 1
+tb["sheet"].Position = UDim2.fromScale(0, 0.01)
+tb["sheet"].Size = UDim2.fromScale(1, 0.42)
+
+tb["top2"] = Instance.new("Frame")
+tb["top2"].Name = "Top"
+tb["top2"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["top2"].BackgroundTransparency = 1
+tb["top2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["top2"].BorderSizePixel = 0
+tb["top2"].Size = UDim2.fromScale(1, 0.167)
+
+tb["fill7"] = Instance.new("Frame")
+tb["fill7"].Name = "Fill"
+tb["fill7"].AnchorPoint = Vector2.new(0, 0.5)
+tb["fill7"].BackgroundColor3 = Color3.fromRGB(250, 252, 255)
+tb["fill7"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["fill7"].BorderSizePixel = 0
+tb["fill7"].Position = UDim2.fromScale(0.05, 0.5)
+tb["fill7"].Size = UDim2.fromScale(0.9, 1)
+tb["fill7"].Parent = tb["top2"]
+
+tb["titleholder2"] = Instance.new("Frame")
+tb["titleholder2"].Name = "TitleHolder"
+tb["titleholder2"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["titleholder2"].BackgroundTransparency = 1
+tb["titleholder2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["titleholder2"].BorderSizePixel = 0
+tb["titleholder2"].Position = UDim2.fromScale(0.05, 0)
+tb["titleholder2"].Size = UDim2.fromScale(0.6, 1)
+
+tb["label20"] = Instance.new("TextLabel")
+tb["label20"].Name = "Label"
+tb["label20"].FontFace = Font.new("rbxassetid://11598121416")
+tb["label20"].Text = "This is a sheet."
+tb["label20"].TextColor3 = Color3.fromRGB(69, 72, 79)
+tb["label20"].TextScaled = true
+tb["label20"].TextSize = 14
+tb["label20"].TextWrapped = true
+tb["label20"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["label20"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["label20"].BackgroundTransparency = 1
+tb["label20"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["label20"].BorderSizePixel = 0
+tb["label20"].Position = UDim2.fromScale(0.5, 0.5)
+tb["label20"].Size = UDim2.fromScale(0.975, 0.6)
+tb["label20"].ZIndex = 3
+tb["label20"].Parent = tb["titleholder2"]
+
+tb["titleholder2"].Parent = tb["top2"]
+
+tb["search2"] = Instance.new("Frame")
+tb["search2"].Name = "Search"
+tb["search2"].AnchorPoint = Vector2.new(0, 0.5)
+tb["search2"].BackgroundColor3 = Color3.fromRGB(235, 243, 250)
+tb["search2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["search2"].BorderSizePixel = 0
+tb["search2"].Position = UDim2.fromScale(0.65, 0.5)
+tb["search2"].Size = UDim2.fromScale(0.3, 1)
+
+tb["label21"] = Instance.new("TextBox")
+tb["label21"].Name = "Label"
+tb["label21"].FontFace = Font.new("rbxassetid://11598121416")
+tb["label21"].PlaceholderColor3 = Color3.fromRGB(173, 188, 205)
+tb["label21"].PlaceholderText = "Search"
+tb["label21"].Text = ""
+tb["label21"].TextColor3 = Color3.fromRGB(112, 113, 128)
+tb["label21"].TextScaled = true
+tb["label21"].TextSize = 14
+tb["label21"].TextWrapped = true
+tb["label21"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["label21"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["label21"].BackgroundTransparency = 1
+tb["label21"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["label21"].BorderSizePixel = 0
+tb["label21"].Position = UDim2.fromScale(0.5, 0.5)
+tb["label21"].Selectable = false
+tb["label21"].Size = UDim2.fromScale(0.95, 0.6)
+tb["label21"].ZIndex = 3
+tb["label21"].Parent = tb["search2"]
+
+tb["search2"].Parent = tb["top2"]
+
+tb["top2"].Parent = tb["sheet"]
+
+tb["lineu2"] = Instance.new("Frame")
+tb["lineu2"].Name = "LineU"
+tb["lineu2"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["lineu2"].BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+tb["lineu2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["lineu2"].BorderSizePixel = 0
+tb["lineu2"].Position = UDim2.fromScale(0.5, 0.167)
+tb["lineu2"].Size = UDim2.fromScale(0.9, 1)
+tb["lineu2"].ZIndex = 2
+
+tb["uiaspectratioconstraint30"] = Instance.new("UIAspectRatioConstraint")
+tb["uiaspectratioconstraint30"].Name = "UIAspectRatioConstraint"
+tb["uiaspectratioconstraint30"].AspectRatio = 360
+tb["uiaspectratioconstraint30"].Parent = tb["lineu2"]
+
+tb["dot4"] = Instance.new("Frame")
+tb["dot4"].Name = "Dot"
+tb["dot4"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["dot4"].BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+tb["dot4"].BackgroundTransparency = 1
+tb["dot4"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["dot4"].BorderSizePixel = 0
+tb["dot4"].Position = UDim2.fromScale(0.5, 0.5)
+tb["dot4"].Size = UDim2.fromScale(3, 3)
+tb["dot4"].ZIndex = 2
+
+tb["uiaspectratioconstraint31"] = Instance.new("UIAspectRatioConstraint")
+tb["uiaspectratioconstraint31"].Name = "UIAspectRatioConstraint"
+tb["uiaspectratioconstraint31"].Parent = tb["dot4"]
+
+tb["circle8"] = Instance.new("TextLabel")
+tb["circle8"].Name = "Circle"
+tb["circle8"].FontFace = Font.new("rbxassetid://11598121416")
+tb["circle8"].Text = "●"
+tb["circle8"].TextColor3 = Color3.fromRGB(173, 188, 205)
+tb["circle8"].TextScaled = true
+tb["circle8"].TextSize = 100
+tb["circle8"].TextWrapped = true
+tb["circle8"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["circle8"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["circle8"].BackgroundTransparency = 1
+tb["circle8"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["circle8"].BorderSizePixel = 0
+tb["circle8"].Position = UDim2.fromScale(0.5, 0.5)
+tb["circle8"].Size = UDim2.fromScale(2, 2)
+tb["circle8"].Parent = tb["dot4"]
+
+tb["dot4"].Parent = tb["lineu2"]
+
+tb["dotwhiteclip4"] = Instance.new("Frame")
+tb["dotwhiteclip4"].Name = "DotWhiteClip"
+tb["dotwhiteclip4"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["dotwhiteclip4"].BackgroundTransparency = 1
+tb["dotwhiteclip4"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["dotwhiteclip4"].BorderSizePixel = 0
+tb["dotwhiteclip4"].ClipsDescendants = true
+tb["dotwhiteclip4"].Size = UDim2.fromScale(1, 1)
+
+tb["dotwhite4"] = Instance.new("Frame")
+tb["dotwhite4"].Name = "DotWhite"
+tb["dotwhite4"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["dotwhite4"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["dotwhite4"].BackgroundTransparency = 1
+tb["dotwhite4"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["dotwhite4"].BorderSizePixel = 0
+tb["dotwhite4"].Position = UDim2.fromScale(0.5, 0.5)
+tb["dotwhite4"].Size = UDim2.fromScale(5, 5)
+
+tb["uiaspectratioconstraint32"] = Instance.new("UIAspectRatioConstraint")
+tb["uiaspectratioconstraint32"].Name = "UIAspectRatioConstraint"
+tb["uiaspectratioconstraint32"].Parent = tb["dotwhite4"]
+
+tb["uicorner8"] = Instance.new("UICorner")
+tb["uicorner8"].Name = "UICorner"
+tb["uicorner8"].CornerRadius = UDim.new(1, 0)
+tb["uicorner8"].Parent = tb["dotwhite4"]
+
+tb["circle9"] = Instance.new("TextLabel")
+tb["circle9"].Name = "Circle"
+tb["circle9"].FontFace = Font.new("rbxassetid://11598121416")
+tb["circle9"].Text = "●"
+tb["circle9"].TextColor3 = Color3.fromRGB(220, 230, 245)
+tb["circle9"].TextScaled = true
+tb["circle9"].TextSize = 100
+tb["circle9"].TextWrapped = true
+tb["circle9"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["circle9"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["circle9"].BackgroundTransparency = 1
+tb["circle9"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["circle9"].BorderSizePixel = 0
+tb["circle9"].Position = UDim2.fromScale(0.5, 0.5)
+tb["circle9"].Size = UDim2.fromScale(2, 2)
+tb["circle9"].Parent = tb["dotwhite4"]
+
+tb["dotwhite4"].Parent = tb["dotwhiteclip4"]
+
+tb["dotwhiteclip4"].Parent = tb["lineu2"]
+
+tb["lineu2"].Parent = tb["sheet"]
+
+tb["lined2"] = Instance.new("Frame")
+tb["lined2"].Name = "LineD"
+tb["lined2"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["lined2"].BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+tb["lined2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["lined2"].BorderSizePixel = 0
+tb["lined2"].Position = UDim2.fromScale(0.5, 1)
+tb["lined2"].Size = UDim2.fromScale(0.9, 1)
+tb["lined2"].ZIndex = 2
+
+tb["uiaspectratioconstraint33"] = Instance.new("UIAspectRatioConstraint")
+tb["uiaspectratioconstraint33"].Name = "UIAspectRatioConstraint"
+tb["uiaspectratioconstraint33"].AspectRatio = 360
+tb["uiaspectratioconstraint33"].Parent = tb["lined2"]
+
+tb["lined2"].Parent = tb["sheet"]
+
+tb["columnheader"] = Instance.new("Frame")
+tb["columnheader"].Name = "ColumnHeader"
+tb["columnheader"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["columnheader"].BackgroundTransparency = 1
+tb["columnheader"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["columnheader"].BorderSizePixel = 0
+tb["columnheader"].Position = UDim2.fromScale(0, 0.167)
+tb["columnheader"].Size = UDim2.fromScale(1, 0.167)
+
+tb["fill8"] = Instance.new("Frame")
+tb["fill8"].Name = "Fill"
+tb["fill8"].AnchorPoint = Vector2.new(0, 0.5)
+tb["fill8"].BackgroundColor3 = Color3.fromRGB(250, 252, 255)
+tb["fill8"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["fill8"].BorderSizePixel = 0
+tb["fill8"].Position = UDim2.fromScale(0.05, 0.5)
+tb["fill8"].Size = UDim2.fromScale(0.9, 1)
+tb["fill8"].Parent = tb["columnheader"]
+
+tb["title4"] = Instance.new("Frame")
+tb["title4"].Name = "Title"
+tb["title4"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["title4"].BackgroundTransparency = 1
+tb["title4"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["title4"].BorderSizePixel = 0
+tb["title4"].Position = UDim2.fromScale(0.05, 0)
+tb["title4"].Size = UDim2.fromScale(0.9, 1)
+
+tb["label22"] = Instance.new("TextLabel")
+tb["label22"].Name = "Label"
+tb["label22"].FontFace = Font.new("rbxassetid://11598121416")
+tb["label22"].Text = "Title"
+tb["label22"].TextColor3 = Color3.fromRGB(69, 72, 79)
+tb["label22"].TextScaled = true
+tb["label22"].TextSize = 14
+tb["label22"].TextWrapped = true
+tb["label22"].TextXAlignment = Enum.TextXAlignment.Left
+tb["label22"].AnchorPoint = Vector2.new(0, 0.5)
+tb["label22"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["label22"].BackgroundTransparency = 1
+tb["label22"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["label22"].BorderSizePixel = 0
+tb["label22"].Position = UDim2.fromScale(0.01, 0.5)
+tb["label22"].Size = UDim2.fromScale(1, 0.6)
+tb["label22"].ZIndex = 3
+tb["label22"].Parent = tb["title4"]
+
+tb["title4"].Parent = tb["columnheader"]
+
+tb["cells"] = Instance.new("Frame")
+tb["cells"].Name = "Cells"
+tb["cells"].AnchorPoint = Vector2.new(1, 0)
+tb["cells"].BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+tb["cells"].BackgroundTransparency = 1
+tb["cells"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["cells"].BorderSizePixel = 0
+tb["cells"].Position = UDim2.fromScale(0.95, 0)
+tb["cells"].Size = UDim2.fromScale(0.9, 1)
+
+tb["template2"] = Instance.new("Frame")
+tb["template2"].Name = "Template"
+tb["template2"].BackgroundColor3 = Color3.fromRGB(240, 243, 250)
+tb["template2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["template2"].BorderSizePixel = 0
+tb["template2"].Size = UDim2.fromScale(0.167, 1)
+
+tb["label23"] = Instance.new("TextLabel")
+tb["label23"].Name = "Label"
+tb["label23"].FontFace = Font.new("rbxassetid://11598121416")
+tb["label23"].Text = "Template"
+tb["label23"].TextColor3 = Color3.fromRGB(112, 113, 128)
+tb["label23"].TextScaled = true
+tb["label23"].TextSize = 14
+tb["label23"].TextWrapped = true
+tb["label23"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["label23"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["label23"].BackgroundTransparency = 1
+tb["label23"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["label23"].BorderSizePixel = 0
+tb["label23"].Position = UDim2.fromScale(0.5, 0.5)
+tb["label23"].Size = UDim2.fromScale(0.9, 0.6)
+tb["label23"].ZIndex = 3
+tb["label23"].Parent = tb["template2"]
+
+tb["template2"].Parent = tb["cells"]
+
+tb["uilistlayout8"] = Instance.new("UIListLayout")
+tb["uilistlayout8"].Name = "UIListLayout"
+tb["uilistlayout8"].FillDirection = Enum.FillDirection.Horizontal
+tb["uilistlayout8"].HorizontalAlignment = Enum.HorizontalAlignment.Right
+tb["uilistlayout8"].SortOrder = Enum.SortOrder.LayoutOrder
+tb["uilistlayout8"].VerticalAlignment = Enum.VerticalAlignment.Center
+tb["uilistlayout8"].Parent = tb["cells"]
+
+tb["cells"].Parent = tb["columnheader"]
+
+tb["columnheader"].Parent = tb["sheet"]
+
+tb["rows"] = Instance.new("ScrollingFrame")
+tb["rows"].Name = "Rows"
+tb["rows"].AutomaticCanvasSize = Enum.AutomaticSize.Y
+tb["rows"].BottomImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
+tb["rows"].CanvasSize = UDim2.new()
+tb["rows"].ScrollBarImageColor3 = Color3.fromRGB(112, 113, 128)
+tb["rows"].ScrollBarImageTransparency = 0.75
+tb["rows"].ScrollBarThickness = 0
+tb["rows"].ScrollingDirection = Enum.ScrollingDirection.Y
+tb["rows"].TopImage = "rbxasset://textures/ui/Scroll/scroll-middle.png"
+tb["rows"].VerticalScrollBarInset = Enum.ScrollBarInset.Always
+tb["rows"].AnchorPoint = Vector2.new(0.5, 0)
+tb["rows"].BackgroundColor3 = Color3.fromRGB(235, 243, 250)
+tb["rows"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["rows"].BorderSizePixel = 0
+tb["rows"].Position = UDim2.fromScale(0.5, 0.333)
+tb["rows"].Selectable = false
+tb["rows"].Size = UDim2.fromScale(0.9, 0.667)
+
+tb["uilistlayout9"] = Instance.new("UIListLayout")
+tb["uilistlayout9"].Name = "UIListLayout"
+tb["uilistlayout9"].SortOrder = Enum.SortOrder.LayoutOrder
+tb["uilistlayout9"].Parent = tb["rows"]
+
+tb["template3"] = Instance.new("Frame")
+tb["template3"].Name = "Template"
+tb["template3"].BackgroundColor3 = Color3.fromRGB(235, 243, 250)
+tb["template3"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["template3"].BorderSizePixel = 0
+tb["template3"].Size = UDim2.fromScale(1, 0.25)
+
+tb["label24"] = Instance.new("TextLabel")
+tb["label24"].Name = "Label"
+tb["label24"].FontFace = Font.new("rbxassetid://11598121416")
+tb["label24"].Text = "Example"
+tb["label24"].TextColor3 = Color3.fromRGB(112, 113, 128)
+tb["label24"].TextScaled = true
+tb["label24"].TextSize = 14
+tb["label24"].TextWrapped = true
+tb["label24"].TextXAlignment = Enum.TextXAlignment.Left
+tb["label24"].AnchorPoint = Vector2.new(0, 0.5)
+tb["label24"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["label24"].BackgroundTransparency = 1
+tb["label24"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["label24"].BorderSizePixel = 0
+tb["label24"].Position = UDim2.fromScale(0.015, 0.5)
+tb["label24"].Size = UDim2.fromScale(1, 0.6)
+tb["label24"].ZIndex = 3
+tb["label24"].Parent = tb["template3"]
+
+tb["cells1"] = Instance.new("Frame")
+tb["cells1"].Name = "Cells"
+tb["cells1"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["cells1"].BackgroundTransparency = 1
+tb["cells1"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["cells1"].BorderSizePixel = 0
+tb["cells1"].Size = UDim2.fromScale(1, 1)
+
+tb["textfield1"] = Instance.new("Frame")
+tb["textfield1"].Name = "TextField"
+tb["textfield1"].BackgroundColor3 = Color3.fromRGB(224, 236, 248)
+tb["textfield1"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["textfield1"].BorderSizePixel = 0
+tb["textfield1"].Size = UDim2.fromScale(0.167, 1)
+
+tb["box3"] = Instance.new("TextBox")
+tb["box3"].Name = "Box"
+tb["box3"].FontFace = Font.new("rbxassetid://11598121416")
+tb["box3"].PlaceholderColor3 = Color3.fromRGB(255, 255, 255)
+tb["box3"].Text = "Text field"
+tb["box3"].TextColor3 = Color3.fromRGB(69, 72, 79)
+tb["box3"].TextScaled = true
+tb["box3"].TextSize = 14
+tb["box3"].TextWrapped = true
+tb["box3"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["box3"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["box3"].BackgroundTransparency = 1
+tb["box3"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["box3"].BorderSizePixel = 0
+tb["box3"].Position = UDim2.fromScale(0.5, 0.5)
+tb["box3"].Size = UDim2.fromScale(0.9, 0.6)
+tb["box3"].Parent = tb["textfield1"]
+
+tb["textfield1"].Parent = tb["cells1"]
+
+tb["uilistlayout10"] = Instance.new("UIListLayout")
+tb["uilistlayout10"].Name = "UIListLayout"
+tb["uilistlayout10"].FillDirection = Enum.FillDirection.Horizontal
+tb["uilistlayout10"].HorizontalAlignment = Enum.HorizontalAlignment.Right
+tb["uilistlayout10"].SortOrder = Enum.SortOrder.LayoutOrder
+tb["uilistlayout10"].VerticalAlignment = Enum.VerticalAlignment.Center
+tb["uilistlayout10"].Parent = tb["cells1"]
+
+tb["checkbox1"] = Instance.new("Frame")
+tb["checkbox1"].Name = "Checkbox"
+tb["checkbox1"].BackgroundColor3 = Color3.fromRGB(224, 236, 248)
+tb["checkbox1"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["checkbox1"].BorderSizePixel = 0
+tb["checkbox1"].Size = UDim2.fromScale(0.167, 1)
+
+tb["checkbox2"] = Instance.new("ImageButton")
+tb["checkbox2"].Name = "Checkbox"
+tb["checkbox2"].Image = "rbxasset://textures/ui/GuiImagePlaceholder.png"
+tb["checkbox2"].ImageTransparency = 1
+tb["checkbox2"].AutoButtonColor = false
+tb["checkbox2"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["checkbox2"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["checkbox2"].BackgroundTransparency = 1
+tb["checkbox2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["checkbox2"].BorderSizePixel = 0
+tb["checkbox2"].Position = UDim2.fromScale(0.5, 0.5)
+tb["checkbox2"].Size = UDim2.fromScale(0.6, 0.6)
+
+tb["uiaspectratioconstraint34"] = Instance.new("UIAspectRatioConstraint")
+tb["uiaspectratioconstraint34"].Name = "UIAspectRatioConstraint"
+tb["uiaspectratioconstraint34"].Parent = tb["checkbox2"]
+
+tb["var_true1"] = Instance.new("ImageLabel")
+tb["var_true1"].Name = "true"
+tb["var_true1"].Image = "rbxassetid://18873947049"
+tb["var_true1"].ImageColor3 = Color3.fromRGB(137, 152, 170)
+tb["var_true1"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["var_true1"].BackgroundTransparency = 1
+tb["var_true1"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["var_true1"].BorderSizePixel = 0
+tb["var_true1"].Size = UDim2.fromScale(1, 1)
+tb["var_true1"].Visible = false
+tb["var_true1"].Parent = tb["checkbox2"]
+
+tb["var_false1"] = Instance.new("ImageLabel")
+tb["var_false1"].Name = "false"
+tb["var_false1"].Image = "rbxassetid://18873946765"
+tb["var_false1"].ImageColor3 = Color3.fromRGB(137, 152, 170)
+tb["var_false1"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["var_false1"].BackgroundTransparency = 1
+tb["var_false1"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["var_false1"].BorderSizePixel = 0
+tb["var_false1"].Size = UDim2.fromScale(1, 1)
+tb["var_false1"].Parent = tb["checkbox2"]
+
+tb["checkbox2"].Parent = tb["checkbox1"]
+
+tb["checkbox1"].Parent = tb["cells1"]
+
+tb["cells1"].Parent = tb["template3"]
+
+tb["template3"].Parent = tb["rows"]
+
+tb["rows"].Parent = tb["sheet"]
+
+tb["sheet"].Parent = tb["frame1"]
 
 tb["frame1"].Parent = tb["features"]
 
@@ -2337,27 +2796,27 @@ tb["frame4"].BorderSizePixel = 0
 tb["frame4"].Position = UDim2.fromScale(0.5, 0.5)
 tb["frame4"].Size = UDim2.fromScale(0.5, 0.5)
 
-tb["uiaspectratioconstraint30"] = Instance.new("UIAspectRatioConstraint")
-tb["uiaspectratioconstraint30"].Name = "UIAspectRatioConstraint"
-tb["uiaspectratioconstraint30"].AspectRatio = 2
-tb["uiaspectratioconstraint30"].Parent = tb["frame4"]
+tb["uiaspectratioconstraint35"] = Instance.new("UIAspectRatioConstraint")
+tb["uiaspectratioconstraint35"].Name = "UIAspectRatioConstraint"
+tb["uiaspectratioconstraint35"].AspectRatio = 2
+tb["uiaspectratioconstraint35"].Parent = tb["frame4"]
 
-tb["title4"] = Instance.new("TextLabel")
-tb["title4"].Name = "Title"
-tb["title4"].FontFace = Font.new("rbxassetid://11598121416")
-tb["title4"].Text = "Are you sure?"
-tb["title4"].TextColor3 = Color3.fromRGB(69, 72, 79)
-tb["title4"].TextScaled = true
-tb["title4"].TextSize = 14
-tb["title4"].TextWrapped = true
-tb["title4"].AnchorPoint = Vector2.new(0.5, 0)
-tb["title4"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-tb["title4"].BackgroundTransparency = 1
-tb["title4"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["title4"].BorderSizePixel = 0
-tb["title4"].Position = UDim2.fromScale(0.5, 0.05)
-tb["title4"].Size = UDim2.fromScale(0.9, 0.2)
-tb["title4"].Parent = tb["frame4"]
+tb["title5"] = Instance.new("TextLabel")
+tb["title5"].Name = "Title"
+tb["title5"].FontFace = Font.new("rbxassetid://11598121416")
+tb["title5"].Text = "Are you sure?"
+tb["title5"].TextColor3 = Color3.fromRGB(69, 72, 79)
+tb["title5"].TextScaled = true
+tb["title5"].TextSize = 14
+tb["title5"].TextWrapped = true
+tb["title5"].AnchorPoint = Vector2.new(0.5, 0)
+tb["title5"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["title5"].BackgroundTransparency = 1
+tb["title5"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["title5"].BorderSizePixel = 0
+tb["title5"].Position = UDim2.fromScale(0.5, 0.05)
+tb["title5"].Size = UDim2.fromScale(0.9, 0.2)
+tb["title5"].Parent = tb["frame4"]
 
 tb["content5"] = Instance.new("TextLabel")
 tb["content5"].Name = "Content"
@@ -2398,23 +2857,23 @@ tb["no"].Position = UDim2.fromScale(0.75, 0.5)
 tb["no"].Selectable = false
 tb["no"].Size = UDim2.fromScale(0.5, 0.7)
 
-tb["label21"] = Instance.new("TextLabel")
-tb["label21"].Name = "Label"
-tb["label21"].FontFace = Font.new("rbxassetid://11598121416")
-tb["label21"].Text = "NO"
-tb["label21"].TextColor3 = Color3.fromRGB(112, 113, 128)
-tb["label21"].TextScaled = true
-tb["label21"].TextSize = 14
-tb["label21"].TextWrapped = true
-tb["label21"].AnchorPoint = Vector2.new(0.5, 0.5)
-tb["label21"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-tb["label21"].BackgroundTransparency = 1
-tb["label21"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["label21"].BorderSizePixel = 0
-tb["label21"].Position = UDim2.fromScale(0.5, 0.5)
-tb["label21"].Size = UDim2.fromScale(0.95, 0.6)
-tb["label21"].ZIndex = 3
-tb["label21"].Parent = tb["no"]
+tb["label25"] = Instance.new("TextLabel")
+tb["label25"].Name = "Label"
+tb["label25"].FontFace = Font.new("rbxassetid://11598121416")
+tb["label25"].Text = "NO"
+tb["label25"].TextColor3 = Color3.fromRGB(112, 113, 128)
+tb["label25"].TextScaled = true
+tb["label25"].TextSize = 14
+tb["label25"].TextWrapped = true
+tb["label25"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["label25"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["label25"].BackgroundTransparency = 1
+tb["label25"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["label25"].BorderSizePixel = 0
+tb["label25"].Position = UDim2.fromScale(0.5, 0.5)
+tb["label25"].Size = UDim2.fromScale(0.95, 0.6)
+tb["label25"].ZIndex = 3
+tb["label25"].Parent = tb["no"]
 
 tb["no"].Parent = tb["choices"]
 
@@ -2429,23 +2888,23 @@ tb["yes"].Position = UDim2.fromScale(0.25, 0.5)
 tb["yes"].Selectable = false
 tb["yes"].Size = UDim2.fromScale(0.5, 0.7)
 
-tb["label22"] = Instance.new("TextLabel")
-tb["label22"].Name = "Label"
-tb["label22"].FontFace = Font.new("rbxassetid://11598121416")
-tb["label22"].Text = "YES"
-tb["label22"].TextColor3 = Color3.fromRGB(69, 72, 79)
-tb["label22"].TextScaled = true
-tb["label22"].TextSize = 14
-tb["label22"].TextWrapped = true
-tb["label22"].AnchorPoint = Vector2.new(0.5, 0.5)
-tb["label22"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-tb["label22"].BackgroundTransparency = 1
-tb["label22"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["label22"].BorderSizePixel = 0
-tb["label22"].Position = UDim2.fromScale(0.5, 0.5)
-tb["label22"].Size = UDim2.fromScale(0.95, 0.6)
-tb["label22"].ZIndex = 3
-tb["label22"].Parent = tb["yes"]
+tb["label26"] = Instance.new("TextLabel")
+tb["label26"].Name = "Label"
+tb["label26"].FontFace = Font.new("rbxassetid://11598121416")
+tb["label26"].Text = "YES"
+tb["label26"].TextColor3 = Color3.fromRGB(69, 72, 79)
+tb["label26"].TextScaled = true
+tb["label26"].TextSize = 14
+tb["label26"].TextWrapped = true
+tb["label26"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["label26"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["label26"].BackgroundTransparency = 1
+tb["label26"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["label26"].BorderSizePixel = 0
+tb["label26"].Position = UDim2.fromScale(0.5, 0.5)
+tb["label26"].Size = UDim2.fromScale(0.95, 0.6)
+tb["label26"].ZIndex = 3
+tb["label26"].Parent = tb["yes"]
 
 tb["yes"].Parent = tb["choices"]
 
@@ -2484,23 +2943,23 @@ tb["cards"].BorderSizePixel = 0
 tb["cards"].Size = UDim2.fromScale(1, 1)
 tb["cards"].Visible = false
 
-tb["uilistlayout8"] = Instance.new("UIListLayout")
-tb["uilistlayout8"].Name = "UIListLayout"
-tb["uilistlayout8"].HorizontalFlex = Enum.UIFlexAlignment.SpaceEvenly
-tb["uilistlayout8"].FillDirection = Enum.FillDirection.Horizontal
-tb["uilistlayout8"].HorizontalAlignment = Enum.HorizontalAlignment.Center
-tb["uilistlayout8"].SortOrder = Enum.SortOrder.LayoutOrder
-tb["uilistlayout8"].Parent = tb["cards"]
+tb["uilistlayout11"] = Instance.new("UIListLayout")
+tb["uilistlayout11"].Name = "UIListLayout"
+tb["uilistlayout11"].HorizontalFlex = Enum.UIFlexAlignment.SpaceEvenly
+tb["uilistlayout11"].FillDirection = Enum.FillDirection.Horizontal
+tb["uilistlayout11"].HorizontalAlignment = Enum.HorizontalAlignment.Center
+tb["uilistlayout11"].SortOrder = Enum.SortOrder.LayoutOrder
+tb["uilistlayout11"].Parent = tb["cards"]
 
-tb["template2"] = Instance.new("Frame")
-tb["template2"].Name = "Template"
-tb["template2"].AnchorPoint = Vector2.new(0, 0.5)
-tb["template2"].BackgroundColor3 = Color3.fromRGB(250, 252, 255)
-tb["template2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["template2"].BorderSizePixel = 0
-tb["template2"].LayoutOrder = 1
-tb["template2"].Position = UDim2.fromScale(0, 0.5)
-tb["template2"].Size = UDim2.fromScale(0.3, 1)
+tb["template4"] = Instance.new("Frame")
+tb["template4"].Name = "Template"
+tb["template4"].AnchorPoint = Vector2.new(0, 0.5)
+tb["template4"].BackgroundColor3 = Color3.fromRGB(250, 252, 255)
+tb["template4"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["template4"].BorderSizePixel = 0
+tb["template4"].LayoutOrder = 1
+tb["template4"].Position = UDim2.fromScale(0, 0.5)
+tb["template4"].Size = UDim2.fromScale(0.3, 1)
 
 tb["description"] = Instance.new("Frame")
 tb["description"].Name = "Description"
@@ -2532,34 +2991,34 @@ tb["textlabel5"].Position = UDim2.fromScale(0.5, 0.5)
 tb["textlabel5"].Size = UDim2.fromScale(0.925, 0.9)
 tb["textlabel5"].Parent = tb["description"]
 
-tb["description"].Parent = tb["template2"]
+tb["description"].Parent = tb["template4"]
 
-tb["title5"] = Instance.new("Frame")
-tb["title5"].Name = "Title"
-tb["title5"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-tb["title5"].BackgroundTransparency = 1
-tb["title5"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["title5"].BorderSizePixel = 0
-tb["title5"].Size = UDim2.fromScale(1, 0.15)
+tb["title6"] = Instance.new("Frame")
+tb["title6"].Name = "Title"
+tb["title6"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["title6"].BackgroundTransparency = 1
+tb["title6"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["title6"].BorderSizePixel = 0
+tb["title6"].Size = UDim2.fromScale(1, 0.15)
 
-tb["label23"] = Instance.new("TextLabel")
-tb["label23"].Name = "Label"
-tb["label23"].FontFace = Font.new("rbxassetid://11598121416")
-tb["label23"].Text = "Placeholder (Rarity)"
-tb["label23"].TextColor3 = Color3.fromRGB(112, 113, 128)
-tb["label23"].TextScaled = true
-tb["label23"].TextSize = 14
-tb["label23"].TextWrapped = true
-tb["label23"].AnchorPoint = Vector2.new(0.5, 0.5)
-tb["label23"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-tb["label23"].BackgroundTransparency = 1
-tb["label23"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["label23"].BorderSizePixel = 0
-tb["label23"].Position = UDim2.fromScale(0.5, 0.5)
-tb["label23"].Size = UDim2.fromScale(0.925, 0.5)
-tb["label23"].Parent = tb["title5"]
+tb["label27"] = Instance.new("TextLabel")
+tb["label27"].Name = "Label"
+tb["label27"].FontFace = Font.new("rbxassetid://11598121416")
+tb["label27"].Text = "Placeholder (Rarity)"
+tb["label27"].TextColor3 = Color3.fromRGB(112, 113, 128)
+tb["label27"].TextScaled = true
+tb["label27"].TextSize = 14
+tb["label27"].TextWrapped = true
+tb["label27"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["label27"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["label27"].BackgroundTransparency = 1
+tb["label27"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["label27"].BorderSizePixel = 0
+tb["label27"].Position = UDim2.fromScale(0.5, 0.5)
+tb["label27"].Size = UDim2.fromScale(0.925, 0.5)
+tb["label27"].Parent = tb["title6"]
 
-tb["title5"].Parent = tb["template2"]
+tb["title6"].Parent = tb["template4"]
 
 tb["bonuses"] = Instance.new("Frame")
 tb["bonuses"].Name = "Bonuses"
@@ -2604,7 +3063,7 @@ tb["textlabel6"].Parent = tb["stat"]
 
 tb["stat"].Parent = tb["bonuses"]
 
-tb["bonuses"].Parent = tb["template2"]
+tb["bonuses"].Parent = tb["template4"]
 
 tb["holder4"] = Instance.new("Frame")
 tb["holder4"].Name = "Holder"
@@ -2646,7 +3105,7 @@ tb["textlabel7"].Parent = tb["imagebutton"]
 
 tb["imagebutton"].Parent = tb["holder4"]
 
-tb["holder4"].Parent = tb["template2"]
+tb["holder4"].Parent = tb["template4"]
 
 tb["darken"] = Instance.new("Frame")
 tb["darken"].Name = "Darken"
@@ -2657,7 +3116,7 @@ tb["darken"].BorderSizePixel = 0
 tb["darken"].Size = UDim2.fromScale(1, 1)
 tb["darken"].Visible = false
 tb["darken"].ZIndex = 2
-tb["darken"].Parent = tb["template2"]
+tb["darken"].Parent = tb["template4"]
 
 tb["line1"] = Instance.new("Frame")
 tb["line1"].Name = "Line1"
@@ -2668,98 +3127,10 @@ tb["line1"].BorderSizePixel = 0
 tb["line1"].Position = UDim2.fromScale(0.5, 0.15)
 tb["line1"].Size = UDim2.fromScale(0.95, 0.5)
 
-tb["uiaspectratioconstraint31"] = Instance.new("UIAspectRatioConstraint")
-tb["uiaspectratioconstraint31"].Name = "UIAspectRatioConstraint"
-tb["uiaspectratioconstraint31"].AspectRatio = 100
-tb["uiaspectratioconstraint31"].Parent = tb["line1"]
-
-tb["dot4"] = Instance.new("Frame")
-tb["dot4"].Name = "Dot"
-tb["dot4"].AnchorPoint = Vector2.new(0.5, 0.5)
-tb["dot4"].BackgroundColor3 = Color3.fromRGB(173, 188, 205)
-tb["dot4"].BackgroundTransparency = 1
-tb["dot4"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["dot4"].BorderSizePixel = 0
-tb["dot4"].Position = UDim2.fromScale(0.5, 0.5)
-tb["dot4"].Size = UDim2.fromScale(2.5, 2.5)
-tb["dot4"].ZIndex = 2
-
-tb["uiaspectratioconstraint32"] = Instance.new("UIAspectRatioConstraint")
-tb["uiaspectratioconstraint32"].Name = "UIAspectRatioConstraint"
-tb["uiaspectratioconstraint32"].Parent = tb["dot4"]
-
-tb["circle8"] = Instance.new("TextLabel")
-tb["circle8"].Name = "Circle"
-tb["circle8"].FontFace = Font.new("rbxassetid://11598121416")
-tb["circle8"].Text = "●"
-tb["circle8"].TextColor3 = Color3.fromRGB(173, 188, 205)
-tb["circle8"].TextScaled = true
-tb["circle8"].TextSize = 100
-tb["circle8"].TextWrapped = true
-tb["circle8"].AnchorPoint = Vector2.new(0.5, 0.5)
-tb["circle8"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-tb["circle8"].BackgroundTransparency = 1
-tb["circle8"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["circle8"].BorderSizePixel = 0
-tb["circle8"].Position = UDim2.fromScale(0.5, 0.5)
-tb["circle8"].Size = UDim2.fromScale(2, 2)
-tb["circle8"].Parent = tb["dot4"]
-
-tb["dot4"].Parent = tb["line1"]
-
-tb["dotwhite4"] = Instance.new("Frame")
-tb["dotwhite4"].Name = "DotWhite"
-tb["dotwhite4"].AnchorPoint = Vector2.new(0.5, 0.5)
-tb["dotwhite4"].BackgroundColor3 = Color3.fromRGB(250, 252, 255)
-tb["dotwhite4"].BackgroundTransparency = 1
-tb["dotwhite4"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["dotwhite4"].BorderSizePixel = 0
-tb["dotwhite4"].Position = UDim2.fromScale(0.5, 0.5)
-tb["dotwhite4"].Size = UDim2.fromScale(5, 5)
-
-tb["uiaspectratioconstraint33"] = Instance.new("UIAspectRatioConstraint")
-tb["uiaspectratioconstraint33"].Name = "UIAspectRatioConstraint"
-tb["uiaspectratioconstraint33"].Parent = tb["dotwhite4"]
-
-tb["uicorner8"] = Instance.new("UICorner")
-tb["uicorner8"].Name = "UICorner"
-tb["uicorner8"].CornerRadius = UDim.new(1, 0)
-tb["uicorner8"].Parent = tb["dotwhite4"]
-
-tb["circle9"] = Instance.new("TextLabel")
-tb["circle9"].Name = "Circle"
-tb["circle9"].FontFace = Font.new("rbxassetid://11598121416")
-tb["circle9"].Text = "●"
-tb["circle9"].TextColor3 = Color3.fromRGB(250, 252, 255)
-tb["circle9"].TextScaled = true
-tb["circle9"].TextSize = 100
-tb["circle9"].TextWrapped = true
-tb["circle9"].AnchorPoint = Vector2.new(0.5, 0.5)
-tb["circle9"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-tb["circle9"].BackgroundTransparency = 1
-tb["circle9"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["circle9"].BorderSizePixel = 0
-tb["circle9"].Position = UDim2.fromScale(0.5, 0.5)
-tb["circle9"].Size = UDim2.fromScale(2, 2)
-tb["circle9"].Parent = tb["dotwhite4"]
-
-tb["dotwhite4"].Parent = tb["line1"]
-
-tb["line1"].Parent = tb["template2"]
-
-tb["line2"] = Instance.new("Frame")
-tb["line2"].Name = "Line2"
-tb["line2"].AnchorPoint = Vector2.new(0.5, 0.5)
-tb["line2"].BackgroundColor3 = Color3.fromRGB(173, 188, 205)
-tb["line2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["line2"].BorderSizePixel = 0
-tb["line2"].Position = UDim2.fromScale(0.5, 0.65)
-tb["line2"].Size = UDim2.fromScale(0.95, 0.5)
-
-tb["uiaspectratioconstraint34"] = Instance.new("UIAspectRatioConstraint")
-tb["uiaspectratioconstraint34"].Name = "UIAspectRatioConstraint"
-tb["uiaspectratioconstraint34"].AspectRatio = 100
-tb["uiaspectratioconstraint34"].Parent = tb["line2"]
+tb["uiaspectratioconstraint36"] = Instance.new("UIAspectRatioConstraint")
+tb["uiaspectratioconstraint36"].Name = "UIAspectRatioConstraint"
+tb["uiaspectratioconstraint36"].AspectRatio = 100
+tb["uiaspectratioconstraint36"].Parent = tb["line1"]
 
 tb["dot5"] = Instance.new("Frame")
 tb["dot5"].Name = "Dot"
@@ -2772,9 +3143,9 @@ tb["dot5"].Position = UDim2.fromScale(0.5, 0.5)
 tb["dot5"].Size = UDim2.fromScale(2.5, 2.5)
 tb["dot5"].ZIndex = 2
 
-tb["uiaspectratioconstraint35"] = Instance.new("UIAspectRatioConstraint")
-tb["uiaspectratioconstraint35"].Name = "UIAspectRatioConstraint"
-tb["uiaspectratioconstraint35"].Parent = tb["dot5"]
+tb["uiaspectratioconstraint37"] = Instance.new("UIAspectRatioConstraint")
+tb["uiaspectratioconstraint37"].Name = "UIAspectRatioConstraint"
+tb["uiaspectratioconstraint37"].Parent = tb["dot5"]
 
 tb["circle10"] = Instance.new("TextLabel")
 tb["circle10"].Name = "Circle"
@@ -2793,7 +3164,7 @@ tb["circle10"].Position = UDim2.fromScale(0.5, 0.5)
 tb["circle10"].Size = UDim2.fromScale(2, 2)
 tb["circle10"].Parent = tb["dot5"]
 
-tb["dot5"].Parent = tb["line2"]
+tb["dot5"].Parent = tb["line1"]
 
 tb["dotwhite5"] = Instance.new("Frame")
 tb["dotwhite5"].Name = "DotWhite"
@@ -2805,9 +3176,9 @@ tb["dotwhite5"].BorderSizePixel = 0
 tb["dotwhite5"].Position = UDim2.fromScale(0.5, 0.5)
 tb["dotwhite5"].Size = UDim2.fromScale(5, 5)
 
-tb["uiaspectratioconstraint36"] = Instance.new("UIAspectRatioConstraint")
-tb["uiaspectratioconstraint36"].Name = "UIAspectRatioConstraint"
-tb["uiaspectratioconstraint36"].Parent = tb["dotwhite5"]
+tb["uiaspectratioconstraint38"] = Instance.new("UIAspectRatioConstraint")
+tb["uiaspectratioconstraint38"].Name = "UIAspectRatioConstraint"
+tb["uiaspectratioconstraint38"].Parent = tb["dotwhite5"]
 
 tb["uicorner9"] = Instance.new("UICorner")
 tb["uicorner9"].Name = "UICorner"
@@ -2831,23 +3202,23 @@ tb["circle11"].Position = UDim2.fromScale(0.5, 0.5)
 tb["circle11"].Size = UDim2.fromScale(2, 2)
 tb["circle11"].Parent = tb["dotwhite5"]
 
-tb["dotwhite5"].Parent = tb["line2"]
+tb["dotwhite5"].Parent = tb["line1"]
 
-tb["line2"].Parent = tb["template2"]
+tb["line1"].Parent = tb["template4"]
 
-tb["line3"] = Instance.new("Frame")
-tb["line3"].Name = "Line3"
-tb["line3"].AnchorPoint = Vector2.new(0.5, 0)
-tb["line3"].BackgroundColor3 = Color3.fromRGB(173, 188, 205)
-tb["line3"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["line3"].BorderSizePixel = 0
-tb["line3"].Position = UDim2.fromScale(0.5, 0.85)
-tb["line3"].Size = UDim2.fromScale(0.95, 0.5)
+tb["line2"] = Instance.new("Frame")
+tb["line2"].Name = "Line2"
+tb["line2"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["line2"].BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+tb["line2"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["line2"].BorderSizePixel = 0
+tb["line2"].Position = UDim2.fromScale(0.5, 0.65)
+tb["line2"].Size = UDim2.fromScale(0.95, 0.5)
 
-tb["uiaspectratioconstraint37"] = Instance.new("UIAspectRatioConstraint")
-tb["uiaspectratioconstraint37"].Name = "UIAspectRatioConstraint"
-tb["uiaspectratioconstraint37"].AspectRatio = 100
-tb["uiaspectratioconstraint37"].Parent = tb["line3"]
+tb["uiaspectratioconstraint39"] = Instance.new("UIAspectRatioConstraint")
+tb["uiaspectratioconstraint39"].Name = "UIAspectRatioConstraint"
+tb["uiaspectratioconstraint39"].AspectRatio = 100
+tb["uiaspectratioconstraint39"].Parent = tb["line2"]
 
 tb["dot6"] = Instance.new("Frame")
 tb["dot6"].Name = "Dot"
@@ -2860,9 +3231,9 @@ tb["dot6"].Position = UDim2.fromScale(0.5, 0.5)
 tb["dot6"].Size = UDim2.fromScale(2.5, 2.5)
 tb["dot6"].ZIndex = 2
 
-tb["uiaspectratioconstraint38"] = Instance.new("UIAspectRatioConstraint")
-tb["uiaspectratioconstraint38"].Name = "UIAspectRatioConstraint"
-tb["uiaspectratioconstraint38"].Parent = tb["dot6"]
+tb["uiaspectratioconstraint40"] = Instance.new("UIAspectRatioConstraint")
+tb["uiaspectratioconstraint40"].Name = "UIAspectRatioConstraint"
+tb["uiaspectratioconstraint40"].Parent = tb["dot6"]
 
 tb["circle12"] = Instance.new("TextLabel")
 tb["circle12"].Name = "Circle"
@@ -2881,7 +3252,7 @@ tb["circle12"].Position = UDim2.fromScale(0.5, 0.5)
 tb["circle12"].Size = UDim2.fromScale(2, 2)
 tb["circle12"].Parent = tb["dot6"]
 
-tb["dot6"].Parent = tb["line3"]
+tb["dot6"].Parent = tb["line2"]
 
 tb["dotwhite6"] = Instance.new("Frame")
 tb["dotwhite6"].Name = "DotWhite"
@@ -2893,9 +3264,9 @@ tb["dotwhite6"].BorderSizePixel = 0
 tb["dotwhite6"].Position = UDim2.fromScale(0.5, 0.5)
 tb["dotwhite6"].Size = UDim2.fromScale(5, 5)
 
-tb["uiaspectratioconstraint39"] = Instance.new("UIAspectRatioConstraint")
-tb["uiaspectratioconstraint39"].Name = "UIAspectRatioConstraint"
-tb["uiaspectratioconstraint39"].Parent = tb["dotwhite6"]
+tb["uiaspectratioconstraint41"] = Instance.new("UIAspectRatioConstraint")
+tb["uiaspectratioconstraint41"].Name = "UIAspectRatioConstraint"
+tb["uiaspectratioconstraint41"].Parent = tb["dotwhite6"]
 
 tb["uicorner10"] = Instance.new("UICorner")
 tb["uicorner10"].Name = "UICorner"
@@ -2919,11 +3290,99 @@ tb["circle13"].Position = UDim2.fromScale(0.5, 0.5)
 tb["circle13"].Size = UDim2.fromScale(2, 2)
 tb["circle13"].Parent = tb["dotwhite6"]
 
-tb["dotwhite6"].Parent = tb["line3"]
+tb["dotwhite6"].Parent = tb["line2"]
 
-tb["line3"].Parent = tb["template2"]
+tb["line2"].Parent = tb["template4"]
 
-tb["template2"].Parent = tb["cards"]
+tb["line3"] = Instance.new("Frame")
+tb["line3"].Name = "Line3"
+tb["line3"].AnchorPoint = Vector2.new(0.5, 0)
+tb["line3"].BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+tb["line3"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["line3"].BorderSizePixel = 0
+tb["line3"].Position = UDim2.fromScale(0.5, 0.85)
+tb["line3"].Size = UDim2.fromScale(0.95, 0.5)
+
+tb["uiaspectratioconstraint42"] = Instance.new("UIAspectRatioConstraint")
+tb["uiaspectratioconstraint42"].Name = "UIAspectRatioConstraint"
+tb["uiaspectratioconstraint42"].AspectRatio = 100
+tb["uiaspectratioconstraint42"].Parent = tb["line3"]
+
+tb["dot7"] = Instance.new("Frame")
+tb["dot7"].Name = "Dot"
+tb["dot7"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["dot7"].BackgroundColor3 = Color3.fromRGB(173, 188, 205)
+tb["dot7"].BackgroundTransparency = 1
+tb["dot7"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["dot7"].BorderSizePixel = 0
+tb["dot7"].Position = UDim2.fromScale(0.5, 0.5)
+tb["dot7"].Size = UDim2.fromScale(2.5, 2.5)
+tb["dot7"].ZIndex = 2
+
+tb["uiaspectratioconstraint43"] = Instance.new("UIAspectRatioConstraint")
+tb["uiaspectratioconstraint43"].Name = "UIAspectRatioConstraint"
+tb["uiaspectratioconstraint43"].Parent = tb["dot7"]
+
+tb["circle14"] = Instance.new("TextLabel")
+tb["circle14"].Name = "Circle"
+tb["circle14"].FontFace = Font.new("rbxassetid://11598121416")
+tb["circle14"].Text = "●"
+tb["circle14"].TextColor3 = Color3.fromRGB(173, 188, 205)
+tb["circle14"].TextScaled = true
+tb["circle14"].TextSize = 100
+tb["circle14"].TextWrapped = true
+tb["circle14"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["circle14"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["circle14"].BackgroundTransparency = 1
+tb["circle14"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["circle14"].BorderSizePixel = 0
+tb["circle14"].Position = UDim2.fromScale(0.5, 0.5)
+tb["circle14"].Size = UDim2.fromScale(2, 2)
+tb["circle14"].Parent = tb["dot7"]
+
+tb["dot7"].Parent = tb["line3"]
+
+tb["dotwhite7"] = Instance.new("Frame")
+tb["dotwhite7"].Name = "DotWhite"
+tb["dotwhite7"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["dotwhite7"].BackgroundColor3 = Color3.fromRGB(250, 252, 255)
+tb["dotwhite7"].BackgroundTransparency = 1
+tb["dotwhite7"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["dotwhite7"].BorderSizePixel = 0
+tb["dotwhite7"].Position = UDim2.fromScale(0.5, 0.5)
+tb["dotwhite7"].Size = UDim2.fromScale(5, 5)
+
+tb["uiaspectratioconstraint44"] = Instance.new("UIAspectRatioConstraint")
+tb["uiaspectratioconstraint44"].Name = "UIAspectRatioConstraint"
+tb["uiaspectratioconstraint44"].Parent = tb["dotwhite7"]
+
+tb["uicorner11"] = Instance.new("UICorner")
+tb["uicorner11"].Name = "UICorner"
+tb["uicorner11"].CornerRadius = UDim.new(1, 0)
+tb["uicorner11"].Parent = tb["dotwhite7"]
+
+tb["circle15"] = Instance.new("TextLabel")
+tb["circle15"].Name = "Circle"
+tb["circle15"].FontFace = Font.new("rbxassetid://11598121416")
+tb["circle15"].Text = "●"
+tb["circle15"].TextColor3 = Color3.fromRGB(250, 252, 255)
+tb["circle15"].TextScaled = true
+tb["circle15"].TextSize = 100
+tb["circle15"].TextWrapped = true
+tb["circle15"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["circle15"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["circle15"].BackgroundTransparency = 1
+tb["circle15"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["circle15"].BorderSizePixel = 0
+tb["circle15"].Position = UDim2.fromScale(0.5, 0.5)
+tb["circle15"].Size = UDim2.fromScale(2, 2)
+tb["circle15"].Parent = tb["dotwhite7"]
+
+tb["dotwhite7"].Parent = tb["line3"]
+
+tb["line3"].Parent = tb["template4"]
+
+tb["template4"].Parent = tb["cards"]
 
 tb["cards"].Parent = tb["area"]
 
@@ -3000,17 +3459,16 @@ tb["textlabel9"].Parent = tb["discard"]
 
 tb["discard"].Parent = tb["actions"]
 
-tb["uilistlayout9"] = Instance.new("UIListLayout")
-tb["uilistlayout9"].Name = "UIListLayout"
-tb["uilistlayout9"].Padding = UDim.new(0.025, 0)
-tb["uilistlayout9"].FillDirection = Enum.FillDirection.Horizontal
-tb["uilistlayout9"].HorizontalAlignment = Enum.HorizontalAlignment.Center
-tb["uilistlayout9"].SortOrder = Enum.SortOrder.LayoutOrder
-tb["uilistlayout9"].Parent = tb["actions"]
+tb["uilistlayout12"] = Instance.new("UIListLayout")
+tb["uilistlayout12"].Name = "UIListLayout"
+tb["uilistlayout12"].Padding = UDim.new(0.025, 0)
+tb["uilistlayout12"].FillDirection = Enum.FillDirection.Horizontal
+tb["uilistlayout12"].HorizontalAlignment = Enum.HorizontalAlignment.Center
+tb["uilistlayout12"].SortOrder = Enum.SortOrder.LayoutOrder
+tb["uilistlayout12"].Parent = tb["actions"]
 
 tb["switchview"] = Instance.new("ImageButton")
 tb["switchview"].Name = "switchView"
-tb["switchview"].Visible = false
 tb["switchview"].ImageTransparency = 1
 tb["switchview"].AutoButtonColor = false
 tb["switchview"].AnchorPoint = Vector2.new(0.5, 0.5)
@@ -3020,6 +3478,7 @@ tb["switchview"].BorderSizePixel = 0
 tb["switchview"].LayoutOrder = 3
 tb["switchview"].Position = UDim2.fromScale(0.25, 0.5)
 tb["switchview"].Size = UDim2.fromScale(0.25, 1)
+tb["switchview"].Visible = false
 
 tb["textlabel10"] = Instance.new("TextLabel")
 tb["textlabel10"].Name = "TextLabel"
@@ -3120,31 +3579,31 @@ tb["titlecontainer"].BorderSizePixel = 0
 tb["titlecontainer"].Position = UDim2.fromScale(0, 0.087)
 tb["titlecontainer"].Size = UDim2.fromScale(0.162, 0.175)
 
-tb["title6"] = Instance.new("TextLabel")
-tb["title6"].Name = "Title"
-tb["title6"].FontFace = Font.new("rbxassetid://12187366846", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
-tb["title6"].RichText = true
-tb["title6"].Text = "Autian Essentials"
-tb["title6"].TextColor3 = Color3.fromRGB(109, 123, 150)
-tb["title6"].TextScaled = true
-tb["title6"].TextSize = 45
-tb["title6"].TextWrapped = true
-tb["title6"].AnchorPoint = Vector2.new(0.5, 0.5)
-tb["title6"].BackgroundColor3 = Color3.fromRGB(0, 0, 0)
-tb["title6"].BackgroundTransparency = 1
-tb["title6"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["title6"].BorderSizePixel = 0
-tb["title6"].Position = UDim2.fromScale(0.5, 0.5)
-tb["title6"].Size = UDim2.fromScale(0.9, 0.5)
-tb["title6"].ZIndex = 2
-tb["title6"].Parent = tb["titlecontainer"]
+tb["title7"] = Instance.new("TextLabel")
+tb["title7"].Name = "Title"
+tb["title7"].FontFace = Font.new("rbxassetid://12187366846", Enum.FontWeight.SemiBold, Enum.FontStyle.Normal)
+tb["title7"].RichText = true
+tb["title7"].Text = "Autian Essentials"
+tb["title7"].TextColor3 = Color3.fromRGB(109, 123, 150)
+tb["title7"].TextScaled = true
+tb["title7"].TextSize = 45
+tb["title7"].TextWrapped = true
+tb["title7"].AnchorPoint = Vector2.new(0.5, 0.5)
+tb["title7"].BackgroundColor3 = Color3.fromRGB(0, 0, 0)
+tb["title7"].BackgroundTransparency = 1
+tb["title7"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["title7"].BorderSizePixel = 0
+tb["title7"].Position = UDim2.fromScale(0.5, 0.5)
+tb["title7"].Size = UDim2.fromScale(0.9, 0.5)
+tb["title7"].ZIndex = 2
+tb["title7"].Parent = tb["titlecontainer"]
 
 tb["titlecontainer"].Parent = tb["main"]
 
-tb["uiaspectratioconstraint40"] = Instance.new("UIAspectRatioConstraint")
-tb["uiaspectratioconstraint40"].Name = "UIAspectRatioConstraint"
-tb["uiaspectratioconstraint40"].AspectRatio = 1.78
-tb["uiaspectratioconstraint40"].Parent = tb["main"]
+tb["uiaspectratioconstraint45"] = Instance.new("UIAspectRatioConstraint")
+tb["uiaspectratioconstraint45"].Name = "UIAspectRatioConstraint"
+tb["uiaspectratioconstraint45"].AspectRatio = 1.78
+tb["uiaspectratioconstraint45"].Parent = tb["main"]
 
 tb["main"].Parent = tb["autianessentials"]
 
@@ -3171,9 +3630,9 @@ tb["hidden"].Position = UDim2.fromScale(1, 1)
 tb["hidden"].Size = UDim2.fromScale(0.05, 0.05)
 tb["hidden"].Visible = false
 
-tb["uiaspectratioconstraint41"] = Instance.new("UIAspectRatioConstraint")
-tb["uiaspectratioconstraint41"].Name = "UIAspectRatioConstraint"
-tb["uiaspectratioconstraint41"].Parent = tb["hidden"]
+tb["uiaspectratioconstraint46"] = Instance.new("UIAspectRatioConstraint")
+tb["uiaspectratioconstraint46"].Name = "UIAspectRatioConstraint"
+tb["uiaspectratioconstraint46"].Parent = tb["hidden"]
 
 tb["button2"] = Instance.new("ImageButton")
 tb["button2"].Name = "Button"
@@ -3188,10 +3647,10 @@ tb["button2"].BorderSizePixel = 0
 tb["button2"].Position = UDim2.fromScale(1, 1)
 tb["button2"].Size = UDim2.fromScale(2, 2)
 
-tb["uicorner11"] = Instance.new("UICorner")
-tb["uicorner11"].Name = "UICorner"
-tb["uicorner11"].CornerRadius = UDim.new(1, 0)
-tb["uicorner11"].Parent = tb["button2"]
+tb["uicorner12"] = Instance.new("UICorner")
+tb["uicorner12"].Name = "UICorner"
+tb["uicorner12"].CornerRadius = UDim.new(1, 0)
+tb["uicorner12"].Parent = tb["button2"]
 
 tb["button2"].Parent = tb["hidden"]
 
@@ -3208,14 +3667,14 @@ tb["notifications"].Position = UDim2.fromScale(1, 0)
 tb["notifications"].Size = UDim2.fromScale(0.25, 1)
 tb["notifications"].ZIndex = 10
 
-tb["template3"] = Instance.new("Frame")
-tb["template3"].Name = "Template"
-tb["template3"].BackgroundColor3 = Color3.fromRGB(68, 71, 85)
-tb["template3"].BackgroundTransparency = 0.1
-tb["template3"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["template3"].BorderSizePixel = 0
-tb["template3"].Size = UDim2.fromScale(1, 0.15)
-tb["template3"].Visible = false
+tb["template5"] = Instance.new("Frame")
+tb["template5"].Name = "Template"
+tb["template5"].BackgroundColor3 = Color3.fromRGB(68, 71, 85)
+tb["template5"].BackgroundTransparency = 0.1
+tb["template5"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["template5"].BorderSizePixel = 0
+tb["template5"].Size = UDim2.fromScale(1, 0.15)
+tb["template5"].Visible = false
 
 tb["content6"] = Instance.new("TextLabel")
 tb["content6"].Name = "Content"
@@ -3241,26 +3700,26 @@ tb["uitextsizeconstraint"].Name = "UITextSizeConstraint"
 tb["uitextsizeconstraint"].MaxTextSize = 40
 tb["uitextsizeconstraint"].Parent = tb["content6"]
 
-tb["content6"].Parent = tb["template3"]
+tb["content6"].Parent = tb["template5"]
 
-tb["title7"] = Instance.new("TextLabel")
-tb["title7"].Name = "Title"
-tb["title7"].FontFace = Font.new("rbxassetid://11598121416", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
-tb["title7"].Text = "Notification"
-tb["title7"].TextColor3 = Color3.fromRGB(184, 187, 195)
-tb["title7"].TextScaled = true
-tb["title7"].TextSize = 14
-tb["title7"].TextTransparency = 0.1
-tb["title7"].TextWrapped = true
-tb["title7"].TextXAlignment = Enum.TextXAlignment.Left
-tb["title7"].AnchorPoint = Vector2.new(0, 0.5)
-tb["title7"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
-tb["title7"].BackgroundTransparency = 1
-tb["title7"].BorderColor3 = Color3.fromRGB(0, 0, 0)
-tb["title7"].BorderSizePixel = 0
-tb["title7"].Position = UDim2.fromScale(0.025, 0.125)
-tb["title7"].Size = UDim2.fromScale(0.45, 0.2)
-tb["title7"].Parent = tb["template3"]
+tb["title8"] = Instance.new("TextLabel")
+tb["title8"].Name = "Title"
+tb["title8"].FontFace = Font.new("rbxassetid://11598121416", Enum.FontWeight.Bold, Enum.FontStyle.Normal)
+tb["title8"].Text = "Notification"
+tb["title8"].TextColor3 = Color3.fromRGB(184, 187, 195)
+tb["title8"].TextScaled = true
+tb["title8"].TextSize = 14
+tb["title8"].TextTransparency = 0.1
+tb["title8"].TextWrapped = true
+tb["title8"].TextXAlignment = Enum.TextXAlignment.Left
+tb["title8"].AnchorPoint = Vector2.new(0, 0.5)
+tb["title8"].BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+tb["title8"].BackgroundTransparency = 1
+tb["title8"].BorderColor3 = Color3.fromRGB(0, 0, 0)
+tb["title8"].BorderSizePixel = 0
+tb["title8"].Position = UDim2.fromScale(0.025, 0.125)
+tb["title8"].Size = UDim2.fromScale(0.45, 0.2)
+tb["title8"].Parent = tb["template5"]
 
 tb["close"] = Instance.new("ImageButton")
 tb["close"].Name = "Close"
@@ -3274,9 +3733,9 @@ tb["close"].BorderSizePixel = 0
 tb["close"].Position = UDim2.fromScale(0.975, 0.125)
 tb["close"].Size = UDim2.fromScale(0.2, 0.2)
 
-tb["uiaspectratioconstraint42"] = Instance.new("UIAspectRatioConstraint")
-tb["uiaspectratioconstraint42"].Name = "UIAspectRatioConstraint"
-tb["uiaspectratioconstraint42"].Parent = tb["close"]
+tb["uiaspectratioconstraint47"] = Instance.new("UIAspectRatioConstraint")
+tb["uiaspectratioconstraint47"].Name = "UIAspectRatioConstraint"
+tb["uiaspectratioconstraint47"].Parent = tb["close"]
 
 tb["x"] = Instance.new("TextLabel")
 tb["x"].Name = "X"
@@ -3296,16 +3755,16 @@ tb["x"].Position = UDim2.fromScale(0.5, 0.5)
 tb["x"].Size = UDim2.fromScale(0.95, 0.95)
 tb["x"].Parent = tb["close"]
 
-tb["close"].Parent = tb["template3"]
+tb["close"].Parent = tb["template5"]
 
-tb["template3"].Parent = tb["notifications"]
+tb["template5"].Parent = tb["notifications"]
 
-tb["uilistlayout10"] = Instance.new("UIListLayout")
-tb["uilistlayout10"].Name = "UIListLayout"
-tb["uilistlayout10"].Padding = UDim.new(0.01, 0)
-tb["uilistlayout10"].SortOrder = Enum.SortOrder.LayoutOrder
-tb["uilistlayout10"].VerticalAlignment = Enum.VerticalAlignment.Bottom
-tb["uilistlayout10"].Parent = tb["notifications"]
+tb["uilistlayout13"] = Instance.new("UIListLayout")
+tb["uilistlayout13"].Name = "UIListLayout"
+tb["uilistlayout13"].Padding = UDim.new(0.01, 0)
+tb["uilistlayout13"].SortOrder = Enum.SortOrder.LayoutOrder
+tb["uilistlayout13"].VerticalAlignment = Enum.VerticalAlignment.Bottom
+tb["uilistlayout13"].Parent = tb["notifications"]
 
 tb["notifications"].Parent = tb["autianessentials"]
 return tb["autianessentials"]

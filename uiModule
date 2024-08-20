@@ -10,13 +10,14 @@ return function(config, saved)
 		saved = {}
 	end
 	--
+	config = table.clone(config)
 	local control = {} :: { saveChanged: () -> ()? }
 	local save = {}
 	control.save = save
 	local janitorList = {}
 
 	--fundamental functions
-	local function janitor<T>(object: T & (RBXScriptConnection | Instance)): T
+	local function janitor<T>(object: T): T
 		table.insert(janitorList, object)
 		return object
 	end
@@ -353,36 +354,6 @@ return function(config, saved)
 			end)
 		end
 
-		handlers.InputField = function(self, component: typeof(frame.InputField), data)
-			component.FillTitle.Label.Text = data.title
-
-			self.fireCallback = function()
-				self:spawnCallback(self.value)
-			end
-
-			local current = (if data.noSave then nil else saved[data.name]) or data.default or ""
-			local function update()
-				self.value = current
-				self.fireCallback()
-				if not data.noSave then
-					save[data.name] = current
-					saveChanged()
-				end
-			end
-
-			local textBox = component.FillField.Label
-			textBox.Text = current
-			textBox.FocusLost:Connect(function(entered)
-				if entered then
-					current = textBox.Text
-					update()
-				else
-					textBox.Text = current
-				end
-			end)
-			update()
-		end
-
 		handlers.Dropdown = function(self, component: typeof(frame.Dropdown), data)
 			component.FillTitle.Label.Text = data.title
 
@@ -455,7 +426,210 @@ return function(config, saved)
 			end
 		end
 
-		handlers.Checklist = function(self, component: typeof(frame.Checklist), data)
+		handlers.TextField = function(self, component: typeof(frame.TextField), data)
+			component.FillTitle.Label.Text = data.title
+
+			local textBox = component.Field.Box
+
+			self.fireCallback = function()
+				self:spawnCallback(self.value)
+			end
+
+			local function format(text)
+				if data.format then
+					text = data.format(text)
+				end
+				return text
+			end
+
+			local current = format((not data.noSave and saved[data.name]) or data.default or "")
+			local function update()
+				textBox.Text = current
+				self.value = current
+				self.fireCallback()
+				if not data.noSave then
+					save[data.name] = current
+					saveChanged()
+				end
+			end
+
+			textBox.Text = current
+			textBox.FocusLost:Connect(function(entered)
+				if entered then
+					current = format(textBox.Text)
+					update()
+				else
+					textBox.Text = current
+				end
+			end)
+			update()
+		end
+
+		handlers.Sheet = function(self, component: typeof(frame.Sheet), data)
+			local list = {}
+			if not data.noSave then
+				save[data.name] = {}
+			end
+
+			local searchBox = component.Top.Search.Label
+			local rows = component.Rows
+			local columnHeader = component.ColumnHeader
+			local cellTemplates = {}
+			janitor(function()
+				table.clear(cellTemplates)
+			end)
+
+			component.Top.TitleHolder.Label.Text = data.title
+			columnHeader.Cells.Template.Visible = false
+			columnHeader.Title.Label.Text = data.entryName
+			rows.Template.Visible = false
+
+			for _, cellTemplate in pairs(rows.Template.Cells:GetChildren()) do
+				if not cellTemplate:IsA("UIListLayout") then
+					cellTemplates[cellTemplate.Name] = cellTemplate
+					cellTemplate.Parent = nil
+				end
+			end
+
+			for i, column in pairs(data.columns) do
+				local this = columnHeader.Cells.Template:Clone()
+				this.Visible = true
+				this.Label.Text = column.title
+				this.LayoutOrder = #data.columns + 1 - i
+				this.Parent = columnHeader.Cells
+			end
+
+			self.get = function(row, column)
+				return list[row].cells[column]
+			end
+
+			self.set = function(row, column, value)
+				list[row].cells[column] = value
+				if not data.noSave then
+					save[data.name][row][column] = value
+				end
+				self:spawnCallback(row, column, value)
+			end
+
+			local function addRow(info)
+				local this = rows.Template:Clone()
+				this.Visible = true
+				this.Label.Text = info.title
+				this.Parent = rows
+				local row = { cells = {}, instance = this, title = info.title }
+				list[info.name] = row
+				if not data.noSave then
+					save[data.name][info.name] = {}
+				end
+
+				for i, column in pairs(data.columns) do
+					local kind = column.kind
+					local cell = cellTemplates[kind]:Clone()
+					cell.LayoutOrder = #data.columns + 1 - i
+
+					local function getValue()
+						return self.get(info.name, column.name)
+					end
+
+					local function setValue(value)
+						self.set(info.name, column.name, value)
+					end
+
+					local default = if info.cells then info.cells[column.name] else column.default
+					if kind == "Checkbox" then
+						if default == nil then
+							default = false
+						end
+
+						local checkbox = cell.Checkbox
+						local function toggle(bool)
+							setValue(bool)
+							checkbox[tostring(bool)].Visible = true
+							checkbox[tostring(not bool)].Visible = false
+						end
+
+						toggle(default)
+						checkbox.Activated:Connect(function()
+							local newValue = not getValue()
+							toggle(newValue)
+						end)
+					elseif kind == "TextField" then
+						if not default then
+							default = "Text field"
+						end
+
+						local textBox = cell.Box :: TextBox
+						local function format(text)
+							if column.format then
+								text = column.format(text)
+							end
+							textBox.Text = text
+							return text
+						end
+
+						textBox.FocusLost:Connect(function(entered)
+							if entered then
+								setValue(format(textBox.Text))
+							else
+								textBox.Text = getValue()
+							end
+						end)
+
+						if default then
+							setValue(format(default))
+						end
+					end
+					cell.Parent = this.Cells
+				end
+			end
+
+			local function removeRow(name)
+				local row = list[name]
+				row.instance:Destroy()
+				list[name] = nil
+			end
+
+			if data.default then
+				for _, row in pairs(data.default) do
+					addRow(row)
+				end
+			end
+
+			searchBox.FocusLost:Connect(function(entered)
+				if not entered then
+					searchBox.Text = ""
+				end
+
+				for name, row in pairs(list) do
+					row.instance.Visible = filter(row.title, searchBox.Text)
+				end
+			end)
+
+			self.fireCallback = function()
+				for name, row in pairs(list) do
+					for column, value in pairs(row.cells) do
+						self:spawnCallback(name, column, value)
+					end
+				end
+			end
+
+			self.add = addRow
+			self.remove = removeRow
+			self.getAll = function()
+				local clone = {}
+				for i, v in pairs(list) do
+					clone[i] = table.clone(v.cells)
+				end
+				return clone
+			end
+			self.removeAll = function()
+				for name, _ in pairs(list) do
+					removeRow(name)
+				end
+			end
+		end
+
+		--[[handlers.Checklist = function(self, component: typeof(frame.Checklist), data)
 			local list = {}
 			if not data.noSave then
 				save[data.name] = {}
@@ -564,15 +738,15 @@ return function(config, saved)
 				local savedValue = saved[data.name] and saved[data.name][name]
 				add(name, v.title, if savedValue ~= nil then savedValue else v.default)
 			end
-
+			
 			self.fireCallback = function()
 				for name, v in pairs(list) do
 					self:spawnCallback(name, v.value)
 				end
 			end
-		end
+		end--]]
 
-		handlers.List = function(self, component: typeof(frame.List), data)
+		--[[handlers.List = function(self, component: typeof(frame.List), data)
 			local list = {}
 			if not data.noSave then
 				save[data.name] = list
@@ -657,13 +831,13 @@ return function(config, saved)
 			for name, _ in pairs((if data.noSave then nil else saved[data.name]) or data.default) do
 				add(name)
 			end
-
+			
 			self.fireCallback = function()
 				for name, _ in pairs(list) do
 					self:spawnCallback(name, true)
 				end
 			end
-		end
+		end--]]
 
 		local i = 1
 		for _, v in pairs(config.features.sections) do
@@ -1039,6 +1213,8 @@ return function(config, saved)
 					object:Cancel()
 				end
 				object:Destroy()
+			elseif typeof(object) == "function" then
+				task.spawn(object)
 			end
 		end
 	end
